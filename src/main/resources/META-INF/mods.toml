@@ -4,7 +4,7 @@ license="MIT"
 
 [[mods]]
 modId="railward"
-version="${mod_version}"
+version="0.0.0"
 displayName="Create: Railward"
 logoFile="railward.png"
 authors="Shurgent"
