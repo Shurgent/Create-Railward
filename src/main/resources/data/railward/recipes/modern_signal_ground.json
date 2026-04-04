@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "S"
+  ],
+  "key": {
+    "#": { "item": "create:nixie_tube" },
+    "S": { "item": "minecraft:smooth_stone_slab" }
+  },
+  "result": {
+    "item": "railward:train/signal/modern_signal_ground"
+  }
+}

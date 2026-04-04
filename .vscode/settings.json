@@ -1,0 +1,5 @@
+{
+    "CodeGPT.apiKey": "OpenAI",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "automatic"
+}

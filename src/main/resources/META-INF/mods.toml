@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="MIT"
+
+[[mods]]
+modId="railward"
+version="${mod_version}"
+displayName="Create: Railward"
+logoFile="railward.png"
+authors="Shurgent"
+description='''Railway signals, infrastructure and rolling stock details for Create.'''
+
+[[dependencies.railward]]
+modId="forge"
+mandatory=true
+versionRange="[40,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.railward]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.18.2,1.19)"
+ordering="NONE"
+side="BOTH"

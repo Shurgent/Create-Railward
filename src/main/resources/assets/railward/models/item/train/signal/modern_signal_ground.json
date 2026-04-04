@@ -1,0 +1,20 @@
+{
+  "parent": "railward:block/train/signal/modern_signal_ground",
+  "display": {
+    "thirdperson": {
+      "rotation": [ 10, -45, 170 ],
+      "translation": [ 0, 1.5, -2.75 ],
+      "scale": [ 0.375, 0.375, 0.375 ]
+    },
+    "firstperson": {
+      "rotation": [ 0, -45, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.4, 0.4, 0.4 ]
+    },
+    "gui": {
+      "rotation": [ 30, 225, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.625, 0.625, 0.625 ]
+    }
+  }
+}

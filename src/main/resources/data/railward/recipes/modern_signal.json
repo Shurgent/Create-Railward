@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "I",
+    "S"
+  ],
+  "key": {
+    "#": { "item": "create:nixie_tube" },
+    "I": { "item": "create:industrial_iron_block" },
+    "S": { "item": "minecraft:smooth_stone" }
+  },
+  "result": {
+    "item": "railward:train/signal/modern_signal"
+  }
+}

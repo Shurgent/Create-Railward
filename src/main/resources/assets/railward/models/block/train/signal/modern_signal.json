@@ -1,0 +1,9 @@
+{
+	"parent": "block/block",
+	"loader": "forge:obj",
+	"textures": {
+		"particle": "railward:block/train/signal/modern_signal"
+  	},
+	"model": "railward:models/block/train/signal/modern_signal.obj",
+	"flip-v": true
+}

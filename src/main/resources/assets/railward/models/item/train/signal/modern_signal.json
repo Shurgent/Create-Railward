@@ -1,0 +1,43 @@
+{
+	"parent": "builtin/entity",
+	"loader": "forge:obj",
+	"model": "railward:models/block/train/signal/modern_signal.obj",
+	"flip-v": true,
+	"display": {
+		"ground": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 2, 0, 2 ],
+			"scale": [ 0.25, 0.25, 0.25 ]
+		},
+		"fixed": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 2, -5, 2 ],
+			"scale": [ 0.25, 0.25, 0.25 ]
+		},
+		"thirdperson_righthand": {
+			"rotation": [ 10, -45, 0 ],
+			"translation": [ 0, -2.5, 3.5 ],
+			"scale": [ 0.375, 0.375, 0.375 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [ 10, -45, 0 ],
+			"translation": [ -4.5, -2.5, -0.75 ],
+			"scale": [ 0.375, 0.375, 0.375 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 0, -45, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.4, 0.4, 0.4 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 0, -45, 0 ],
+			"translation": [ -4, 0, -4 ],
+			"scale": [ 0.4, 0.4, 0.4 ]
+		},
+		"gui": {
+			"rotation": [ 30, 225, 0 ],
+			"translation": [ -3, -5, 0 ],
+			"scale": [ 0.25, 0.25, 0.25 ]
+		}
+	}
+}

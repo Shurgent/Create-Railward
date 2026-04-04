@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#R#",
+	"###"
+  ],
+  "key": {
+    "#": { "item": "railward:train/parts/train_wall_blue" },
+	"R": { "tag": "forge:dyes/red" }
+  },
+  "result": {
+    "item": "railward:train/parts/train_wall_blue_stripe_red",
+	"count": 8
+  }
+}

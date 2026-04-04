@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "railward:models/block/train/signal/lamp_red_glow.obj",
+  "flip-v": true
+}

@@ -1,0 +1,15 @@
+{
+  "itemGroup.railward": "Create: Railward",
+  
+  "block.railward.train.parts.train_wall_blue": "Train Wall (Blue)",
+  "block.railward.train.parts.train_wall_blue_stripe_yellow": "Train Wall (Blue with yellow stripe)",
+  "block.railward.train.parts.train_wall_blue_stripe_red": "Train Wall (Blue with red stripe)",
+  "block.railward.train.parts.train_wall_blue_window_small": "Train Wall (Blue with small window)",
+  "block.railward.train.parts.train_wall_panel_blue": "Train Wall Panel (Blue)",
+  "block.railward.train.parts.train_wall_panel_blue_stripe_yellow": "Train Wall Panel (Blue with yellow stripe)",
+  "block.railward.train.parts.train_wall_panel_blue_stripe_red": "Train Wall Panel (Blue with red stripe)",
+  "block.railward.train.parts.train_wall_panel_blue_window_small": "Train Wall Panel (Blue with small window)",
+  "block.railward.train.parts.train_buffer": "Train Buffer",
+  "block.railward.train.signal.modern_signal_ground": "Modern Ground Signal",
+  "block.railward.train.signal.modern_signal": "Modern Signal"
+}

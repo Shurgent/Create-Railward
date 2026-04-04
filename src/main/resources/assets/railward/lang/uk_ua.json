@@ -1,0 +1,15 @@
+{
+  "itemGroup.railward": "Create: Railward",
+  
+  "block.railward.train.parts.train_wall_blue": "Стіна поїзда (синя)",
+  "block.railward.train.parts.train_wall_blue_stripe_yellow": "Стіна поїзда (синя з жовтою полосою)",
+  "block.railward.train.parts.train_wall_blue_stripe_red": "Стіна поїзда (синя з червоною полосою)",
+  "block.railward.train.parts.train_wall_blue_window_small": "Стіна поїзда (синя з маленьким вікном)",
+  "block.railward.train.parts.train_wall_panel_blue": "Стінова панель поїзда (синя)",
+  "block.railward.train.parts.train_wall_panel_blue_stripe_yellow": "Стінова панель поїзда (синя з жовтою полосою)",
+  "block.railward.train.parts.train_wall_panel_blue_stripe_red": "Стінова панель поїзда (синя з червоною полосою)",
+  "block.railward.train.parts.train_wall_panel_blue_window_small": "Стінова панель поїзда (синя з маленьким вікном)",
+  "block.railward.train.parts.train_buffer": "Буфер поїзда",
+  "block.railward.train.signal.modern_signal_ground": "Сучасний наземний світлофор",
+  "block.railward.train.signal.modern_signal": "Сучасний світлофор"
+}

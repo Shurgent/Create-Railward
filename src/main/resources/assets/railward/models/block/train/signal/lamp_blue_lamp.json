@@ -1,0 +1,40 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "railward:block/train/signal/modern_signal_ground_glow",
+		"1": "railward:block/train/signal/modern_signal_ground",
+		"particle": "railward:block/train/signal/modern_signal_ground_glow"
+	},
+	"elements": [
+		{
+			"name": "blue_lamp",
+			"from": [7, 4, 6],
+			"to": [9, 6, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 4, 5]},
+			"faces": {
+				"north": {"uv": [0, 15, 1, 16], "texture": "#0"},
+				"east": {"uv": [0.5, 15, 1, 16], "texture": "#0"},
+				"south": {"uv": [0, 15, 1, 16], "texture": "#0"},
+				"west": {"uv": [0.5, 15, 1, 16], "texture": "#0"},
+				"up": {"uv": [0, 15, 1, 15.5], "texture": "#0"},
+				"down": {"uv": [0, 15.5, 1, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "blue_glass",
+			"from": [6.5, 3.5, 5],
+			"to": [9.5, 6.5, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 4, 5]},
+			"faces": {
+				"north": {"uv": [1, 14.5, 2.5, 16], "texture": "#1"},
+				"east": {"uv": [1.5, 14.5, 2.5, 16], "texture": "#1"},
+				"south": {"uv": [1, 14.5, 2.5, 16], "texture": "#1"},
+				"west": {"uv": [1.5, 14.5, 2.5, 16], "texture": "#1"},
+				"up": {"uv": [1, 14.5, 2.5, 15.5], "texture": "#1"},
+				"down": {"uv": [1, 15, 2.5, 16], "texture": "#1"}
+			}
+		}
+	]
+}

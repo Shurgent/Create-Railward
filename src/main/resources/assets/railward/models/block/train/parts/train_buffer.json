@@ -1,0 +1,52 @@
+{
+	"credit": "Made with Blockbench by Shurgent",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "railward:block/train/parts/train_buffer",
+		"particle": "railward:block/train/parts/train_buffer"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [5, 5, -1],
+			"to": [11, 11, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 7, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 6], "texture": "#0", "cullface": "north"},
+				"east": {"uv": [0, 6, 4, 12], "texture": "#0"},
+				"south": {"uv": [0, 0, 6, 6], "texture": "#0"},
+				"west": {"uv": [0, 6, 4, 12], "texture": "#0"},
+				"up": {"uv": [0, 6, 4, 12], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [0, 6, 4, 12], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "rod",
+			"from": [6, 6, 3],
+			"to": [10, 10, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 7, 3]},
+			"faces": {
+				"east": {"uv": [8, 0, 16, 4], "texture": "#0"},
+				"west": {"uv": [16, 4, 8, 0], "texture": "#0"},
+				"up": {"uv": [8, 0, 16, 4], "rotation": 270, "texture": "#0"},
+				"down": {"uv": [16, 4, 8, 0], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "cap",
+			"from": [3, 4, 11],
+			"to": [13, 12, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 7, 11]},
+			"faces": {
+				"north": {"uv": [6, 8, 16, 16], "texture": "#0"},
+				"east": {"uv": [5, 8, 6, 16], "texture": "#0"},
+				"south": {"uv": [6, 8, 16, 16], "texture": "#0"},
+				"west": {"uv": [5, 8, 6, 16], "texture": "#0"},
+				"up": {"uv": [6, 7, 16, 8], "texture": "#0"},
+				"down": {"uv": [6, 7, 16, 8], "texture": "#0"}
+			}
+		}
+	]
+}
