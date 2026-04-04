@@ -186,32 +186,8 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-// ForgeGradle copyEclipseResources copies the *source* resource tree into bin/main, not processResources output,
-// so placeholders stay literal and Nightconfig fails on [[dependencies.${mod_id}]]. Overwrite metadata from build/.
-tasks.register('syncEclipseModMetadataFromProcessedResources') {
-    dependsOn 'processResources'
-    group = 'eclipse'
-    description = 'Copy expanded mods.toml and pack.mcmeta from build/resources/main into bin/main after Eclipse sync.'
-    doLast {
-        def srcToml = file("${buildDir}/resources/main/META-INF/mods.toml")
-        def destToml = file("${projectDir}/bin/main/META-INF/mods.toml")
-        def srcPack = file("${buildDir}/resources/main/pack.mcmeta")
-        def destPack = file("${projectDir}/bin/main/pack.mcmeta")
-        destToml.parentFile.mkdirs()
-        destPack.parentFile.mkdirs()
-        java.nio.file.Files.copy(srcToml.toPath(), destToml.toPath(),
-                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
-        java.nio.file.Files.copy(srcPack.toPath(), destPack.toPath(),
-                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
-    }
-}
-
-afterEvaluate {
-    tasks.named('copyEclipseResources').configure {
-        dependsOn 'processResources'
-        finalizedBy 'syncEclipseModMetadataFromProcessedResources'
-    }
-}
+// ForgeGradle's copyIdeResources support already copies processed resources into IDE output folders.
+// Writing directly into bin/main from a custom task can leave Eclipse with out-of-sync workspace metadata.
 
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {

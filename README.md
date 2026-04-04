@@ -25,24 +25,6 @@ This mod is aimed at players who want more believable rail environments without 
 - Matching wall panels for more modular carriage exteriors
 - Windowed variants for shaping passenger rolling stock
 
-## Included Blocks
-
-| Category | Content |
-| --- | --- |
-| Signals | Modern Signal, Modern Ground Signal |
-| Rolling stock parts | Train Wall (Blue), Yellow Stripe, Red Stripe, Small Window |
-| Panels | Train Wall Panel (Blue), Yellow Stripe, Red Stripe, Small Window |
-| Infrastructure | Train Buffer |
-
-## Compatibility
-
-| Target | Version |
-| --- | --- |
-| Minecraft | `1.18.2` |
-| Forge | `40.3.10` |
-| Create | `0.5.1.i-435` |
-| Mod version | `0.0.1` |
-
 ## Design Direction
 
 Railward is built around a simple goal: give Create trains stronger railway identity. The current lineup focuses on modern signal visuals and practical train body pieces that help bridges, platforms, sidings, and passenger builds look less improvised and more intentional.
