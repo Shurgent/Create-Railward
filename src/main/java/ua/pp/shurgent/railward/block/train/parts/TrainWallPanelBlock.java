@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -53,7 +52,11 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 	}
 
 	public TrainWallPanelBlock(BlockBehaviour.Properties properties) {
-        super(BlockBehaviour.Properties.of(Material.METAL).strength(1.0f, 6f).sound(SoundType.METAL).color(MaterialColor.COLOR_BLUE).noOcclusion());
+		this(properties, MaterialColor.COLOR_BLUE);
+	}
+
+	public TrainWallPanelBlock(BlockBehaviour.Properties properties, MaterialColor color) {
+        super(properties.strength(1.0f, 6f).sound(SoundType.METAL).color(color).noOcclusion());
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
@@ -91,25 +94,35 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 	}
 
 	public static boolean isTrainWallPanelItem(ItemStack stack) {
-		
-		if (AllBlocks.TRAIN_WALL_PANEL_BLUE.isIn(stack)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.isIn(stack)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.isIn(stack)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.isIn(stack)) return true;
-		
-		return false;
-		
+
+		return AllBlocks.TRAIN_WALL_PANEL_BLUE.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_RED.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.isIn(stack);
 	}
 
 	public static boolean isTrainWallPanelState(BlockState state) {
-		
-		if (AllBlocks.TRAIN_WALL_PANEL_BLUE.has(state)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.has(state)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.has(state)) return true;
-		else if (AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.has(state)) return true;
-		
-		return false;
-		
+
+		return AllBlocks.TRAIN_WALL_PANEL_BLUE.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_RED.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.has(state);
 	}
 
 	@MethodsReturnNonnullByDefault

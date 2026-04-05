@@ -1,4 +1,4 @@
-{
+﻿{
   "itemGroup.railward": "Create: Railward",
   
   "block.railward.train.parts.train_wall_blue": "Стіна поїзда (синя)",
@@ -9,6 +9,22 @@
   "block.railward.train.parts.train_wall_panel_blue_stripe_yellow": "Стінова панель поїзда (синя з жовтою полосою)",
   "block.railward.train.parts.train_wall_panel_blue_stripe_red": "Стінова панель поїзда (синя з червоною полосою)",
   "block.railward.train.parts.train_wall_panel_blue_window_small": "Стінова панель поїзда (синя з маленьким вікном)",
+  "block.railward.train.parts.train_wall_green": "Стіна поїзда (зелена)",
+  "block.railward.train.parts.train_wall_green_stripe_yellow": "Стіна поїзда (зелена з жовтою полосою)",
+  "block.railward.train.parts.train_wall_green_stripe_red": "Стіна поїзда (зелена з червоною полосою)",
+  "block.railward.train.parts.train_wall_green_window_small": "Стіна поїзда (зелена з маленьким вікном)",
+  "block.railward.train.parts.train_wall_panel_green": "Стінова панель поїзда (зелена)",
+  "block.railward.train.parts.train_wall_panel_green_stripe_yellow": "Стінова панель поїзда (зелена з жовтою полосою)",
+  "block.railward.train.parts.train_wall_panel_green_stripe_red": "Стінова панель поїзда (зелена з червоною полосою)",
+  "block.railward.train.parts.train_wall_panel_green_window_small": "Стінова панель поїзда (зелена з маленьким вікном)",
+  "block.railward.train.parts.train_wall_light_blue": "Стіна поїзда (блакитна)",
+  "block.railward.train.parts.train_wall_light_blue_stripe_yellow": "Стіна поїзда (блакитна з жовтою полосою)",
+  "block.railward.train.parts.train_wall_light_blue_stripe_red": "Стіна поїзда (блакитна з червоною полосою)",
+  "block.railward.train.parts.train_wall_light_blue_window_small": "Стіна поїзда (блакитна з маленьким вікном)",
+  "block.railward.train.parts.train_wall_panel_light_blue": "Стінова панель поїзда (блакитна)",
+  "block.railward.train.parts.train_wall_panel_light_blue_stripe_yellow": "Стінова панель поїзда (блакитна з жовтою полосою)",
+  "block.railward.train.parts.train_wall_panel_light_blue_stripe_red": "Стінова панель поїзда (блакитна з червоною полосою)",
+  "block.railward.train.parts.train_wall_panel_light_blue_window_small": "Стінова панель поїзда (блакитна з маленьким вікном)",
   "block.railward.train.parts.train_buffer": "Буфер поїзда",
   "block.railward.train.signal.modern_signal_ground": "Сучасний наземний світлофор",
   "block.railward.train.signal.modern_signal": "Сучасний світлофор"
