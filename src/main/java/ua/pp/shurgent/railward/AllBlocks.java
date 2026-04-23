@@ -11,6 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MaterialColor;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
+import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlueBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
@@ -240,6 +241,13 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
+
+	public static final BlockEntry<ModernWhistleBlock> MODERN_WHISTLE = REGISTRATE
+			.block("train/parts/modern_whistle", ModernWhistleBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
 
 	public static final BlockEntry<ModernSignalGroundBlock> MODERN_SIGNAL_GROUND = REGISTRATE
 			.block("train/signal/modern_signal_ground", ModernSignalGroundBlock::new)

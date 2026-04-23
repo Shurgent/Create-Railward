@@ -1,0 +1,97 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/modern_whistle_horn_2",
+		"horn": "railward:block/train/parts/modern_whistle_horn_2"
+	},
+	"elements": [
+		{
+			"name": "left_stem",
+			"from": [4, 2, 5],
+			"to": [6, 4, 10],
+			"rotation": {"angle": 0, "axis": "x", "origin": [7, 3, 5]},
+			"faces": {
+				"north": {"uv": [2.5, 15, 3.5, 16], "texture": "#horn"},
+				"east": {"uv": [0, 15, 2.5, 16], "texture": "#horn"},
+				"south": {"uv": [6, 15, 7, 16], "texture": "#horn"},
+				"west": {"uv": [3.5, 15, 6, 16], "texture": "#horn"},
+				"up": {"uv": [3.5, 15, 2.5, 12.5], "texture": "#horn"},
+				"down": {"uv": [4.5, 12.5, 3.5, 15], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "right_stem",
+			"from": [10, 2, 5],
+			"to": [12, 4, 10],
+			"rotation": {"angle": 0, "axis": "x", "origin": [9, 3, 5]},
+			"faces": {
+				"north": {"uv": [2.5, 15, 3.5, 16], "texture": "#horn"},
+				"east": {"uv": [0, 15, 2.5, 16], "texture": "#horn"},
+				"south": {"uv": [6, 15, 7, 16], "texture": "#horn"},
+				"west": {"uv": [3.5, 15, 6, 16], "texture": "#horn"},
+				"up": {"uv": [3.5, 15, 2.5, 12.5], "texture": "#horn"},
+				"down": {"uv": [4.5, 12.5, 3.5, 15], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "left_bell",
+			"from": [3, 1, 3],
+			"to": [7, 5, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 3, 5]},
+			"faces": {
+				"north": {"uv": [11, 1, 13, 3], "texture": "#horn"},
+				"east": {"uv": [10, 1, 11, 3], "texture": "#horn"},
+				"south": {"uv": [14, 1, 16, 3], "texture": "#horn"},
+				"west": {"uv": [13, 1, 14, 3], "texture": "#horn"},
+				"up": {"uv": [13, 1, 11, 0], "texture": "#horn"},
+				"down": {"uv": [15, 0, 13, 1], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "right_bell",
+			"from": [9, 1, 3],
+			"to": [13, 5, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 3, 5]},
+			"faces": {
+				"north": {"uv": [11, 1, 13, 3], "texture": "#horn"},
+				"east": {"uv": [10, 1, 11, 3], "texture": "#horn"},
+				"south": {"uv": [14, 1, 16, 3], "texture": "#horn"},
+				"west": {"uv": [13, 1, 14, 3], "texture": "#horn"},
+				"up": {"uv": [13, 1, 11, 0], "texture": "#horn"},
+				"down": {"uv": [15, 0, 13, 1], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "left_pump",
+			"from": [3, 1, 10],
+			"to": [7, 5, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 3, 13]},
+			"faces": {
+				"north": {"uv": [9.5, 14, 11.5, 16], "texture": "#horn"},
+				"east": {"uv": [7, 14, 9.5, 16], "texture": "#horn"},
+				"south": {"uv": [14, 14, 16, 16], "texture": "#horn"},
+				"west": {"uv": [11.5, 14, 14, 16], "texture": "#horn"},
+				"up": {"uv": [11.5, 14, 9.5, 11.5], "texture": "#horn"},
+				"down": {"uv": [13.5, 11.5, 11.5, 14], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "right_pump",
+			"from": [9, 1, 10],
+			"to": [13, 5, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 3, 13]},
+			"faces": {
+				"north": {"uv": [9.5, 14, 11.5, 16], "texture": "#horn"},
+				"east": {"uv": [7, 14, 9.5, 16], "texture": "#horn"},
+				"south": {"uv": [14, 14, 16, 16], "texture": "#horn"},
+				"west": {"uv": [11.5, 14, 14, 16], "texture": "#horn"},
+				"up": {"uv": [11.5, 14, 9.5, 11.5], "texture": "#horn"},
+				"down": {"uv": [13.5, 11.5, 11.5, 14], "texture": "#horn"}
+			}
+		}
+	]
+}

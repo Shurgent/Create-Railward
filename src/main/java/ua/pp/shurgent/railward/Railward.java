@@ -44,6 +44,7 @@ public class Railward {
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		REGISTRATE.registerEventListeners(modEventBus);
+		RailwardSoundEvents.register(modEventBus);
 		
 		AllBlocks.register();
 		AllBlockEntities.register();

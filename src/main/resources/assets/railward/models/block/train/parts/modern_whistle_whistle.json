@@ -1,0 +1,55 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/modern_whistle_whistle",
+		"whistle": "railward:block/train/parts/modern_whistle_whistle"
+	},
+	"elements": [
+		{
+			"name": "body",
+			"from": [7, 2, 4],
+			"to": [9, 4, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
+			"faces": {
+				"north": {"uv": [4.5, 4.5, 5.5, 5.5], "texture": "#whistle"},
+				"east": {"uv": [0, 4.5, 4.5, 5.5], "texture": "#whistle"},
+				"south": {"uv": [10, 4.5, 11, 5.5], "texture": "#whistle"},
+				"west": {"uv": [5.5, 4.5, 10, 5.5], "texture": "#whistle"},
+				"up": {"uv": [5.5, 4.5, 4.5, 0], "texture": "#whistle"},
+				"down": {"uv": [6.5, 0, 5.5, 4.5], "texture": "#whistle"}
+			}
+		},
+		{
+			"name": "cap",
+			"from": [6, 1, 3],
+			"to": [10, 5, 4],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
+			"faces": {
+				"north": {"uv": [1, 13.5, 3, 15.5], "texture": "#whistle"},
+				"east": {"uv": [0.5, 13.5, 1, 15.5], "texture": "#whistle"},
+				"south": {"uv": [3.5, 13.5, 5.5, 15.5], "texture": "#whistle"},
+				"west": {"uv": [3, 13.5, 3.5, 15.5], "texture": "#whistle"},
+				"up": {"uv": [3, 13.5, 1, 13], "texture": "#whistle"},
+				"down": {"uv": [5, 13, 3, 13.5], "texture": "#whistle"}
+			}
+		},
+		{
+			"name": "side_slot",
+			"from": [6, 4, 6],
+			"to": [10, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
+			"faces": {
+				"north": {"uv": [10.5, 11, 12.5, 12], "texture": "#whistle"},
+				"east": {"uv": [9, 11, 10.5, 12], "texture": "#whistle"},
+				"south": {"uv": [14, 11, 16, 12], "texture": "#whistle"},
+				"west": {"uv": [12.5, 11, 14, 12], "texture": "#whistle"},
+				"up": {"uv": [12.5, 11, 10.5, 9.5], "texture": "#whistle"},
+				"down": {"uv": [14.5, 9.5, 12.5, 11], "texture": "#whistle"}
+			}
+		}
+	]
+}

@@ -26,6 +26,11 @@
   "block.railward.train.parts.train_wall_panel_light_blue_stripe_red": "Train Wall Panel (Light Blue with red stripe)",
   "block.railward.train.parts.train_wall_panel_light_blue_window_small": "Train Wall Panel (Light Blue with small window)",
   "block.railward.train.parts.train_buffer": "Train Buffer",
+  "block.railward.train.parts.modern_whistle": "Modern Whistle",
   "block.railward.train.signal.modern_signal_ground": "Modern Ground Signal",
-  "block.railward.train.signal.modern_signal": "Modern Signal"
+  "block.railward.train.signal.modern_signal": "Modern Signal",
+
+  "subtitle.railward.modern_whistle.horn_1": "Modern whistle sounds horn 1",
+  "subtitle.railward.modern_whistle.horn_2": "Modern whistle sounds horn 2",
+  "subtitle.railward.modern_whistle.whistle": "Modern whistle sounds whistle"
 }

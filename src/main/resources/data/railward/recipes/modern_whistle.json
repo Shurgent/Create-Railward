@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "FPF",
+    " I "
+  ],
+  "key": {
+    "C": { "item": "minecraft:copper_ingot" },
+    "F": { "item": "create:fluid_pipe" },
+    "P": { "tag": "forge:plates/brass" },
+    "I": { "item": "create:industrial_iron_block" }
+  },
+  "result": {
+    "item": "railward:train/parts/modern_whistle"
+  }
+}

@@ -1,0 +1,55 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/modern_whistle_horn_1",
+		"horn": "railward:block/train/parts/modern_whistle_horn_1"
+	},
+	"elements": [
+		{
+			"name": "stem",
+			"from": [7, 2, 4],
+			"to": [9, 4, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 7]},
+			"faces": {
+				"north": {"uv": [2, 12, 4, 14], "rotation": 270, "texture": "#horn"},
+				"east": {"uv": [2, 14, 4, 20], "rotation": 90, "texture": "#horn"},
+				"south": {"uv": [4, 14, 2, 12], "rotation": 270, "texture": "#horn"},
+				"west": {"uv": [6, 14, 8, 20], "rotation": 270, "texture": "#horn"},
+				"up": {"uv": [0, 14, 2, 20], "texture": "#horn"},
+				"down": {"uv": [4, 14, 6, 20], "rotation": 180, "texture": "#horn"}
+			}
+		},
+		{
+			"name": "pump",
+			"from": [6, 1, 10],
+			"to": [10, 5, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 13]},
+			"faces": {
+				"north": {"uv": [10, 10, 12, 12], "texture": "#horn"},
+				"east": {"uv": [10, 14, 13, 16], "texture": "#horn"},
+				"south": {"uv": [10, 14, 12, 16], "texture": "#horn"},
+				"west": {"uv": [10, 14, 13, 16], "texture": "#horn"},
+				"up": {"uv": [14, 10, 16, 13], "texture": "#horn"},
+				"down": {"uv": [16, 13, 14, 10], "texture": "#horn"}
+			}
+		},
+		{
+			"name": "bell",
+			"from": [6, 1, 3],
+			"to": [10, 5, 4],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 14, 2, 16], "texture": "#horn"},
+				"east": {"uv": [2.25, 14, 2.75, 16], "texture": "#horn"},
+				"south": {"uv": [0, 14, 2, 16], "texture": "#horn"},
+				"west": {"uv": [3.25, 12, 3.75, 14], "texture": "#horn"},
+				"up": {"uv": [2, 15.5, 4, 16], "texture": "#horn"},
+				"down": {"uv": [2, 15, 4, 15.5], "texture": "#horn"}
+			}
+		}
+	]
+}

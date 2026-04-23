@@ -1,0 +1,26 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/modern_whistle_base",
+		"base": "railward:block/train/parts/modern_whistle_base"
+	},
+	"elements": [
+		{
+			"name": "mount_plate",
+			"from": [4, 0, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"north": {"uv": [4, 10, 12, 12], "texture": "#base"},
+				"east": {"uv": [4, 10, 12, 12], "texture": "#base"},
+				"south": {"uv": [4, 10, 12, 12], "texture": "#base"},
+				"west": {"uv": [4, 10, 12, 12], "texture": "#base"},
+				"up": {"uv": [4, 2, 12, 10], "texture": "#base"},
+				"down": {"uv": [12, 10, 4, 2], "texture": "#base"}
+			}
+		}
+	]
+}

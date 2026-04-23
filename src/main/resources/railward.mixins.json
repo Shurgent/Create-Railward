@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ua.pp.shurgent.railward.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "railward.refmap.json",
+  "mixins": [],
+  "client": [
+    "create.client.ArrivalSoundQueueMixin",
+    "create.client.CarriageSoundsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

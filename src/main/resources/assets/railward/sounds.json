@@ -1,0 +1,74 @@
+{
+  "modern_whistle_horn_1_start": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_1",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_1_start"
+      }
+    ]
+  },
+  "modern_whistle_horn_1_loop": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_1",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_1_loop"
+      }
+    ]
+  },
+  "modern_whistle_horn_1_end": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_1",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_1_end"
+      }
+    ]
+  },
+  "modern_whistle_horn_2_start": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_2",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_2_start"
+      }
+    ]
+  },
+  "modern_whistle_horn_2_loop": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_2",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_2_loop"
+      }
+    ]
+  },
+  "modern_whistle_horn_2_end": {
+    "subtitle": "subtitle.railward.modern_whistle.horn_2",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/horn_2_end"
+      }
+    ]
+  },
+  "modern_whistle_whistle_start": {
+    "subtitle": "subtitle.railward.modern_whistle.whistle",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/whistle_start"
+      }
+    ]
+  },
+  "modern_whistle_whistle_loop": {
+    "subtitle": "subtitle.railward.modern_whistle.whistle",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/whistle_loop"
+      }
+    ]
+  },
+  "modern_whistle_whistle_end": {
+    "subtitle": "subtitle.railward.modern_whistle.whistle",
+    "sounds": [
+      {
+        "name": "railward:train/parts/modern_whistle/whistle_end"
+      }
+    ]
+  }
+}

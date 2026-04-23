@@ -1,0 +1,33 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "railward:block/train/parts/modern_whistle_base"
+      }
+    },
+    {
+      "when": {
+        "sound_type": "horn_1"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/modern_whistle_horn_1"
+      }
+    },
+    {
+      "when": {
+        "sound_type": "horn_2"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/modern_whistle_horn_2"
+      }
+    },
+    {
+      "when": {
+        "sound_type": "whistle"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/modern_whistle_whistle"
+      }
+    }
+  ]
+}

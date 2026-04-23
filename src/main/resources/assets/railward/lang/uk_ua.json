@@ -26,6 +26,11 @@
   "block.railward.train.parts.train_wall_panel_light_blue_stripe_red": "Стінова панель поїзда (блакитна з червоною полосою)",
   "block.railward.train.parts.train_wall_panel_light_blue_window_small": "Стінова панель поїзда (блакитна з маленьким вікном)",
   "block.railward.train.parts.train_buffer": "Буфер поїзда",
+  "block.railward.train.parts.modern_whistle": "Сучасний гудок",
   "block.railward.train.signal.modern_signal_ground": "Сучасний наземний світлофор",
-  "block.railward.train.signal.modern_signal": "Сучасний світлофор"
+  "block.railward.train.signal.modern_signal": "Сучасний світлофор",
+
+  "subtitle.railward.modern_whistle.horn_1": "Сучасний гудок звучить як гудок 1",
+  "subtitle.railward.modern_whistle.horn_2": "Сучасний гудок звучить як гудок 2",
+  "subtitle.railward.modern_whistle.whistle": "Сучасний гудок звучить як свисток"
 }

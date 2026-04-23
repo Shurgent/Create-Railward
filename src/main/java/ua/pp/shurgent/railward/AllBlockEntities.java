@@ -8,6 +8,8 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
+import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
+import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 
 public class AllBlockEntities {
 
@@ -21,6 +23,12 @@ public class AllBlockEntities {
 			.blockEntity("train/signal/modern_signal", ModernSignalBlockEntity::new)
 			.validBlocks(AllBlocks.MODERN_SIGNAL)
 			.renderer(() -> ModernSignalRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<ModernWhistleBlockEntity> MODERN_WHISTLE = REGISTRATE
+			.blockEntity("train/parts/modern_whistle", ModernWhistleBlockEntity::new)
+			.validBlocks(AllBlocks.MODERN_WHISTLE)
+			.renderer(() -> ModernWhistleRenderer::new)
 			.register();
 
 	public static void register() {
