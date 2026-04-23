@@ -10,13 +10,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MaterialColor;
 
-public class TrainWallBlueBlock extends Block implements IWrenchable {
+public class TrainWallBlock extends Block implements IWrenchable {
 
-    public TrainWallBlueBlock(BlockBehaviour.Properties properties) {
+    public TrainWallBlock(BlockBehaviour.Properties properties) {
         this(properties, MaterialColor.COLOR_BLUE);
     }
 
-    public TrainWallBlueBlock(BlockBehaviour.Properties properties, MaterialColor color) {
+    public TrainWallBlock(BlockBehaviour.Properties properties, MaterialColor color) {
         super(properties.strength(1.0f, 6f).sound(SoundType.METAL).color(color));
     }
 

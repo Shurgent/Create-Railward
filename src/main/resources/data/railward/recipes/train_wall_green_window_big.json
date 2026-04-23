@@ -1,0 +1,17 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#G#",
+    "#G#",
+	"#G#"
+  ],
+  "key": {
+    "#": { "item": "railward:train/parts/train_wall_green" },
+	"G": { "tag": "forge:glass/colorless" }
+  },
+  "result": {
+    "item": "railward:train/parts/train_wall_green_window_big",
+	"count": 6
+  }
+}
+

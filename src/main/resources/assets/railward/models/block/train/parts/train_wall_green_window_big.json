@@ -1,0 +1,9 @@
+﻿{
+	"parent": "block/cube_column",
+	"textures": {
+		"side": "railward:block/train/parts/train_wall_green_window_big",
+		"end": "railward:block/train/parts/train_wall_green"
+	}
+}
+
+

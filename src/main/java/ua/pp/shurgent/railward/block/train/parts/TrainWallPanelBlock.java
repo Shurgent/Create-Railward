@@ -99,14 +99,17 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_BIG.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_RED.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_BIG.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW.isIn(stack)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED.isIn(stack)
-				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.isIn(stack);
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.isIn(stack)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG.isIn(stack);
 	}
 
 	public static boolean isTrainWallPanelState(BlockState state) {
@@ -115,14 +118,17 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_STRIPE_RED.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_BLUE_WINDOW_BIG.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_STRIPE_RED.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_GREEN_WINDOW_BIG.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED.has(state)
-				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.has(state);
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.has(state)
+				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG.has(state);
 	}
 
 	@MethodsReturnNonnullByDefault
