@@ -3,7 +3,6 @@ package ua.pp.shurgent.railward.client.sound;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -35,10 +33,6 @@ public class ModernWhistleTrainAudio {
 
 	private static final int MANUAL_RELEASE_TICKS = 5;
 	private static final int MANUAL_LOOP_FADE_OUT_TICKS = 4;
-	private static final ResourceLocation CREATE_MANUAL_LOOP = Objects
-		.requireNonNull(ResourceLocation.tryParse("create:whistle_train_manual"));
-	private static final ResourceLocation CREATE_MANUAL_LOW_LOOP = Objects
-		.requireNonNull(ResourceLocation.tryParse("create:whistle_train_manual_low"));
 	private static final Map<Integer, ManualHonkState> ACTIVE_MANUAL_HONKS = new HashMap<>();
 
 	private ModernWhistleTrainAudio() {
@@ -106,15 +100,6 @@ public class ModernWhistleTrainAudio {
 		ManualHonkState state = ACTIVE_MANUAL_HONKS.remove(carriageEntity.getId());
 		if (state != null)
 			state.stopLoop();
-	}
-
-	public static void suppressCreateManualLoop() {
-		Minecraft minecraft = Minecraft.getInstance();
-		if (minecraft == null || minecraft.getSoundManager() == null)
-			return;
-
-		minecraft.getSoundManager().stop(CREATE_MANUAL_LOOP, SoundSource.NEUTRAL);
-		minecraft.getSoundManager().stop(CREATE_MANUAL_LOW_LOOP, SoundSource.NEUTRAL);
 	}
 
 	public static void playMovingTrainSound(CarriageContraptionEntity carriageEntity, SoundEvent soundEvent, float volume,

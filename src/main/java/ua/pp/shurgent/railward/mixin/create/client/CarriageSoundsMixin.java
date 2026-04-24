@@ -35,13 +35,11 @@ public abstract class CarriageSoundsMixin {
 		Carriage carriage = entity.getCarriage();
 		if (carriage == null || carriage.train == null) {
 			ModernWhistleTrainAudio.stopManualHonk(entity);
-			ModernWhistleTrainAudio.suppressCreateManualLoop();
 			ci.cancel();
 			return;
 		}
 
 		Train train = carriage.train;
-		ModernWhistleTrainAudio.suppressCreateManualLoop();
 
 		if (train.honkTicks == 0) {
 			ModernWhistleTrainAudio.stopManualHonk(entity);

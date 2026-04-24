@@ -37,7 +37,12 @@ public class ModernWhistleBlock extends WhistleBlock {
 	public static final EnumProperty<ModernWhistleSoundType> SOUND_TYPE = EnumProperty.create("sound_type",
 		ModernWhistleSoundType.class);
 
-	private static final VoxelShape SHAPE = Block.box(3, 3, 3, 13, 13, 13);
+	private static final VoxelShape SHAPE_DOWN = Block.box(0, 0, 0, 16, 8, 16);
+	private static final VoxelShape SHAPE_UP = Block.box(0, 8, 0, 16, 16, 16);
+	private static final VoxelShape SHAPE_NORTH = Block.box(0, 0, 0, 16, 16, 8);
+	private static final VoxelShape SHAPE_SOUTH = Block.box(0, 0, 8, 16, 16, 16);
+	private static final VoxelShape SHAPE_WEST = Block.box(0, 0, 0, 8, 16, 16);
+	private static final VoxelShape SHAPE_EAST = Block.box(8, 0, 0, 16, 16, 16);
 
 	public ModernWhistleBlock(Properties properties) {
 		super(BlockBehaviour.Properties.of(Material.METAL)
@@ -166,7 +171,24 @@ public class ModernWhistleBlock extends WhistleBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return SHAPE;
+		return getAttachedFaceShape(state);
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
+		CollisionContext context) {
+		return getAttachedFaceShape(state);
+	}
+
+	private VoxelShape getAttachedFaceShape(BlockState state) {
+		return switch (state.getValue(ATTACHED_FACE)) {
+		case DOWN -> SHAPE_DOWN;
+		case UP -> SHAPE_UP;
+		case NORTH -> SHAPE_NORTH;
+		case SOUTH -> SHAPE_SOUTH;
+		case WEST -> SHAPE_WEST;
+		case EAST -> SHAPE_EAST;
+		};
 	}
 
 	@Override
