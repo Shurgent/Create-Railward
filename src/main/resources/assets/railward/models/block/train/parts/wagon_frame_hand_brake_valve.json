@@ -1,0 +1,111 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/wagon_frame",
+		"frame": "railward:block/train/parts/wagon_frame"
+	},
+	"elements": [
+		{
+			"name": "stem",
+			"from": [0.5, 2, 7.5],
+			"to": [2, 6, 8.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, 8]},
+			"faces": {
+				"north": {"uv": [8.5, 8.5, 9, 10.5], "texture": "#frame"},
+				"east": {"uv": [8, 8.5, 8.5, 10.5], "texture": "#frame"},
+				"south": {"uv": [9.5, 8.5, 10, 10.5], "texture": "#frame"},
+				"west": {"uv": [9, 8.5, 9.5, 10.5], "texture": "#frame"},
+				"up": {"uv": [9, 8.5, 8.5, 8], "texture": "#frame"},
+				"down": {"uv": [9.5, 8, 9, 8.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "stem",
+			"from": [0.4, 3.5, 6],
+			"to": [1.9, 4.5, 10],
+			"rotation": {"angle": 0, "axis": "x", "origin": [1.9, 4, 8]},
+			"faces": {
+				"north": {"uv": [11.5, 9.5, 12, 10], "texture": "#frame"},
+				"east": {"uv": [9.5, 9.5, 11.5, 10], "texture": "#frame"},
+				"south": {"uv": [10, 9.5, 10.5, 10], "texture": "#frame"},
+				"west": {"uv": [8, 9.5, 10, 10], "texture": "#frame"},
+				"up": {"uv": [10.5, 10.5, 10, 8.5], "texture": "#frame"},
+				"down": {"uv": [11, 8.5, 10.5, 10.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "wheel_top",
+			"from": [0, 5.5, 6],
+			"to": [1, 6.5, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, 8]},
+			"faces": {
+				"north": {"uv": [8, 10.5, 8.5, 11], "texture": "#frame"},
+				"east": {"uv": [10, 10.5, 12, 11], "texture": "#frame"},
+				"south": {"uv": [10.5, 10.5, 11, 11], "texture": "#frame"},
+				"west": {"uv": [8.5, 10.5, 10.5, 11], "texture": "#frame"},
+				"up": {"uv": [8.5, 10.5, 8, 8.5], "texture": "#frame"},
+				"down": {"uv": [9, 8.5, 8.5, 10.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "wheel_bottom",
+			"from": [0, 1.5, 6],
+			"to": [1, 2.5, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, 8]},
+			"faces": {
+				"north": {"uv": [8, 10.5, 8.5, 11], "texture": "#frame"},
+				"east": {"uv": [10, 10.5, 12, 11], "texture": "#frame"},
+				"south": {"uv": [10.5, 10.5, 11, 11], "texture": "#frame"},
+				"west": {"uv": [8.5, 10.5, 10.5, 11], "texture": "#frame"},
+				"up": {"uv": [8.5, 10.5, 8, 8.5], "texture": "#frame"},
+				"down": {"uv": [9, 8.5, 8.5, 10.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "wheel_front",
+			"from": [0, 2.5, 9.5],
+			"to": [1, 5.5, 10.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, 8]},
+			"faces": {
+				"north": {"uv": [9, 9, 8.5, 10.5], "texture": "#frame"},
+				"east": {"uv": [9.5, 9, 9, 10.5], "texture": "#frame"},
+				"south": {"uv": [10, 9, 9.5, 10.5], "texture": "#frame"},
+				"west": {"uv": [8.5, 9, 8, 10.5], "texture": "#frame"},
+				"up": {"uv": [8.5, 9, 9, 8.5], "texture": "#frame"},
+				"down": {"uv": [9, 8.5, 9.5, 9], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "wheel_back",
+			"from": [0, 2.5, 5.5],
+			"to": [1, 5.5, 6.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, 8]},
+			"faces": {
+				"north": {"uv": [10.5, 9, 10, 10.5], "texture": "#frame"},
+				"east": {"uv": [11, 9, 10.5, 10.5], "texture": "#frame"},
+				"south": {"uv": [11.5, 9, 11, 10.5], "texture": "#frame"},
+				"west": {"uv": [10, 9, 9.5, 10.5], "texture": "#frame"},
+				"up": {"uv": [10, 9, 10.5, 8.5], "texture": "#frame"},
+				"down": {"uv": [10.5, 8.5, 11, 9], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "shaft",
+			"from": [2, 3, 7],
+			"to": [9, 5, 9],
+			"rotation": {"angle": 0, "axis": "x", "origin": [2, 4, 8]},
+			"faces": {
+				"north": {"uv": [1, 15, 4.5, 16], "texture": "#frame"},
+				"east": {"uv": [0, 15, 1, 16], "texture": "#frame"},
+				"south": {"uv": [5.5, 15, 9, 16], "texture": "#frame"},
+				"west": {"uv": [4.5, 15, 5.5, 16], "texture": "#frame"},
+				"up": {"uv": [4.5, 15, 1, 14], "texture": "#frame"},
+				"down": {"uv": [8, 14, 4.5, 15], "texture": "#frame"}
+			}
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "railward:block/train/parts/wagon_frame_base"
+    },
+    "facing=east": {
+      "model": "railward:block/train/parts/wagon_frame_base",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "railward:block/train/parts/wagon_frame_base",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "railward:block/train/parts/wagon_frame_base",
+      "y": 270
+    }
+  }
+}

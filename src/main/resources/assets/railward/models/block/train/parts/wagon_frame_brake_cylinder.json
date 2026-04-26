@@ -1,0 +1,93 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/wagon_frame",
+		"frame": "railward:block/train/parts/wagon_frame"
+	},
+	"elements": [
+		{
+			"name": "cylinder_body",
+			"from": [4, 2, 4],
+			"to": [12, 6, 12],
+			"faces": {
+				"north": {"uv": [12, 10, 16, 12], "texture": "#frame"},
+				"east": {"uv": [11, 14, 15, 16], "texture": "#frame"},
+				"south": {"uv": [12, 8, 16, 10], "texture": "#frame"},
+				"west": {"uv": [11, 14, 15, 16], "texture": "#frame"},
+				"up": {"uv": [8, 11, 12, 15], "texture": "#frame"},
+				"down": {"uv": [8, 11, 12, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "cylinder_rounding",
+			"from": [5, 1, 5],
+			"to": [11, 7, 11],
+			"faces": {
+				"north": {"uv": [12.5, 9.5, 15.5, 12.5], "texture": "#frame"},
+				"east": {"uv": [12, 8, 15, 11], "texture": "#frame"},
+				"south": {"uv": [13, 9, 16, 12], "texture": "#frame"},
+				"west": {"uv": [12, 9, 15, 12], "texture": "#frame"},
+				"up": {"uv": [13, 8, 16, 11], "texture": "#frame"},
+				"down": {"uv": [12.5, 8.5, 15.5, 11.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "piston_rod",
+			"from": [7, 3, 0],
+			"to": [9, 5, 4],
+			"faces": {
+				"north": {"uv": [2, 9, 3, 10], "texture": "#frame"},
+				"east": {"uv": [3, 9, 5, 10], "texture": "#frame"},
+				"south": {"uv": [2, 8, 3, 9], "texture": "#frame"},
+				"west": {"uv": [3, 8, 5, 9], "texture": "#frame"},
+				"up": {"uv": [1, 8, 2, 10], "texture": "#frame"},
+				"down": {"uv": [0, 8, 1, 10], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "rear_mount",
+			"from": [6, 2, 12],
+			"to": [10, 6, 16],
+			"faces": {
+				"north": {"uv": [12.5, 9, 14.5, 11], "texture": "#frame"},
+				"east": {"uv": [14.5, 11, 16, 13], "texture": "#frame"},
+				"south": {"uv": [12.5, 14, 14.5, 16], "texture": "#frame"},
+				"west": {"uv": [11, 11, 12.5, 13], "texture": "#frame"},
+				"up": {"uv": [12.5, 11, 14.5, 12.5], "texture": "#frame"},
+				"down": {"uv": [12.5, 12.5, 14.5, 14], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "rear_band",
+			"from": [5.5, 1.5, 13],
+			"to": [6.5, 14.5, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 8]},
+			"faces": {
+				"north": {"uv": [5.5, 8.5, 6.5, 15], "texture": "#frame"},
+				"east": {"uv": [5, 8.5, 5.5, 15], "texture": "#frame"},
+				"south": {"uv": [7, 8.5, 8, 15], "texture": "#frame"},
+				"west": {"uv": [6.5, 8.5, 7, 15], "texture": "#frame"},
+				"up": {"uv": [6.5, 8.5, 5.5, 8], "texture": "#frame"},
+				"down": {"uv": [7.5, 8, 6.5, 8.5], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "rear_band",
+			"from": [9.5, 1.5, 13],
+			"to": [10.5, 14.5, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 0, 8]},
+			"faces": {
+				"north": {"uv": [5.5, 8.5, 6.5, 15], "texture": "#frame"},
+				"east": {"uv": [5, 8.5, 5.5, 15], "texture": "#frame"},
+				"south": {"uv": [7, 8.5, 8, 15], "texture": "#frame"},
+				"west": {"uv": [6.5, 8.5, 7, 15], "texture": "#frame"},
+				"up": {"uv": [6.5, 8.5, 5.5, 8], "texture": "#frame"},
+				"down": {"uv": [7.5, 8, 6.5, 8.5], "texture": "#frame"}
+			}
+		}
+	]
+}

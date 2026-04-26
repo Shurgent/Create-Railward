@@ -1,0 +1,91 @@
+{
+  "format_version": "1.21.6",
+  "credit": "Made for Create: Railward",
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "texture_size": [32, 32],
+  "textures": {
+    "particle": "railward:block/train/parts/wagon_frame",
+    "frame": "railward:block/train/parts/wagon_frame"
+  },
+  "elements": [
+    {
+      "name": "top_deck",
+      "from": [0, 14, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    },
+    {
+      "name": "front_beam",
+      "from": [0, 8, 0],
+      "to": [16, 16, 4],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    },
+    {
+      "name": "back_beam",
+      "from": [0, 8, 12],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    },
+    {
+      "name": "left_beam",
+      "from": [0, 8, 4],
+      "to": [4, 16, 12],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    },
+    {
+      "name": "right_beam",
+      "from": [12, 8, 4],
+      "to": [16, 16, 12],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    },
+    {
+      "name": "receiver_body",
+      "from": [5, 2, 3],
+      "to": [11, 6, 13],
+      "faces": {
+        "north": {"texture": "#frame"},
+        "east": {"texture": "#frame"},
+        "south": {"texture": "#frame"},
+        "west": {"texture": "#frame"},
+        "up": {"texture": "#frame"},
+        "down": {"texture": "#frame"}
+      }
+    }
+  ]
+}

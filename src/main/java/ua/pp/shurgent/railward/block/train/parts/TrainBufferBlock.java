@@ -27,10 +27,10 @@ public class TrainBufferBlock extends HorizontalDirectionalBlock implements IWre
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE_NORTH = Shapes.or(
-		Block.box(5, 5, 0, 11, 11, 3), // base
-		Block.box(6, 6, 3, 10, 10, 11), // rod
-		Block.box(3, 4, 11, 13, 12, 12), // cap
-		Block.box(0, 0, 0, 16, 16, 1) // задняя грань полная
+		Block.box(5, 7, 0, 11, 13, 3), // base
+		Block.box(6, 8, 3, 10, 12, 11), // rod
+		Block.box(3, 6, 11, 13, 14, 12), // cap
+		Block.box(0, 0, 0, 16, 16, 1) // rear full size hitbox for easier selection
 	);
 
 	// Build a directional shaper so you don’t manually rotate each AABB

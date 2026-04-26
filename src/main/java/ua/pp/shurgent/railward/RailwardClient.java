@@ -4,6 +4,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RailwardClient {
@@ -13,6 +14,7 @@ public class RailwardClient {
 		AllPartialModels.init();
 		
 		modEventBus.addListener(RailwardClient::clientInit);
+		forgeEventBus.addListener(WagonFrameInteractionHighlight::render);
 		
 	}
 

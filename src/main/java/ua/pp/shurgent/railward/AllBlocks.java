@@ -12,8 +12,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MaterialColor;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
 
@@ -21,6 +23,32 @@ public class AllBlocks {
 
 	static final String PATH_TRAINPARTS = "block/train/parts/";
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
+
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_BLUE = REGISTRATE
+			.block("train/parts/train_floor_blue", TrainFloorBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_GREEN = REGISTRATE
+			.block("train/parts/train_floor_green", properties -> new TrainFloorBlock(properties, MaterialColor.COLOR_GREEN))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_LIGHT_BLUE = REGISTRATE
+			.block("train/parts/train_floor_light_blue", properties -> new TrainFloorBlock(properties, MaterialColor.COLOR_LIGHT_BLUE))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
 
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE = REGISTRATE
 			.block("train/parts/train_wall_blue", TrainWallBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
@@ -298,6 +326,13 @@ public class AllBlocks {
 
 	public static final BlockEntry<ModernWhistleBlock> MODERN_WHISTLE = REGISTRATE
 			.block("train/parts/modern_whistle", ModernWhistleBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<WagonFrameBlock> WAGON_FRAME = REGISTRATE
+			.block("train/parts/wagon_frame", WagonFrameBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))

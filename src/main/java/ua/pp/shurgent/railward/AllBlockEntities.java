@@ -9,7 +9,9 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
+import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
 
@@ -29,6 +31,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/modern_whistle", ModernWhistleBlockEntity::new)
 			.validBlocks(AllBlocks.MODERN_WHISTLE)
 			.renderer(() -> ModernWhistleRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<WagonFrameBlockEntity> WAGON_FRAME = REGISTRATE
+			.blockEntity("train/parts/wagon_frame", WagonFrameBlockEntity::new)
+			.validBlocks(AllBlocks.WAGON_FRAME)
+			.renderer(() -> WagonFrameRenderer::new)
 			.register();
 
 	public static void register() {

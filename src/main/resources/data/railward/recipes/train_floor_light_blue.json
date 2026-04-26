@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I#I",
+    "#B#",
+    "IHI"
+  ],
+  "key": {
+    "#": { "item": "create:sturdy_sheet" },
+    "I": { "tag": "forge:plates/iron" },
+    "B": { "tag": "forge:dyes/light_blue" },
+    "H": { "item": "create:industrial_iron_block" }
+  },
+  "result": {
+    "item": "railward:train/parts/train_floor_light_blue",
+    "count": 4
+  }
+}
