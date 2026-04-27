@@ -8,7 +8,7 @@
   "key": {
     "#": { "item": "create:sturdy_sheet" },
     "I": { "item": "create:industrial_iron_block" },
-    "G": { "item": "create:girder" },
+    "G": { "item": "create:metal_girder" },
     "S": { "item": "create:shaft" }
   },
   "result": {

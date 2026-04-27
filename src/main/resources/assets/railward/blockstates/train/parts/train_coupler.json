@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "railward:block/train/parts/train_coupler" },
+    "facing=south": { "model": "railward:block/train/parts/train_coupler", "y": 180 },
+    "facing=west":  { "model": "railward:block/train/parts/train_coupler", "y": 270 },
+    "facing=east":  { "model": "railward:block/train/parts/train_coupler", "y": 90 }
+  }
+}

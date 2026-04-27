@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ISG"
+  ],
+  "key": {
+    "I": { "tag": "forge:ingots/iron" },
+    "S": { "item": "create:shaft" },
+    "G": { "item": "create:metal_girder" }
+  },
+  "result": {
+    "item": "railward:train/parts/train_coupler"
+  }
+}

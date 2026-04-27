@@ -44,7 +44,10 @@ public class AllPartialModels {
 	WAGON_FRAME_DISTRIBUTOR = block("train/parts/wagon_frame_distributor"),
 	WAGON_FRAME_BRAKE_PIPE = block("train/parts/wagon_frame_brake_pipe"),
 	WAGON_FRAME_FUEL_TANK = block("train/parts/wagon_frame_fuel_tank"),
-	WAGON_FRAME_HAND_BRAKE_VALVE = block("train/parts/wagon_frame_hand_brake_valve")
+	WAGON_FRAME_HAND_BRAKE_VALVE = block("train/parts/wagon_frame_hand_brake_valve"),
+
+	// Train Coupler
+	TRAIN_COUPLER = block("train/parts/train_coupler")
 
 	;
 

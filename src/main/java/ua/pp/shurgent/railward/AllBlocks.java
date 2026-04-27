@@ -1,6 +1,7 @@
 package ua.pp.shurgent.railward;
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
+import static com.simibubi.create.AllInteractionBehaviours.interactionBehaviour;
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -11,6 +12,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MaterialColor;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
@@ -320,6 +323,15 @@ public class AllBlocks {
 			.block("train/parts/train_buffer", TrainBufferBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops().noOcclusion())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainCouplerBlock> TRAIN_COUPLER = REGISTRATE
+			.block("train/parts/train_coupler", TrainCouplerBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops().noOcclusion())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(interactionBehaviour(new TrainCouplerInteractionBehaviour()))
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();

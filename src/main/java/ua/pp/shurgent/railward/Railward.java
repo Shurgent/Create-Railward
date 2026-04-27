@@ -18,8 +18,10 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.ModLoadingContext;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("railward")
@@ -42,9 +44,11 @@ public class Railward {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 		
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RailwardConfig.COMMON_SPEC);
 		MinecraftForge.EVENT_BUS.register(this);
 		REGISTRATE.registerEventListeners(modEventBus);
 		RailwardSoundEvents.register(modEventBus);
+		RailwardPackets.registerPackets();
 		
 		AllBlocks.register();
 		AllBlockEntities.register();

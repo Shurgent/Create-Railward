@@ -4,7 +4,10 @@
   "package": "ua.pp.shurgent.railward.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "railward.refmap.json",
-  "mixins": [],
+  "mixins": [
+    "create.CarriageBogeyAccessor",
+    "create.TrainAccessor"
+  ],
   "client": [
     "create.client.ArrivalSoundQueueMixin",
     "create.client.CarriageSoundsMixin"

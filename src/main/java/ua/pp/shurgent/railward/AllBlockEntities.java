@@ -9,8 +9,10 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
+import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
@@ -37,6 +39,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/wagon_frame", WagonFrameBlockEntity::new)
 			.validBlocks(AllBlocks.WAGON_FRAME)
 			.renderer(() -> WagonFrameRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<TrainCouplerBlockEntity> TRAIN_COUPLER = REGISTRATE
+			.blockEntity("train/parts/train_coupler", TrainCouplerBlockEntity::new)
+			.validBlocks(AllBlocks.TRAIN_COUPLER)
+			.renderer(() -> TrainCouplerRenderer::new)
 			.register();
 
 	public static void register() {
