@@ -70,5 +70,21 @@
         "name": "railward:train/parts/modern_whistle/whistle_end"
       }
     ]
+  },
+  "train_coupler_manual": {
+    "subtitle": "subtitle.railward.train_coupler.manual",
+    "sounds": [
+      {
+        "name": "railward:train/parts/coupler/coupler_manual"
+      }
+    ]
+  },
+  "train_coupler_auto": {
+    "subtitle": "subtitle.railward.train_coupler.auto",
+    "sounds": [
+      {
+        "name": "railward:train/parts/coupler/coupler_auto"
+      }
+    ]
   }
 }

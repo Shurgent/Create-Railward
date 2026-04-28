@@ -32,6 +32,9 @@ public class RailwardSoundEvents {
 	public static final RegistryObject<SoundEvent> MODERN_WHISTLE_WHISTLE_END = register(
 		"modern_whistle_whistle_end");
 
+	public static final RegistryObject<SoundEvent> TRAIN_COUPLER_MANUAL = register("train_coupler_manual");
+	public static final RegistryObject<SoundEvent> TRAIN_COUPLER_AUTO = register("train_coupler_auto");
+
 	private static RegistryObject<SoundEvent> register(String name) {
 		return SOUND_EVENTS.register(name, () -> new SoundEvent(Railward.asResource(name)));
 	}

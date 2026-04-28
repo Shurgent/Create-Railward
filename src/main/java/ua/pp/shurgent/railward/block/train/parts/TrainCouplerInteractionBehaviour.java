@@ -5,13 +5,17 @@ import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.behaviour.MovingInteractionBehaviour;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
+import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import ua.pp.shurgent.railward.RailwardSoundEvents;
 
 public class TrainCouplerInteractionBehaviour extends MovingInteractionBehaviour {
 
@@ -33,7 +37,9 @@ public class TrainCouplerInteractionBehaviour extends MovingInteractionBehaviour
 
 		TrainCouplerHandler.Result result = TrainCouplerHandler.tryDecouple(player.level, carriageEntity, localPos);
 		if (result.success()) {
-			AllSoundEvents.CONFIRM.playOnServer(player.level, player.blockPosition(), 1, 1);
+			Vec3 soundPos = carriageEntity.toGlobalVector(VecHelper.getCenterOf(localPos), 1);
+			player.level.playSound(null, soundPos.x, soundPos.y, soundPos.z,
+				RailwardSoundEvents.TRAIN_COUPLER_MANUAL.get(), SoundSource.BLOCKS, 1, 1);
 			player.displayClientMessage(new TranslatableComponent(result.message()).withStyle(ChatFormatting.GREEN), true);
 		} else {
 			AllSoundEvents.DENY.playOnServer(player.level, player.blockPosition(), 1, 1);

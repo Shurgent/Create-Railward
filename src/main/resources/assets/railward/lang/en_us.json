@@ -44,6 +44,8 @@
   "subtitle.railward.modern_whistle.horn_1": "Modern whistle sounds horn 1",
   "subtitle.railward.modern_whistle.horn_2": "Modern whistle sounds horn 2",
   "subtitle.railward.modern_whistle.whistle": "Modern whistle sounds whistle",
+  "subtitle.railward.train_coupler.manual": "Train coupler clanks",
+  "subtitle.railward.train_coupler.auto": "Train coupler locks automatically",
 
   "railward.train_coupler.success.decoupled": "Train decoupled.",
   "railward.train_coupler.success.coupled": "Trains coupled.",
@@ -65,8 +67,11 @@
   "railward.train_coupler.error.same_graph": "Both trains must be on the same track graph.",
   "railward.train_coupler.error.other_straight": "The other train must be fully on straight horizontal track.",
   "railward.train_coupler.error.incompatible_ends": "The couplers are not on compatible train ends.",
+  "railward.train_coupler.error.too_fast": "The train is moving too fast for automatic coupling.",
   "railward.train_coupler.error.too_far": "The other coupler is too far away.",
   "railward.train_coupler.error.too_close": "The couplers are too close together.",
   "railward.train_coupler.error.spacing_failed": "Could not determine carriage spacing.",
-  "railward.train_coupler.error.couple_failed": "Could not couple these trains."
+  "railward.train_coupler.error.couple_failed": "Could not couple these trains.",
+  "railward.train_coupler.auto.distance": "Coupler distance: %s m",
+  "railward.train_coupler.auto.coupled": "%2$s attached to %1$s"
 }

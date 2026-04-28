@@ -44,6 +44,8 @@
   "subtitle.railward.modern_whistle.horn_1": "Современный гудок издает сигнал 1",
   "subtitle.railward.modern_whistle.horn_2": "Современный гудок издает сигнал 2",
   "subtitle.railward.modern_whistle.whistle": "Современный гудок свистит",
+  "subtitle.railward.train_coupler.manual": "Сцепка поезда лязгает",
+  "subtitle.railward.train_coupler.auto": "Сцепка поезда автоматически фиксируется",
 
   "railward.train_coupler.success.decoupled": "Поезд расцеплен.",
   "railward.train_coupler.success.coupled": "Поезда сцеплены.",
@@ -65,8 +67,11 @@
   "railward.train_coupler.error.same_graph": "Оба поезда должны быть на одной путевой сети.",
   "railward.train_coupler.error.other_straight": "Другой поезд должен полностью стоять на прямом горизонтальном участке пути.",
   "railward.train_coupler.error.incompatible_ends": "Сцепки находятся на несовместимых концах поездов.",
+  "railward.train_coupler.error.too_fast": "Поезд движется слишком быстро для автоматической сцепки.",
   "railward.train_coupler.error.too_far": "Другая сцепка слишком далеко.",
   "railward.train_coupler.error.too_close": "Сцепки расположены слишком близко.",
   "railward.train_coupler.error.spacing_failed": "Не удалось определить расстояние между вагонами.",
-  "railward.train_coupler.error.couple_failed": "Не удалось сцепить эти поезда."
+  "railward.train_coupler.error.couple_failed": "Не удалось сцепить эти поезда.",
+  "railward.train_coupler.auto.distance": "Расстояние до сцепки: %s м",
+  "railward.train_coupler.auto.coupled": "К %1$s прицеплен %2$s"
 }

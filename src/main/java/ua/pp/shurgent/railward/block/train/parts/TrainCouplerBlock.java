@@ -31,8 +31,8 @@ public class TrainCouplerBlock extends HorizontalDirectionalBlock implements IBE
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE_NORTH = Shapes.or(
-		Block.box(5, 6, 0, 11, 10, 10), // mounting plate
-		Block.box(0, 0, 0, 16, 16, 1) // rear full size hitbox for easier selection
+		Block.box(5, 6, 0, 11, 10, 8),
+		Block.box(2, 4, 8, 12, 12, 15)
 	);
 
 	private static final VoxelShaper SHAPE = VoxelShaper.forDirectional(SHAPE_NORTH, Direction.NORTH);

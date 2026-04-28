@@ -44,6 +44,8 @@
   "subtitle.railward.modern_whistle.horn_1": "Сучасний гудок звучить як гудок 1",
   "subtitle.railward.modern_whistle.horn_2": "Сучасний гудок звучить як гудок 2",
   "subtitle.railward.modern_whistle.whistle": "Сучасний гудок звучить як свисток",
+  "subtitle.railward.train_coupler.manual": "Зчепка поїзда брязкає",
+  "subtitle.railward.train_coupler.auto": "Зчепка поїзда автоматично фіксується",
 
   "railward.train_coupler.success.decoupled": "Поїзд розчеплено.",
   "railward.train_coupler.success.coupled": "Поїзди зчеплено.",
@@ -65,8 +67,11 @@
   "railward.train_coupler.error.same_graph": "Обидва поїзди мають бути на одній колійній мережі.",
   "railward.train_coupler.error.other_straight": "Інший поїзд має повністю стояти на прямій горизонтальній колії.",
   "railward.train_coupler.error.incompatible_ends": "Зчепки знаходяться на несумісних кінцях поїздів.",
+  "railward.train_coupler.error.too_fast": "Поїзд рухається занадто швидко для автоматичного зчеплення.",
   "railward.train_coupler.error.too_far": "Інша зчепка занадто далеко.",
   "railward.train_coupler.error.too_close": "Зчепки розташовані занадто близько.",
   "railward.train_coupler.error.spacing_failed": "Не вдалося визначити відстань між вагонами.",
-  "railward.train_coupler.error.couple_failed": "Не вдалося зчепити ці поїзди."
+  "railward.train_coupler.error.couple_failed": "Не вдалося зчепити ці поїзди.",
+  "railward.train_coupler.auto.distance": "Відстань до зчепки: %s м",
+  "railward.train_coupler.auto.coupled": "До %1$s причеплено %2$s"
 }

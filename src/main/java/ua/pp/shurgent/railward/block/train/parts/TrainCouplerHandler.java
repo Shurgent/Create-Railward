@@ -3,9 +3,13 @@ package ua.pp.shurgent.railward.block.train.parts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.trains.entity.Carriage;
@@ -28,8 +33,15 @@ import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -38,6 +50,7 @@ import net.minecraftforge.network.PacketDistributor;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.RailwardConfig;
 import ua.pp.shurgent.railward.RailwardPackets;
+import ua.pp.shurgent.railward.RailwardSoundEvents;
 import ua.pp.shurgent.railward.mixin.create.CarriageBogeyAccessor;
 import ua.pp.shurgent.railward.mixin.create.TrainAccessor;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
@@ -53,7 +66,465 @@ public class TrainCouplerHandler {
 	private static final double MAX_COUPLER_DISTANCE_SQ = 25;
 	private static final double MIN_COUPLING_DISTANCE_SQ = 0.25;
 	private static final double MAX_COUPLING_DISTANCE_SQ = 2.25;
+	private static final double MAX_AUTO_COUPLING_DISTANCE_SQ = 1.0;
 	private static final double MIN_AXIS_DOT = 0.5;
+	private static final double AUTO_MOVEMENT_EPSILON_SQ = 1.0E-6;
+
+	private static final Map<UUID, Vec3> AUTO_LAST_TRAIN_CENTERS = new HashMap<>();
+	private static final List<SuppressedCouplerPair> AUTO_SUPPRESSED_COUPLERS = new ArrayList<>();
+
+	public static void tickAutoCouplers(ServerLevel level) {
+		if (!Level.OVERWORLD.equals(level.dimension()))
+			return;
+
+		int interval = Math.max(1, RailwardConfig.COMMON.trainCouplerAutoScanIntervalTicks.get());
+		if (level.getGameTime() % interval != 0)
+			return;
+
+		int debugAttempt = isAutoCouplerDebugEnabled() ? DEBUG_ATTEMPT_COUNTER.incrementAndGet() : 0;
+		if (!RailwardConfig.COMMON.trainCouplerAutoCoupling.get()) {
+			autoDebug(debugAttempt, "auto tick skipped: disabled dimension={} gameTime={}",
+				level.dimension().location(), level.getGameTime());
+			return;
+		}
+
+		List<Train> trains = new ArrayList<>(Create.RAILWAYS.sided(level).trains.values());
+		Map<UUID, Vec3> currentCenters = collectCurrentTrainCenters(level, trains);
+		cleanupSuppressedAutoCouplers(level);
+		autoDebug(debugAttempt, "auto tick: dimension={} gameTime={} trains={} centers={} previousCenters={} suppressedPairs={} interval={} maxSpeed={}",
+			level.dimension().location(), level.getGameTime(), trains.size(), currentCenters.size(),
+			AUTO_LAST_TRAIN_CENTERS.size(), AUTO_SUPPRESSED_COUPLERS.size(), interval,
+			getAutoMaxSpeed());
+
+		try {
+			for (Train movingTrain : trains) {
+				Vec3 currentCenter = currentCenters.get(movingTrain.id);
+				Vec3 previousCenter = AUTO_LAST_TRAIN_CENTERS.get(movingTrain.id);
+				if (currentCenter == null) {
+					autoDebug(debugAttempt, "auto train skipped: {} has no current center", debugTrain(movingTrain));
+					continue;
+				}
+				if (previousCenter == null) {
+					autoDebug(debugAttempt, "auto train sampled for the first time: {} currentCenter={}",
+						debugTrain(movingTrain), debugVec(currentCenter));
+					continue;
+				}
+
+				Vec3 movement = currentCenter.subtract(previousCenter);
+				autoDebug(debugAttempt,
+					"auto train sample: {} previousCenter={} currentCenter={} movement={} movementSq={}",
+					debugTrain(movingTrain), debugVec(previousCenter), debugVec(currentCenter), debugVec(movement),
+					debugDistance(movement.lengthSqr()));
+				if (tryAutoCouple(debugAttempt, level, movingTrain, currentCenter, movement))
+					return;
+			}
+		} finally {
+			AUTO_LAST_TRAIN_CENTERS.clear();
+			AUTO_LAST_TRAIN_CENTERS.putAll(currentCenters);
+		}
+	}
+
+	private static Map<UUID, Vec3> collectCurrentTrainCenters(Level level, Collection<Train> trains) {
+		Map<UUID, Vec3> centers = new HashMap<>();
+		for (Train train : trains) {
+			Vec3 center = getTrainCenter(level, train);
+			if (center != null)
+				centers.put(train.id, center);
+		}
+		return centers;
+	}
+
+	private static Vec3 getTrainCenter(Level level, Train train) {
+		Vec3 sum = Vec3.ZERO;
+		int count = 0;
+
+		for (Carriage carriage : train.carriages) {
+			boolean addedCarriagePosition = false;
+			Carriage.DimensionalCarriageEntity dimensional = carriage.getDimensionalIfPresent(level.dimension());
+			if (dimensional != null) {
+				if (dimensional.leadingAnchor() != null) {
+					sum = sum.add(dimensional.leadingAnchor());
+					count++;
+					addedCarriagePosition = true;
+				}
+				if (dimensional.trailingAnchor() != null) {
+					sum = sum.add(dimensional.trailingAnchor());
+					count++;
+					addedCarriagePosition = true;
+				}
+			}
+
+			if (!addedCarriagePosition) {
+				CarriageContraptionEntity entity = carriage.anyAvailableEntity();
+				if (entity != null && entity.level == level) {
+					sum = sum.add(entity.position());
+					count++;
+				}
+			}
+		}
+
+		return count == 0 ? null : sum.scale(1.0 / count);
+	}
+
+	private static boolean tryAutoCouple(int debugAttempt, ServerLevel level, Train movingTrain, Vec3 trainCenter,
+		Vec3 movement) {
+		if (movement.lengthSqr() <= AUTO_MOVEMENT_EPSILON_SQ) {
+			autoDebug(debugAttempt, "auto skipped moving train {} because movement is too small: movementSq={}",
+				debugTrain(movingTrain), debugDistance(movement.lengthSqr()));
+			return false;
+		}
+
+		Result movingValidation = validateMovingTrainForAuto(movingTrain);
+		if (!movingValidation.success()) {
+			autoDebug(debugAttempt, "auto skipped moving train {} validation={}", debugTrain(movingTrain),
+				movingValidation.message());
+			return false;
+		}
+		if (!areAllCarriagesStraightHorizontal(movingTrain)) {
+			autoDebug(debugAttempt, "auto skipped moving train {} because it is not fully straight horizontal",
+				debugTrain(movingTrain));
+			return false;
+		}
+
+		Vec3 movementDirection = movement.normalize();
+		MovingCoupler movingCoupler =
+			findMovingAutoCoupler(debugAttempt, level, movingTrain, trainCenter, movementDirection);
+		if (movingCoupler == null)
+			return false;
+
+		CouplingCandidate candidate =
+			findAutoCouplingCandidate(debugAttempt, level, movingTrain, movingCoupler);
+		if (candidate == null) {
+			autoDebug(debugAttempt, "auto skipped moving train {} because no candidate coupler was found",
+				debugTrain(movingTrain));
+			return false;
+		}
+
+		Set<ServerPlayer> messagePlayers = collectAutoMessagePlayers(level, movingTrain);
+		sendAutoCouplerPrompt(debugAttempt, messagePlayers, movingTrain, candidate.distanceSq());
+
+		if (candidate.distanceSq() > MAX_AUTO_COUPLING_DISTANCE_SQ) {
+			autoDebug(debugAttempt,
+				"auto candidate is visible but too far: movingTrain={} candidateTrain={} distanceSq={} maxDistanceSq={}",
+				debugTrain(movingTrain), debugTrain(candidate.train()), debugDistance(candidate.distanceSq()),
+				debugDistance(MAX_AUTO_COUPLING_DISTANCE_SQ));
+			return false;
+		}
+		if (candidate.distanceSq() < MIN_COUPLING_DISTANCE_SQ) {
+			autoDebug(debugAttempt,
+				"auto candidate is visible but too close: movingTrain={} candidateTrain={} distanceSq={} minDistanceSq={}",
+				debugTrain(movingTrain), debugTrain(candidate.train()), debugDistance(candidate.distanceSq()),
+				debugDistance(MIN_COUPLING_DISTANCE_SQ));
+			return false;
+		}
+
+		autoDebug(debugAttempt, "auto coupling started: movingTrain={} movingCarriage={} movingEnd={} candidateTrain={}",
+			debugTrain(movingTrain), movingCoupler.carriageIndex(), movingCoupler.end(), debugTrain(candidate.train()));
+		String movingTrainName = movingTrain.name.getString();
+		String attachedTrainName = candidate.train()
+			.name
+			.getString();
+		Vec3 soundPos = movingCoupler.coupler()
+			.center();
+		Result result = completeCoupling(debugAttempt, level, movingTrain, movingCoupler.carriageIndex(),
+			movingCoupler.end(), movingCoupler.coupler(), candidate, movingTrain, true);
+		autoDebug(debugAttempt, "auto coupling finished: success={} message={}", result.success(), result.message());
+		if (result.success()) {
+			level.playSound(null, soundPos.x, soundPos.y, soundPos.z, RailwardSoundEvents.TRAIN_COUPLER_AUTO.get(),
+				SoundSource.BLOCKS, 1, 1);
+			sendAutoCoupledMessage(debugAttempt, messagePlayers, movingTrainName, attachedTrainName);
+		}
+		return result.success();
+	}
+
+	private static Result validateMovingTrainForAuto(Train train) {
+		if (train.graph == null || train.derailed)
+			return Result.fail("railward.train_coupler.error.train_invalid");
+		if (train.runtime.getSchedule() != null)
+			return Result.fail("railward.train_coupler.error.scheduled");
+		if (!train.canDisassemble())
+			return Result.fail("railward.train_coupler.error.not_aligned");
+		double maxSpeed = getAutoMaxSpeed();
+		double speed = Math.abs(train.speed);
+		if (speed <= STOPPED_EPSILON)
+			return Result.fail("railward.train_coupler.error.train_moving");
+		if (speed > maxSpeed)
+			return Result.fail("railward.train_coupler.error.too_fast");
+		return Result.success("");
+	}
+
+	private static double getAutoMaxSpeed() {
+		return RailwardConfig.COMMON.trainCouplerAutoMaxSpeed.get();
+	}
+
+	private static MovingCoupler findMovingAutoCoupler(int debugAttempt, Level level, Train train, Vec3 trainCenter,
+		Vec3 movementDirection) {
+		List<CouplerLocation> couplers = collectOuterCouplers(debugAttempt, level, train);
+		CouplerLocation best = null;
+		double bestProjection = -Double.MAX_VALUE;
+
+		for (CouplerLocation coupler : couplers) {
+			double projection = coupler.coupler()
+				.center()
+				.subtract(trainCenter)
+				.dot(movementDirection);
+			autoDebug(debugAttempt, "auto moving coupler candidate: train={} carriage={} end={} center={} projection={}",
+				debugTrain(train), coupler.carriageIndex(), coupler.end(), debugVec(coupler.coupler()
+					.center()), debugDistance(projection));
+
+			if (projection <= bestProjection)
+				continue;
+
+			bestProjection = projection;
+			best = coupler;
+		}
+
+		if (best == null) {
+			autoDebug(debugAttempt, "auto skipped moving train {} because no outer coupler was found", debugTrain(train));
+			return null;
+		}
+
+		autoDebug(debugAttempt, "auto moving coupler selected: train={} carriage={} end={} center={} projection={}",
+			debugTrain(train), best.carriageIndex(), best.end(), debugVec(best.coupler()
+				.center()), debugDistance(bestProjection));
+		return new MovingCoupler(best.carriageIndex(), best.end(), best.coupler(), movementDirection);
+	}
+
+	private static CouplingCandidate findAutoCouplingCandidate(int debugAttempt, Level level, Train movingTrain,
+		MovingCoupler movingCoupler) {
+		CouplingCandidate best = null;
+		double bestDistance = MAX_COUPLER_DISTANCE_SQ;
+
+		autoDebug(debugAttempt, "auto candidate search started: trainsInLevel={} maxDistanceSq={}",
+			Create.RAILWAYS.sided(level).trains.size(), debugDistance(MAX_COUPLER_DISTANCE_SQ));
+		for (Train candidateTrain : Create.RAILWAYS.sided(level).trains.values()) {
+			if (candidateTrain == movingTrain)
+				continue;
+
+			Result validation = validateTrainReady(candidateTrain);
+			if (!validation.success()) {
+				autoDebug(debugAttempt, "auto candidate train skipped: {} validation={}", debugTrain(candidateTrain),
+					validation.message());
+				continue;
+			}
+			if (candidateTrain.graph != movingTrain.graph) {
+				autoDebug(debugAttempt, "auto candidate train skipped: {} different graph", debugTrain(candidateTrain));
+				continue;
+			}
+			if (!areAllCarriagesStraightHorizontal(candidateTrain)) {
+				autoDebug(debugAttempt, "auto candidate train skipped: {} not fully straight horizontal",
+					debugTrain(candidateTrain));
+				continue;
+			}
+
+			for (CouplerLocation location : collectOuterCouplers(debugAttempt, level, candidateTrain)) {
+				Vec3 offset = location.coupler()
+					.center()
+					.subtract(movingCoupler.coupler()
+						.center());
+				double forwardDistance = offset.dot(movingCoupler.direction());
+				if (forwardDistance <= 0) {
+					autoDebug(debugAttempt,
+						"auto candidate coupler rejected: train={} carriage={} center={} behind moving direction forwardDistance={}",
+						debugTrain(candidateTrain), location.carriageIndex(), debugVec(location.coupler()
+							.center()), debugDistance(forwardDistance));
+					continue;
+				}
+
+				if (isAutoCouplingSuppressed(movingCoupler.coupler(), location.coupler())) {
+					autoDebug(debugAttempt,
+						"auto candidate coupler rejected: train={} carriage={} center={} suppressed until separation",
+						debugTrain(candidateTrain), location.carriageIndex(), debugVec(location.coupler()
+							.center()));
+					continue;
+				}
+
+				CouplerEnd end = resolveCouplingEndByRelativePosition(level, candidateTrain, location.carriageIndex(),
+					location.coupler(), movingCoupler.coupler());
+				if (end == null)
+					end = location.end();
+				if (end == null || !isOuterEnd(candidateTrain, location.carriageIndex(), end)) {
+					autoDebug(debugAttempt,
+						"auto candidate coupler rejected: train={} carriage={} resolvedEnd={} is not outer",
+						debugTrain(candidateTrain), location.carriageIndex(), end);
+					continue;
+				}
+
+				double distance = movingCoupler.coupler()
+					.center()
+					.distanceToSqr(location.coupler()
+						.center());
+				autoDebug(debugAttempt,
+					"auto candidate coupler: train={} carriage={} end={} center={} distanceSq={} forwardDistance={}",
+					debugTrain(candidateTrain), location.carriageIndex(), end, debugVec(location.coupler()
+						.center()), debugDistance(distance), debugDistance(forwardDistance));
+				if (distance >= bestDistance)
+					continue;
+
+				bestDistance = distance;
+				best = new CouplingCandidate(candidateTrain, location.carriageIndex(), end, location.coupler(), distance);
+			}
+		}
+
+		autoDebug(debugAttempt, "auto candidate search result: train={} carriage={} end={} distanceSq={}",
+			best == null ? null : debugTrain(best.train()), best == null ? null : best.carriageIndex(),
+			best == null ? null : best.end(), best == null ? null : debugDistance(bestDistance));
+		return best;
+	}
+
+	private static List<CouplerLocation> collectOuterCouplers(int debugAttempt, Level level, Train train) {
+		List<CouplerLocation> couplers = new ArrayList<>();
+		int lastCarriageIndex = train.carriages.size() - 1;
+		int[] carriageIndices = lastCarriageIndex == 0 ? new int[] { 0 } : new int[] { 0, lastCarriageIndex };
+
+		for (int carriageIndex : carriageIndices) {
+			if (carriageIndex < 0 || carriageIndex >= train.carriages.size())
+				continue;
+
+			Carriage carriage = train.carriages.get(carriageIndex);
+			CarriageContraptionEntity entity = carriage.anyAvailableEntity();
+			if (entity == null || entity.level != level) {
+				autoDebug(debugAttempt,
+					"outer coupler search skipped carriage: train={} carriage={} entityMissingOrWrongLevel entity={}",
+					debugTrain(train), carriageIndex, entity == null ? null : entity.getUUID());
+				continue;
+			}
+
+			Contraption contraption = entity.getContraption();
+			if (!(contraption instanceof CarriageContraption)) {
+				autoDebug(debugAttempt,
+					"outer coupler search skipped carriage: train={} carriage={} is not carriage contraption",
+					debugTrain(train), carriageIndex);
+				continue;
+			}
+
+			for (StructureBlockInfo info : contraption.getBlocks()
+				.values()) {
+				if (!AllBlocks.TRAIN_COUPLER.has(info.state))
+					continue;
+
+				CouplerEnd end = resolveCouplerEnd(level, entity, carriage, info.pos, info.state);
+				if (end == null || !isOuterEnd(train, carriageIndex, end)) {
+					autoDebug(debugAttempt,
+						"outer coupler rejected: train={} carriage={} localPos={} resolvedEnd={} outer={}",
+						debugTrain(train), carriageIndex, info.pos, end,
+						end != null && isOuterEnd(train, carriageIndex, end));
+					continue;
+				}
+
+				CouplerRef coupler = CouplerRef.from(entity, info.pos, info.state);
+				if (coupler == null)
+					continue;
+
+				couplers.add(new CouplerLocation(carriageIndex, end, coupler));
+				autoDebug(debugAttempt, "outer coupler found: train={} carriage={} end={} localPos={} center={}",
+					debugTrain(train), carriageIndex, end, info.pos, debugVec(coupler.center()));
+			}
+		}
+
+		autoDebug(debugAttempt, "outer coupler search result: train={} count={}", debugTrain(train), couplers.size());
+		return couplers;
+	}
+
+	private static Set<ServerPlayer> collectAutoMessagePlayers(ServerLevel level, Train movingTrain) {
+		Set<ServerPlayer> players = new HashSet<>();
+		for (Carriage carriage : movingTrain.carriages) {
+			carriage.forEachPresentEntity(entity -> {
+				Optional<UUID> controllingPlayer = entity.getControllingPlayer();
+				if (controllingPlayer.isEmpty())
+					return;
+
+				if (level.getPlayerByUUID(controllingPlayer.get()) instanceof ServerPlayer player)
+					players.add(player);
+			});
+		}
+
+		return players;
+	}
+
+	private static void sendAutoCouplerPrompt(int debugAttempt, Set<ServerPlayer> players, Train movingTrain,
+		double distanceSq) {
+		if (players.isEmpty()) {
+			autoDebug(debugAttempt,
+				"auto prompt skipped: moving train {} has no controlling server player distanceSq={}",
+				debugTrain(movingTrain), debugDistance(distanceSq));
+			return;
+		}
+
+		double gap = Math.max(0, Math.sqrt(distanceSq) - 1.0);
+		String distance = String.format(Locale.ROOT, "%.2f", gap);
+		Component message =
+			new TranslatableComponent("railward.train_coupler.auto.distance", distance).withStyle(ChatFormatting.YELLOW);
+		for (ServerPlayer player : players) {
+			autoDebug(debugAttempt, "auto prompt sent: player={} train={} gapMeters={}", player.getGameProfile()
+				.getName(), debugTrain(movingTrain), distance);
+			player.displayClientMessage(message, true);
+		}
+	}
+
+	private static void sendAutoCoupledMessage(int debugAttempt, Set<ServerPlayer> players, String movingTrainName,
+		String attachedTrainName) {
+		if (players.isEmpty()) {
+			autoDebug(debugAttempt, "auto success message skipped: no server players were collected");
+			return;
+		}
+
+		Component message =
+			new TranslatableComponent("railward.train_coupler.auto.coupled", movingTrainName, attachedTrainName)
+				.withStyle(ChatFormatting.GREEN);
+		for (ServerPlayer player : players) {
+			autoDebug(debugAttempt, "auto success message sent: player={} movingTrainName={} attachedTrainName={}",
+				player.getGameProfile()
+					.getName(),
+				movingTrainName, attachedTrainName);
+			AllSoundEvents.CONFIRM.playOnServer(player.level, player.blockPosition(), 1, 1);
+			player.displayClientMessage(message, true);
+		}
+	}
+
+	private static void suppressAutoCoupling(CouplerRef first, CouplerRef second) {
+		if (first.endpoint() == null || second.endpoint() == null)
+			return;
+
+		SuppressedCouplerPair pair = new SuppressedCouplerPair(first.endpoint(), second.endpoint());
+		AUTO_SUPPRESSED_COUPLERS.removeIf(pair::matches);
+		AUTO_SUPPRESSED_COUPLERS.add(pair);
+	}
+
+	private static boolean isAutoCouplingSuppressed(CouplerRef first, CouplerRef second) {
+		if (first.endpoint() == null || second.endpoint() == null)
+			return false;
+
+		for (SuppressedCouplerPair pair : AUTO_SUPPRESSED_COUPLERS)
+			if (pair.matches(first.endpoint(), second.endpoint()))
+				return true;
+		return false;
+	}
+
+	private static void cleanupSuppressedAutoCouplers(ServerLevel level) {
+		Iterator<SuppressedCouplerPair> iterator = AUTO_SUPPRESSED_COUPLERS.iterator();
+		while (iterator.hasNext()) {
+			SuppressedCouplerPair pair = iterator.next();
+			Vec3 first = resolveSuppressedCouplerCenter(level, pair.first());
+			Vec3 second = resolveSuppressedCouplerCenter(level, pair.second());
+			if (first == null || second == null || first.distanceToSqr(second) > MAX_COUPLING_DISTANCE_SQ)
+				iterator.remove();
+		}
+	}
+
+	private static Vec3 resolveSuppressedCouplerCenter(ServerLevel level, CouplerEndpoint endpoint) {
+		Entity entity = level.getEntity(endpoint.entityId());
+		if (!(entity instanceof CarriageContraptionEntity carriageEntity))
+			return null;
+
+		StructureBlockInfo info = carriageEntity.getContraption()
+			.getBlocks()
+			.get(endpoint.localPos());
+		if (info == null || !AllBlocks.TRAIN_COUPLER.has(info.state))
+			return null;
+
+		return carriageEntity.toGlobalVector(VecHelper.getCenterOf(endpoint.localPos()), 1);
+	}
 
 	public static Result tryDecouple(Level level, CarriageContraptionEntity carriageEntity, BlockPos localPos) {
 		int debugAttempt = DEBUG_ATTEMPT_COUNTER.incrementAndGet();
@@ -124,6 +595,7 @@ public class TrainCouplerHandler {
 			debug(debugAttempt, "decouple rejected: paired coupler not found");
 			return Result.fail("railward.train_coupler.error.adjacent_missing");
 		}
+		suppressAutoCoupling(clickedCoupler, otherCoupler);
 
 		Train newTrain = splitTrain(level, train, splitIndex);
 		if (newTrain == null) {
@@ -168,6 +640,13 @@ public class TrainCouplerHandler {
 			return Result.fail("railward.train_coupler.error.other_missing");
 		}
 
+		return completeCoupling(debugAttempt, level, clickedTrain, clickedCarriageIndex, clickedEnd, clickedCoupler,
+			candidate, null, false);
+	}
+
+	private static Result completeCoupling(int debugAttempt, Level level, Train clickedTrain, int clickedCarriageIndex,
+		CouplerEnd clickedEnd, CouplerRef clickedCoupler, CouplingCandidate candidate,
+		Train trainToStopBeforeCombine, boolean forceClickedTrainName) {
 		Train otherTrain = candidate.train();
 		debug(debugAttempt, "selected candidate: train={} carriage={} end={} center={} distanceSq={}",
 			debugTrain(otherTrain), candidate.carriageIndex(), candidate.end(), debugVec(candidate.coupler()
@@ -265,7 +744,11 @@ public class TrainCouplerHandler {
 			return Result.fail("railward.train_coupler.error.spacing_failed");
 		}
 
-		Train combinedTrain = combineTrains(level, frontTrain, backTrain, spacing, clickedTrain, rebases);
+		if (trainToStopBeforeCombine != null)
+			stopTrain(trainToStopBeforeCombine);
+
+		Train combinedTrain =
+			combineTrains(level, frontTrain, backTrain, spacing, clickedTrain, rebases, forceClickedTrainName);
 		if (combinedTrain == null) {
 			debug(debugAttempt, "couple failed while combining trains");
 			if (reverseOtherTrain)
@@ -280,6 +763,12 @@ public class TrainCouplerHandler {
 	private static boolean isStopped(Train train) {
 		return Math.abs(train.speed) <= STOPPED_EPSILON && Math.abs(train.targetSpeed) <= STOPPED_EPSILON
 			&& train.speedBeforeStall == null;
+	}
+
+	private static void stopTrain(Train train) {
+		train.speed = 0;
+		train.targetSpeed = 0;
+		train.speedBeforeStall = null;
 	}
 
 	private static boolean isOuterEnd(Train train, int carriageIndex, CouplerEnd end) {
@@ -664,7 +1153,7 @@ public class TrainCouplerHandler {
 	}
 
 	private static Train combineTrains(Level level, Train frontTrain, Train backTrain, int carriageSpacing,
-		Train clickedTrain, Collection<RebaseInstruction> rebases) {
+		Train clickedTrain, Collection<RebaseInstruction> rebases, boolean forceClickedTrainName) {
 		if (frontTrain == backTrain)
 			return null;
 
@@ -682,7 +1171,8 @@ public class TrainCouplerHandler {
 
 		boolean removedBackTrain = false;
 		try {
-			TextComponent combinedName = resolveCoupledName(clickedTrain, frontTrain, backTrain);
+			TextComponent combinedName = forceClickedTrainName ? new TextComponent(clickedTrain.name.getString())
+				: resolveCoupledName(clickedTrain, frontTrain, backTrain);
 			double[] newStress = new double[frontStressBackup.length + backStressBackup.length + 1];
 			System.arraycopy(frontStressBackup, 0, newStress, 0, frontStressBackup.length);
 			System.arraycopy(backStressBackup, 0, newStress, frontStressBackup.length + 1, backStressBackup.length);
@@ -992,6 +1482,16 @@ public class TrainCouplerHandler {
 		LOGGER.info("[Railward TrainCoupler Debug #{}] " + message, prefixedArgs);
 	}
 
+	private static void autoDebug(int attempt, String message, Object... args) {
+		if (!isAutoCouplerDebugEnabled())
+			return;
+
+		Object[] prefixedArgs = new Object[args.length + 1];
+		prefixedArgs[0] = attempt;
+		System.arraycopy(args, 0, prefixedArgs, 1, args.length);
+		LOGGER.info("[Railward AutoCoupler Debug #{}] " + message, prefixedArgs);
+	}
+
 	private static void debugTrainGeometry(int attempt, Level level, Train train) {
 		if (!isCouplerDebugEnabled() || train == null)
 			return;
@@ -1015,7 +1515,13 @@ public class TrainCouplerHandler {
 	}
 
 	private static boolean isCouplerDebugEnabled() {
-		return RailwardConfig.COMMON.trainCouplerDebugLogging.get();
+		return RailwardConfig.COMMON.trainCouplerDebugLogging.get()
+			|| RailwardConfig.COMMON.trainCouplerAutoDebugLogging.get();
+	}
+
+	private static boolean isAutoCouplerDebugEnabled() {
+		return RailwardConfig.COMMON.trainCouplerDebugLogging.get()
+			|| RailwardConfig.COMMON.trainCouplerAutoDebugLogging.get();
 	}
 
 	private static Vec3 debugPointPosition(Train train, TravellingPoint point) {
@@ -1074,11 +1580,31 @@ public class TrainCouplerHandler {
 		double distanceSq) {
 	}
 
-	private record CouplerRef(Vec3 center) {
+	private record MovingCoupler(int carriageIndex, CouplerEnd end, CouplerRef coupler, Vec3 direction) {
+	}
+
+	private record CouplerLocation(int carriageIndex, CouplerEnd end, CouplerRef coupler) {
+	}
+
+	private record CouplerEndpoint(UUID entityId, BlockPos localPos) {
+	}
+
+	private record SuppressedCouplerPair(CouplerEndpoint first, CouplerEndpoint second) {
+
+		private boolean matches(SuppressedCouplerPair other) {
+			return matches(other.first, other.second);
+		}
+
+		private boolean matches(CouplerEndpoint left, CouplerEndpoint right) {
+			return first.equals(left) && second.equals(right) || first.equals(right) && second.equals(left);
+		}
+	}
+
+	private record CouplerRef(Vec3 center, CouplerEndpoint endpoint) {
 
 		private static CouplerRef from(CarriageContraptionEntity entity, BlockPos localPos, BlockState state) {
 			Vec3 center = entity.toGlobalVector(VecHelper.getCenterOf(localPos), 1);
-			return new CouplerRef(center);
+			return new CouplerRef(center, new CouplerEndpoint(entity.getUUID(), localPos.immutable()));
 		}
 	}
 
