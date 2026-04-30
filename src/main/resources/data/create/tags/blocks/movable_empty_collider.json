@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "railward:train/parts/bulk_cargo_container"
+    "railward:train/parts/bulk_cargo_container",
+    "railward:train/parts/bulk_cargo_container_blue",
+    "railward:train/parts/bulk_cargo_container_light_blue"
   ]
 }

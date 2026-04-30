@@ -38,7 +38,9 @@
   "block.railward.train.parts.train_coupler": "Сцепка поезда",
   "block.railward.train.parts.modern_whistle": "Современный гудок",
   "block.railward.train.parts.wagon_frame": "Рама вагона",
-  "block.railward.train.parts.bulk_cargo_container": "Контейнер для насыпных грузов",
+  "block.railward.train.parts.bulk_cargo_container": "Контейнер для насыпных грузов (зеленый)",
+  "block.railward.train.parts.bulk_cargo_container_blue": "Контейнер для насыпных грузов (синий)",
+  "block.railward.train.parts.bulk_cargo_container_light_blue": "Контейнер для насыпных грузов (голубой)",
   "block.railward.train.signal.modern_signal_ground": "Современный наземный сигнал",
   "block.railward.train.signal.modern_signal": "Современный сигнал",
 

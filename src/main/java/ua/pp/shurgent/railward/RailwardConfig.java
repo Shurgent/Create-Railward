@@ -31,8 +31,8 @@ public class RailwardConfig {
 				.comment("How often automatic Train Couplers scan for matching couplers, in ticks.")
 				.defineInRange("trainCouplerAutoScanIntervalTicks", 5, 1, 200);
 			trainCouplerAutoMaxSpeed = builder
-				.comment("Maximum train speed for automatic coupling. Default matches Create's lowest train speed notch.")
-				.defineInRange("trainCouplerAutoMaxSpeed", 0.06D, 0.01D, 0.12D);
+				.comment("Maximum train speed for automatic coupling. Default is slightly above Create's lowest train speed notch.")
+				.defineInRange("trainCouplerAutoMaxSpeed", 0.09D, 0.01D, 0.2D);
 			builder.pop();
 
 			builder.push("debug");

@@ -1456,6 +1456,7 @@ public class TrainCouplerHandler {
 
 		RailwardPackets.getChannel()
 			.send(PacketDistributor.ALL.noArg(), new TrainCouplerSyncPacket(List.of(first, second), entities));
+		syncBulkCargo(entities);
 	}
 
 	private static void syncMergedTrain(Train train, UUID removedTrainId, Collection<RebaseInstruction> rebases) {
@@ -1465,11 +1466,17 @@ public class TrainCouplerHandler {
 		RailwardPackets.getChannel()
 			.send(PacketDistributor.ALL.noArg(),
 				new TrainCouplerSyncPacket(List.of(train), entities, List.of(removedTrainId), rebases));
+		syncBulkCargo(entities);
 	}
 
 	private static void collectEntities(Train train, List<CarriageContraptionEntity> entities) {
 		for (Carriage carriage : train.carriages)
 			carriage.forEachPresentEntity(entities::add);
+	}
+
+	private static void syncBulkCargo(Collection<CarriageContraptionEntity> entities) {
+		for (CarriageContraptionEntity entity : entities)
+			BulkCargoContraptionHelper.syncAllCargo(entity);
 	}
 
 	private static void debug(int attempt, String message, Object... args) {

@@ -158,7 +158,7 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements I
 		resizeInventory(slots);
 		List<ItemStack> leftovers = new java.util.ArrayList<>();
 		for (ItemStack stack : stacks) {
-			ItemStack remainder = BulkCargoStorage.insert(inventory, stack, false);
+			ItemStack remainder = BulkCargoStorage.insertExisting(inventory, stack, false);
 			if (!remainder.isEmpty())
 				leftovers.add(remainder);
 		}
@@ -185,7 +185,7 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements I
 		inventory = new CargoItemHandler(slots);
 		refreshCapability();
 		for (ItemStack stack : stacks) {
-			ItemStack remainder = BulkCargoStorage.insert(inventory, stack, false);
+			ItemStack remainder = BulkCargoStorage.insertExisting(inventory, stack, false);
 			if (!remainder.isEmpty() && level != null && !level.isClientSide)
 				Containers.dropItemStack(level, worldPosition.getX() + .5, worldPosition.getY() + .5,
 					worldPosition.getZ() + .5, remainder);
@@ -503,7 +503,8 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements I
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			ItemStack display = BulkCargoStorage.getDisplayStack(this);
-			return display.isEmpty() || BulkCargoStorage.canStackAsCargo(display, stack);
+			return BulkCargoStorage.isAcceptedCargo(stack)
+				&& (display.isEmpty() || BulkCargoStorage.canStackAsCargo(display, stack));
 		}
 
 		@Override

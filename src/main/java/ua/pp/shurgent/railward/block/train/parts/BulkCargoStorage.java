@@ -57,9 +57,20 @@ public final class BulkCargoStorage {
 	}
 
 	public static ItemStack insert(IItemHandlerModifiable handler, ItemStack stack, boolean simulate) {
+		return insert(handler, stack, simulate, true);
+	}
+
+	static ItemStack insertExisting(IItemHandlerModifiable handler, ItemStack stack, boolean simulate) {
+		return insert(handler, stack, simulate, false);
+	}
+
+	private static ItemStack insert(IItemHandlerModifiable handler, ItemStack stack, boolean simulate,
+		boolean validateCargo) {
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		if (handler == null)
+			return stack;
+		if (validateCargo && !isAcceptedCargo(stack))
 			return stack;
 
 		ItemStack existing = getDisplayStack(handler);
@@ -117,6 +128,10 @@ public final class BulkCargoStorage {
 		return ItemHandlerHelper.canItemStacksStack(first, second);
 	}
 
+	public static boolean isAcceptedCargo(ItemStack stack) {
+		return BulkCargoRules.isAcceptedCargo(stack);
+	}
+
 	public static class CargoItemHandler extends ItemStackHandler {
 		public CargoItemHandler(int size) {
 			super(size);
@@ -125,7 +140,8 @@ public final class BulkCargoStorage {
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			ItemStack display = BulkCargoStorage.getDisplayStack(this);
-			return display.isEmpty() || BulkCargoStorage.canStackAsCargo(display, stack);
+			return BulkCargoStorage.isAcceptedCargo(stack)
+				&& (display.isEmpty() || BulkCargoStorage.canStackAsCargo(display, stack));
 		}
 
 		@Override

@@ -3,17 +3,13 @@ package ua.pp.shurgent.railward.client.renderer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
@@ -21,30 +17,21 @@ import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.EmptyBlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.BulkCargoRules;
 
 public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCargoContainerBlockEntity> {
 
@@ -53,15 +40,10 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	private static final float BLOCK_SURFACE_TILE = .5f;
 	private static final float ITEM_SURFACE_TILE = 1f;
 	private static final float DECORATION_LIFT = 1 / 96f;
-	private static final float MODEL_DECORATION_SCALE = 1.35f;
-	private static final float MODEL_DECORATION_MAX_FOOTPRINT = .72f;
-	private static final float GROUND_MODEL_HALF_EXTENT = .125f;
-	private static final float FALLBACK_MODEL_FOOTPRINT = .55f;
-	private static final float MODEL_HEIGHT_JITTER = .001f;
 	private static final ResourceLocation ITEM_MATERIAL_NOISE =
-		resourceLocation("minecraft:block/gravel");
+		resourceLocation("minecraft:block/diorite");
+	private static final FaceShades DEFAULT_FACE_SHADES = new FaceShades(.5f, 1, .8f, .8f, .6f, .6f);
 	private static final Map<ResourceLocation, Integer> AVERAGE_COLOR_CACHE = new HashMap<>();
-	private static final Map<BakedModel, ModelFootprint> MODEL_FOOTPRINT_CACHE = new IdentityHashMap<>();
 
 	private static final Decoration[] BLOCK_DECORATIONS = {
 		new Decoration(.20f, .23f, .37f, 13),
@@ -71,9 +53,9 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		new Decoration(.18f, .80f, .38f, -52)
 	};
 	private static final Decoration[] ITEM_DECORATIONS = {
-		new Decoration(.17f, .18f, .41f, 30),
+		new Decoration(.17f, .18f, .41f, 40),
 		new Decoration(.52f, .22f, .35f, -28),
-		new Decoration(.82f, .37f, .40f, 24),
+		new Decoration(.82f, .37f, .40f, -24),
 		new Decoration(.31f, .52f, .32f, 77),
 		new Decoration(.65f, .67f, .44f, -8),
 		new Decoration(.24f, .83f, .37f, -43)
@@ -106,18 +88,15 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		if (itemSprite == null)
 			return;
 
-		CargoRenderMode renderMode = getRenderMode(displayStack, itemModel);
-		float modelFootprint = renderMode == CargoRenderMode.MODEL_ITEM
-			? getModelFootprint(itemModel, displayStack.getItem() instanceof BlockItem)
-			: 0;
+		CargoRenderMode renderMode = getRenderMode(displayStack);
 		TextureAtlasSprite surfaceSprite = renderMode == CargoRenderMode.SIMPLE_BLOCK ? itemSprite
 			: getItemMaterialNoise();
 		int surfaceColor = renderMode == CargoRenderMode.SIMPLE_BLOCK ? WHITE : getAverageSpriteColor(itemSprite);
 		float surfaceTile = renderMode == CargoRenderMode.SIMPLE_BLOCK ? BLOCK_SURFACE_TILE : ITEM_SURFACE_TILE;
 
 		if (virtualCargoView) {
-			renderVirtualCell(be, fill, displayStack, renderMode, buffers, light, itemSprite, surfaceSprite,
-				surfaceColor, surfaceTile, modelFootprint, ms);
+			renderVirtualCell(be, fill, renderMode, buffers, light, itemSprite, surfaceSprite, surfaceColor,
+				surfaceTile, ms);
 			return;
 		}
 		if (!be.isController())
@@ -140,13 +119,12 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 			zMax);
 		renderWestEast(pose, vb, surfaceSprite, surfaceColor, light, surfaceTile, xMin, xMax, yMin, yMax, zMin,
 			zMax);
-		renderSurfaceDecorations(displayStack, renderMode, itemSprite, buffers, light, ms, xMin, xMax, yMax,
-			zMin, zMax, modelFootprint);
+		renderSurfaceDecorations(renderMode, itemSprite, buffers, light, ms, xMin, xMax, yMax, zMin, zMax);
 	}
 
-	private void renderVirtualCell(BulkCargoContainerBlockEntity be, float fill, ItemStack displayStack,
-		CargoRenderMode renderMode, MultiBufferSource buffers, int light, TextureAtlasSprite itemSprite,
-		TextureAtlasSprite surfaceSprite, int surfaceColor, float surfaceTile, float modelFootprint, PoseStack ms) {
+	private void renderVirtualCell(BulkCargoContainerBlockEntity be, float fill, CargoRenderMode renderMode,
+		MultiBufferSource buffers, int light, TextureAtlasSprite itemSprite, TextureAtlasSprite surfaceSprite,
+		int surfaceColor, float surfaceTile, PoseStack ms) {
 		int layer = be.getClientCargoLayer();
 		float fillBlocks = fill * be.getHeight();
 		float localFill = Mth.clamp(fillBlocks - layer, 0, 1);
@@ -179,53 +157,23 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 
 		int topLayer = Mth.clamp(Mth.ceil(fillBlocks) - 1, 0, be.getHeight() - 1);
 		if (layer == topLayer)
-			renderSurfaceDecorations(displayStack, renderMode, itemSprite, buffers, light, ms, xMin, xMax, yMax, zMin,
-				zMax, modelFootprint);
+			renderSurfaceDecorations(renderMode, itemSprite, buffers, light, ms, xMin, xMax, yMax, zMin, zMax);
 	}
 
-	private void renderSurfaceDecorations(ItemStack displayStack, CargoRenderMode renderMode,
-		TextureAtlasSprite itemSprite, MultiBufferSource buffers, int light, PoseStack ms, float xMin, float xMax,
-		float y, float zMin, float zMax, float modelFootprint) {
+	private void renderSurfaceDecorations(CargoRenderMode renderMode, TextureAtlasSprite itemSprite,
+		MultiBufferSource buffers, int light, PoseStack ms, float xMin, float xMax, float y, float zMin,
+		float zMax) {
 		if (renderMode == CargoRenderMode.SIMPLE_BLOCK)
 			renderBlockDecorations(itemSprite, buffers.getBuffer(RenderType.solid()), light, ms, xMin, xMax, y, zMin,
 				zMax);
-		else if (renderMode == CargoRenderMode.MODEL_ITEM)
-			renderModelDecorations(displayStack, buffers, light, ms, xMin, xMax, y, zMin, zMax, modelFootprint);
 		else
 			renderItemDecorations(itemSprite, buffers.getBuffer(RenderType.cutout()), light, ms, xMin, xMax, y, zMin,
 				zMax);
 	}
 
-	private void renderModelDecorations(ItemStack displayStack, MultiBufferSource buffers, int light, PoseStack ms,
-		float xMin, float xMax, float y, float zMin, float zMax, float modelFootprint) {
-		boolean layOnSide = displayStack.getItem() instanceof BlockItem;
-		forEachSurfaceCell(xMin, xMax, zMin, zMax, (x0, x1, z0, z1) -> {
-			float cellScale = Math.min(x1 - x0, z1 - z0);
-			if (cellScale <= .35f)
-				return;
-
-			for (Decoration decoration : ITEM_DECORATIONS) {
-				float size = getModelDecorationSize(cellScale, modelFootprint);
-				float x = Mth.lerp(decoration.x(), x0, x1);
-				float z = Mth.lerp(decoration.z(), z0, z1);
-				ms.pushPose();
-				ms.translate(x, y + DECORATION_LIFT + size * GROUND_MODEL_HALF_EXTENT
-					+ decoration.heightJitter() * MODEL_HEIGHT_JITTER, z);
-				ms.mulPose(Vector3f.YP.rotationDegrees(decoration.yaw()));
-				if (layOnSide)
-					ms.mulPose(Vector3f.XP.rotationDegrees(90));
-				ms.scale(size, size, size);
-				Minecraft.getInstance()
-					.getItemRenderer()
-					.renderStatic(displayStack, ItemTransforms.TransformType.GROUND, light,
-						OverlayTexture.NO_OVERLAY, ms, buffers, 0);
-				ms.popPose();
-			}
-		});
-	}
-
 	private void renderBlockDecorations(TextureAtlasSprite sprite, VertexConsumer vb, int light, PoseStack ms,
 		float xMin, float xMax, float y, float zMin, float zMax) {
+		FaceShades shades = getFaceShades();
 		forEachSurfaceCell(xMin, xMax, zMin, zMax, (x0, x1, z0, z1) -> {
 			float cellScale = Math.min(x1 - x0, z1 - z0);
 			if (cellScale <= .35f)
@@ -239,7 +187,7 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 				ms.translate(x, y + DECORATION_LIFT, z);
 				ms.mulPose(Vector3f.YP.rotationDegrees(decoration.yaw()));
 				ms.scale(size, size, size);
-				renderTexturedCube(ms.last(), vb, sprite, WHITE, light);
+				renderTexturedCube(ms.last(), vb, sprite, WHITE, light, decoration.yaw(), shades);
 				ms.popPose();
 			}
 		});
@@ -280,16 +228,22 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	}
 
 	private void renderTexturedCube(PoseStack.Pose pose, VertexConsumer vb, TextureAtlasSprite sprite, int color,
-		int light) {
+		int light, float yaw, FaceShades shades) {
 		float min = -.5f;
 		float max = .5f;
 		float top = 1;
-		quad(pose, vb, sprite, color, light, min, top, max, max, top, max, max, top, min, min, top, min, 0, 1, 0);
-		quad(pose, vb, sprite, color, light, min, 0, min, max, 0, min, max, 0, max, min, 0, max, 0, -1, 0);
-		quad(pose, vb, sprite, color, light, max, 0, min, min, 0, min, min, top, min, max, top, min, 0, 0, -1);
-		quad(pose, vb, sprite, color, light, min, 0, max, max, 0, max, max, top, max, min, top, max, 0, 0, 1);
-		quad(pose, vb, sprite, color, light, min, 0, min, min, 0, max, min, top, max, min, top, min, -1, 0, 0);
-		quad(pose, vb, sprite, color, light, max, 0, max, max, 0, min, max, top, min, max, top, max, 1, 0, 0);
+		quad(pose, vb, sprite, shadeColor(color, shades.up()), light, min, top, max, max, top, max, max, top,
+			min, min, top, min, 0, 1, 0);
+		quad(pose, vb, sprite, shadeColor(color, shades.down()), light, min, 0, min, max, 0, min, max, 0, max,
+			min, 0, max, 0, -1, 0);
+		quad(pose, vb, sprite, shadeColor(color, horizontalShade(0, -1, yaw, shades)), light, max, 0, min, min,
+			0, min, min, top, min, max, top, min, 0, 0, -1);
+		quad(pose, vb, sprite, shadeColor(color, horizontalShade(0, 1, yaw, shades)), light, min, 0, max, max,
+			0, max, max, top, max, min, top, max, 0, 0, 1);
+		quad(pose, vb, sprite, shadeColor(color, horizontalShade(-1, 0, yaw, shades)), light, min, 0, min, min,
+			0, max, min, top, max, min, top, min, -1, 0, 0);
+		quad(pose, vb, sprite, shadeColor(color, horizontalShade(1, 0, yaw, shades)), light, max, 0, max, max,
+			0, min, max, top, min, max, top, max, 1, 0, 0);
 	}
 
 	private void renderFlatItemSprite(PoseStack.Pose pose, VertexConsumer vb, TextureAtlasSprite sprite, int light) {
@@ -422,88 +376,40 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		return r << 16 | g << 8 | b;
 	}
 
-	private float getModelDecorationSize(float cellScale, float modelFootprint) {
-		float baseSize = MODEL_DECORATION_SCALE * cellScale;
-		if (modelFootprint <= 0)
-			return baseSize;
-		return Math.min(baseSize, MODEL_DECORATION_MAX_FOOTPRINT * cellScale / modelFootprint);
+	private FaceShades getFaceShades() {
+		var level = Minecraft.getInstance().level;
+		if (level == null)
+			return DEFAULT_FACE_SHADES;
+		return new FaceShades(level.getShade(Direction.DOWN, true), level.getShade(Direction.UP, true),
+			level.getShade(Direction.NORTH, true), level.getShade(Direction.SOUTH, true),
+			level.getShade(Direction.WEST, true), level.getShade(Direction.EAST, true));
 	}
 
-	private float getModelFootprint(BakedModel model, boolean layOnSide) {
-		ModelFootprint footprint = MODEL_FOOTPRINT_CACHE.computeIfAbsent(model, this::measureModelFootprint);
-		return layOnSide ? footprint.onSide() : footprint.upright();
+	private float horizontalShade(float x, float z, float yaw, FaceShades shades) {
+		float radians = (float) Math.toRadians(yaw);
+		float cos = Mth.cos(radians);
+		float sin = Mth.sin(radians);
+		float rotatedX = x * cos + z * sin;
+		float rotatedZ = z * cos - x * sin;
+		float xWeight = Math.abs(rotatedX);
+		float zWeight = Math.abs(rotatedZ);
+		float weight = xWeight + zWeight;
+		if (weight <= 1.0E-4f)
+			return 1;
+		float xShade = rotatedX < 0 ? shades.west() : shades.east();
+		float zShade = rotatedZ < 0 ? shades.north() : shades.south();
+		return (xShade * xWeight + zShade * zWeight) / weight;
 	}
 
-	@SuppressWarnings("deprecation")
-	private ModelFootprint measureModelFootprint(BakedModel model) {
-		ItemTransform groundTransform = model.getTransforms()
-			.getTransform(ItemTransforms.TransformType.GROUND);
-		Quaternion groundRotation = new Quaternion(groundTransform.rotation.x(), groundTransform.rotation.y(),
-			groundTransform.rotation.z(), true);
-		Quaternion sideRotation = Vector3f.XP.rotationDegrees(90);
-		float[] maxRadius = new float[2];
-		boolean foundVertices = false;
-
-		foundVertices |= measureModelQuads(model.getQuads(null, null, new Random(42L)), groundTransform,
-			groundRotation, sideRotation, maxRadius);
-		for (Direction direction : Direction.values())
-			foundVertices |= measureModelQuads(model.getQuads(null, direction, new Random(42L)), groundTransform,
-				groundRotation, sideRotation, maxRadius);
-
-		if (!foundVertices)
-			return new ModelFootprint(FALLBACK_MODEL_FOOTPRINT, FALLBACK_MODEL_FOOTPRINT);
-		return new ModelFootprint(maxRadius[0] * 2, maxRadius[1] * 2);
+	private int shadeColor(int color, float shade) {
+		int r = Mth.clamp((int) ((color >> 16 & 255) * shade), 0, 255);
+		int g = Mth.clamp((int) ((color >> 8 & 255) * shade), 0, 255);
+		int b = Mth.clamp((int) ((color & 255) * shade), 0, 255);
+		return r << 16 | g << 8 | b;
 	}
 
-	private boolean measureModelQuads(List<BakedQuad> quads, @SuppressWarnings("deprecation") ItemTransform transform, Quaternion groundRotation,
-		Quaternion sideRotation, float[] maxRadius) {
-		boolean foundVertices = false;
-		for (BakedQuad quad : quads) {
-			int[] vertices = quad.getVertices();
-			int stride = vertices.length / 4;
-			if (stride < 3)
-				continue;
-
-			for (int i = 0; i < 4; i++) {
-				int offset = i * stride;
-				float x = Float.intBitsToFloat(vertices[offset]) - .5f;
-				float y = Float.intBitsToFloat(vertices[offset + 1]) - .5f;
-				float z = Float.intBitsToFloat(vertices[offset + 2]) - .5f;
-				maxRadius[0] = Math.max(maxRadius[0],
-					getTransformedHorizontalRadius(x, y, z, transform, groundRotation, sideRotation, false));
-				maxRadius[1] = Math.max(maxRadius[1],
-					getTransformedHorizontalRadius(x, y, z, transform, groundRotation, sideRotation, true));
-				foundVertices = true;
-			}
-		}
-		return foundVertices;
-	}
-
-	private float getTransformedHorizontalRadius(float x, float y, float z, @SuppressWarnings("deprecation") ItemTransform transform,
-		Quaternion groundRotation, Quaternion sideRotation, boolean layOnSide) {
-		Vector3f point = new Vector3f(x, y, z);
-		point.mul(transform.scale.x(), transform.scale.y(), transform.scale.z());
-		point.transform(groundRotation);
-		if (layOnSide)
-			point.transform(sideRotation);
-		return Mth.sqrt(point.x() * point.x() + point.z() * point.z());
-	}
-
-	private CargoRenderMode getRenderMode(ItemStack stack, BakedModel itemModel) {
-		if (!(stack.getItem() instanceof BlockItem blockItem))
-			return itemModel.isGui3d() || itemModel.isCustomRenderer() ? CargoRenderMode.MODEL_ITEM
-				: CargoRenderMode.FLAT_ITEM;
-
-		Block block = blockItem.getBlock();
-		BlockState defaultState = block.defaultBlockState();
-		if (defaultState.getRenderShape() != RenderShape.MODEL)
-			return CargoRenderMode.MODEL_ITEM;
-
-		if (block instanceof SlabBlock)
-			return CargoRenderMode.SIMPLE_BLOCK;
-
-		VoxelShape shape = defaultState.getShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
-		return Block.isShapeFullBlock(shape) ? CargoRenderMode.SIMPLE_BLOCK : CargoRenderMode.MODEL_ITEM;
+	private CargoRenderMode getRenderMode(ItemStack stack) {
+		return BulkCargoRules.isSimpleBlockCargo(stack) ? CargoRenderMode.SIMPLE_BLOCK : CargoRenderMode.FLAT_ITEM;
 	}
 
 	private void forEachTile(float aMin, float aMax, float bMin, float bMax, float tileSize,
@@ -537,18 +443,13 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	}
 
 	private record Decoration(float x, float z, float size, float yaw) {
-		float heightJitter() {
-			float value = x * 13.37f + z * 7.91f + yaw * .013f;
-			return value - Mth.floor(value);
-		}
 	}
 
-	private record ModelFootprint(float upright, float onSide) {
+	private record FaceShades(float down, float up, float north, float south, float west, float east) {
 	}
 
 	private enum CargoRenderMode {
 		SIMPLE_BLOCK,
-		MODEL_ITEM,
 		FLAT_ITEM
 	}
 

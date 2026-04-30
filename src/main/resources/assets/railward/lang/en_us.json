@@ -38,7 +38,9 @@
   "block.railward.train.parts.train_coupler": "Train Coupler",
   "block.railward.train.parts.modern_whistle": "Modern Whistle",
   "block.railward.train.parts.wagon_frame": "Wagon Frame",
-  "block.railward.train.parts.bulk_cargo_container": "Bulk Cargo Container",
+  "block.railward.train.parts.bulk_cargo_container": "Bulk Cargo Container (Green)",
+  "block.railward.train.parts.bulk_cargo_container_blue": "Bulk Cargo Container (Blue)",
+  "block.railward.train.parts.bulk_cargo_container_light_blue": "Bulk Cargo Container (Light Blue)",
   "block.railward.train.signal.modern_signal_ground": "Modern Ground Signal",
   "block.railward.train.signal.modern_signal": "Modern Signal",
 

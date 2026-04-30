@@ -1,6 +1,8 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
@@ -107,6 +109,7 @@ public final class BulkCargoContraptionHelper {
 	static void updateCargoLevels(AbstractContraptionEntity contraptionEntity, ControllerData data,
 		IItemHandler inventory) {
 		float fillBlocks = BulkCargoStorage.getFillState(inventory) * data.height();
+		boolean xLong = data.sizeX() >= data.sizeZ();
 		Contraption contraption = contraptionEntity.getContraption();
 		for (int x = 0; x < data.sizeX(); x++)
 			for (int y = 0; y < data.height(); y++)
@@ -125,6 +128,8 @@ public final class BulkCargoContraptionHelper {
 						.setValue(BulkCargoContainerBlock.NORTH, z == 0)
 						.setValue(BulkCargoContainerBlock.SOUTH, z == data.sizeZ() - 1)
 						.setValue(BulkCargoContainerBlock.BOTTOM, y == 0)
+						.setValue(BulkCargoContainerBlock.TOP, y == data.height() - 1)
+						.setValue(BulkCargoContainerBlock.X_LONG, xLong)
 						.setValue(BulkCargoContainerBlock.CARGO_LEVEL, cargoLevel);
 					if (updated != info.state)
 						contraptionEntity.setBlock(localPos, new StructureBlockInfo(localPos, updated, info.nbt));
@@ -150,6 +155,28 @@ public final class BulkCargoContraptionHelper {
 		IItemHandlerModifiable handler = getItemHandler(entity.getContraption(), data.controllerPos());
 		if (handler != null)
 			syncCargo(entity, data.controllerPos(), handler);
+	}
+
+	static void syncAllCargo(AbstractContraptionEntity entity) {
+		if (entity.level.isClientSide)
+			return;
+
+		Contraption contraption = entity.getContraption();
+		if (contraption == null)
+			return;
+
+		Set<BlockPos> seenControllers = new HashSet<>();
+		for (Map.Entry<BlockPos, StructureBlockInfo> entry : contraption.getBlocks()
+			.entrySet()) {
+			if (!(entry.getValue().state.getBlock() instanceof BulkCargoContainerBlock))
+				continue;
+
+			ControllerData data = resolveController(contraption, entry.getKey());
+			if (data == null || !seenControllers.add(data.controllerPos()))
+				continue;
+
+			syncCargo(entity, data);
+		}
 	}
 
 	public static boolean applyClientCargo(AbstractContraptionEntity entity, BlockPos controllerPos,

@@ -1,5 +1,11 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.simibubi.create.content.contraptions.MountedFluidStorage;
+import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.trains.entity.ArrivalSoundQueue;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
@@ -11,8 +17,11 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
+import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
 
 public class TrainCouplerVisualRebaser {
 
@@ -31,6 +40,7 @@ public class TrainCouplerVisualRebaser {
 		contraption.readNBT(entity.level, tag, false);
 		contraption.entity = entity;
 		entity.setInitialOrientation(newAssemblyDirection.getClockWise());
+		rebaseStorageProxy(contraption, offset);
 
 		rebuildBounds(contraption);
 		contraption.invalidateColliders();
@@ -120,6 +130,41 @@ public class TrainCouplerVisualRebaser {
 
 	private static void rebaseStorageList(ListTag list, BlockPos offset) {
 		rebasePosList(list, "Pos", offset);
+	}
+
+	private static void rebaseStorageProxy(CarriageContraption contraption, BlockPos offset) {
+		if (offset.equals(BlockPos.ZERO))
+			return;
+
+		MountedStorageManager storageProxy = ((CarriageContraptionAccessor) contraption).railward$getStorageProxy();
+		if (storageProxy == null)
+			return;
+
+		MountedStorageManagerAccessor accessor = (MountedStorageManagerAccessor) storageProxy;
+		rebaseMapKeys(accessor.railward$getStorage(), offset);
+		Map<BlockPos, MountedFluidStorage> fluidStorage = accessor.railward$getFluidStorage();
+		rebaseMapKeys(fluidStorage, offset);
+		rebindFluidStorage(contraption, fluidStorage);
+		storageProxy.createHandlers();
+	}
+
+	private static void rebindFluidStorage(CarriageContraption contraption, Map<BlockPos, MountedFluidStorage> fluidStorage) {
+		for (Map.Entry<BlockPos, MountedFluidStorage> entry : fluidStorage.entrySet()) {
+			BlockEntity blockEntity = contraption.presentBlockEntities.get(entry.getKey());
+			if (blockEntity != null)
+				entry.getValue()
+					.assignBlockEntity(blockEntity);
+		}
+	}
+
+	private static <T> void rebaseMapKeys(Map<BlockPos, T> map, BlockPos offset) {
+		if (map == null || map.isEmpty())
+			return;
+
+		List<Map.Entry<BlockPos, T>> entries = new ArrayList<>(map.entrySet());
+		map.clear();
+		for (Map.Entry<BlockPos, T> entry : entries)
+			map.put(rebase(entry.getKey(), offset), entry.getValue());
 	}
 
 	private static void rebasePosList(ListTag list, String key, BlockPos offset) {

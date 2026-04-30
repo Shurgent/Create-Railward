@@ -1,0 +1,7 @@
+{
+  "parent": "railward:block/train/parts/bulk_cargo_container_floor",
+  "textures": {
+    "particle": "railward:block/train/parts/bulk_cargo_container_blue",
+    "all": "railward:block/train/parts/bulk_cargo_container_blue"
+  }
+}

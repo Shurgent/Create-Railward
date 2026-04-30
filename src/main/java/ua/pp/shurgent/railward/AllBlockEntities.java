@@ -51,7 +51,8 @@ public class AllBlockEntities {
 
 	public static final BlockEntityEntry<BulkCargoContainerBlockEntity> BULK_CARGO_CONTAINER = REGISTRATE
 			.blockEntity("train/parts/bulk_cargo_container", BulkCargoContainerBlockEntity::new)
-			.validBlocks(AllBlocks.BULK_CARGO_CONTAINER)
+			.validBlocks(AllBlocks.BULK_CARGO_CONTAINER, AllBlocks.BULK_CARGO_CONTAINER_BLUE,
+				AllBlocks.BULK_CARGO_CONTAINER_LIGHT_BLUE)
 			.renderer(() -> BulkCargoContainerRenderer::new)
 			.register();
 

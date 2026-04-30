@@ -352,17 +352,14 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
-	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER = REGISTRATE
-			.block("train/parts/bulk_cargo_container", BulkCargoContainerBlock::new)
-			.initialProperties(() -> Blocks.IRON_BLOCK)
-			.properties(p -> p.isRedstoneConductor((state, level, pos) -> false)
-				.isSuffocating((state, level, pos) -> false)
-				.isViewBlocking((state, level, pos) -> false)
-				.requiresCorrectToolForDrops())
-			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.onRegister(interactionBehaviour(new BulkCargoContainerInteractionBehaviour()))
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
-			.transform(customItemModel()).register();
+	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER =
+			bulkCargoContainer("bulk_cargo_container");
+
+	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER_BLUE =
+			bulkCargoContainer("bulk_cargo_container_blue");
+
+	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER_LIGHT_BLUE =
+			bulkCargoContainer("bulk_cargo_container_light_blue");
 
 	public static final BlockEntry<ModernSignalGroundBlock> MODERN_SIGNAL_GROUND = REGISTRATE
 			.block("train/signal/modern_signal_ground", ModernSignalGroundBlock::new)
@@ -380,6 +377,19 @@ public class AllBlocks {
 			.transform(customItemModel()).register();
 
 	public static void register() {
+	}
+
+	private static BlockEntry<BulkCargoContainerBlock> bulkCargoContainer(String name) {
+		return REGISTRATE.block("train/parts/" + name, BulkCargoContainerBlock::new)
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.properties(p -> p.isRedstoneConductor((state, level, pos) -> false)
+					.isSuffocating((state, level, pos) -> false)
+					.isViewBlocking((state, level, pos) -> false)
+					.requiresCorrectToolForDrops())
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.onRegister(interactionBehaviour(new BulkCargoContainerInteractionBehaviour()))
+				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.transform(customItemModel()).register();
 	}
 
 }

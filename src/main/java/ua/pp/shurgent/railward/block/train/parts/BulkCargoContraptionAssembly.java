@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -42,7 +43,9 @@ public final class BulkCargoContraptionAssembly {
 		while (!remaining.isEmpty()) {
 			BlockPos start = remaining.iterator()
 				.next();
-			Set<BlockPos> component = collectComponent(blocks, start, remaining);
+			StructureBlockInfo startInfo = blocks.get(start);
+			Block block = startInfo == null ? null : startInfo.state.getBlock();
+			Set<BlockPos> component = collectComponent(blocks, start, remaining, block);
 			Bounds bounds = Bounds.of(component);
 			if (!bounds.isValid(component))
 				continue;
@@ -51,7 +54,7 @@ public final class BulkCargoContraptionAssembly {
 	}
 
 	private static Set<BlockPos> collectComponent(Map<BlockPos, StructureBlockInfo> blocks, BlockPos start,
-		Set<BlockPos> remaining) {
+		Set<BlockPos> remaining, Block block) {
 		Set<BlockPos> component = new HashSet<>();
 		Queue<BlockPos> frontier = new ArrayDeque<>();
 		frontier.add(start);
@@ -60,13 +63,17 @@ public final class BulkCargoContraptionAssembly {
 			BlockPos current = frontier.poll();
 			if (!remaining.remove(current))
 				continue;
+			StructureBlockInfo currentInfo = blocks.get(current);
+			if (currentInfo == null || currentInfo.state.getBlock() != block
+				|| !(currentInfo.state.getBlock() instanceof BulkCargoContainerBlock))
+				continue;
 			component.add(current);
 			for (Direction direction : Direction.values()) {
 				BlockPos next = current.relative(direction);
 				if (!remaining.contains(next))
 					continue;
 				StructureBlockInfo info = blocks.get(next);
-				if (info != null && info.state.getBlock() instanceof BulkCargoContainerBlock)
+				if (info != null && info.state.getBlock() == block)
 					frontier.add(next);
 			}
 		}
@@ -153,7 +160,7 @@ public final class BulkCargoContraptionAssembly {
 
 		BulkCargoStorage.CargoItemHandler merged = new BulkCargoStorage.CargoItemHandler(expectedSlots);
 		for (ItemStack stack : contents)
-			BulkCargoStorage.insert(merged, stack, false);
+			BulkCargoStorage.insertExisting(merged, stack, false);
 		((MountedStorageAccessor) controllerStorage).railward$setHandler(merged);
 		storage.put(controllerPos, controllerStorage);
 		return merged;

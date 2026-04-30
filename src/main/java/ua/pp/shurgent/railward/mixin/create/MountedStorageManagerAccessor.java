@@ -5,6 +5,7 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import com.simibubi.create.content.contraptions.MountedFluidStorage;
 import com.simibubi.create.content.contraptions.MountedStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 
@@ -15,5 +16,8 @@ public interface MountedStorageManagerAccessor {
 
 	@Accessor("storage")
 	Map<BlockPos, MountedStorage> railward$getStorage();
+
+	@Accessor("fluidStorage")
+	Map<BlockPos, MountedFluidStorage> railward$getFluidStorage();
 
 }

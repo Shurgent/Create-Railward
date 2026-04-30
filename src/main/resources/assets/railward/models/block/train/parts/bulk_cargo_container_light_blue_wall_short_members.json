@@ -1,0 +1,7 @@
+{
+  "parent": "railward:block/train/parts/bulk_cargo_container_wall_short_members",
+  "textures": {
+    "particle": "railward:block/train/parts/bulk_cargo_container_light_blue",
+    "all": "railward:block/train/parts/bulk_cargo_container_light_blue"
+  }
+}
