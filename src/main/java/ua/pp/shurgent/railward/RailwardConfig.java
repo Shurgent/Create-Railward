@@ -41,7 +41,7 @@ public class RailwardConfig {
 				.define("trainCouplerDebugLogging", false);
 			trainCouplerAutoDebugLogging = builder
 				.comment("Enable detailed automatic Train Coupler debug logging. Enabled temporarily while the feature is being tested.")
-				.define("trainCouplerAutoDebugLogging", true);
+				.define("trainCouplerAutoDebugLogging", false);
 			builder.pop();
 		}
 	}

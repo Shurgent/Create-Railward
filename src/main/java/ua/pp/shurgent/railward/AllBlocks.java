@@ -11,6 +11,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MaterialColor;
+import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
+import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
@@ -347,6 +349,18 @@ public class AllBlocks {
 			.block("train/parts/wagon_frame", WagonFrameBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER = REGISTRATE
+			.block("train/parts/bulk_cargo_container", BulkCargoContainerBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.isRedstoneConductor((state, level, pos) -> false)
+				.isSuffocating((state, level, pos) -> false)
+				.isViewBlocking((state, level, pos) -> false)
+				.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(interactionBehaviour(new BulkCargoContainerInteractionBehaviour()))
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 

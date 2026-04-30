@@ -1,0 +1,37 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/bulk_cargo_container",
+		"all": "railward:block/train/parts/bulk_cargo_container"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [1, 16, 1],
+			"faces": {
+				"north": {"uv": [3, 4, 3.5, 12], "texture": "#all"},
+				"east": {"uv": [1.5, 4, 2, 12], "texture": "#all"},
+				"south": {"uv": [2.5, 4, 3, 12], "texture": "#all"},
+				"west": {"uv": [2, 4, 2.5, 12], "texture": "#all"},
+				"up": {"uv": [2.5, 12.5, 2, 12], "texture": "#all"},
+				"down": {"uv": [2, 12, 1.5, 12.5], "texture": "#all"}
+			}
+		},
+		{
+			"from": [15, 0, 0],
+			"to": [16, 16, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15, 0, 0]},
+			"faces": {
+				"north": {"uv": [4, 4, 4.5, 12], "texture": "#all"},
+				"east": {"uv": [1.5, 4, 2, 12], "texture": "#all"},
+				"south": {"uv": [4.5, 4, 5, 12], "texture": "#all"},
+				"west": {"uv": [2.5, 4, 3, 12], "texture": "#all"},
+				"up": {"uv": [3, 12.5, 2.5, 12], "texture": "#all"},
+				"down": {"uv": [2.5, 12, 2, 12.5], "texture": "#all"}
+			}
+		}
+	]
+}

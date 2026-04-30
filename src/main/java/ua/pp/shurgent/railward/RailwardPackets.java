@@ -12,6 +12,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
@@ -31,6 +32,7 @@ public class RailwardPackets {
 			.simpleChannel();
 
 		register(TrainCouplerSyncPacket.class, TrainCouplerSyncPacket::new, PLAY_TO_CLIENT);
+		register(BulkCargoSyncPacket.class, BulkCargoSyncPacket::new, PLAY_TO_CLIENT);
 	}
 
 	public static SimpleChannel getChannel() {
