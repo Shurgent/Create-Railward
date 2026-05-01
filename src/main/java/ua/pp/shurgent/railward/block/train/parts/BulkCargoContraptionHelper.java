@@ -34,7 +34,7 @@ public final class BulkCargoContraptionHelper {
 	private BulkCargoContraptionHelper() {
 	}
 
-	static ControllerData resolveController(Contraption contraption, BlockPos localPos) {
+	public static ControllerData resolveController(Contraption contraption, BlockPos localPos) {
 		StructureBlockInfo info = contraption.getBlocks()
 			.get(localPos);
 		if (info == null || !(info.state.getBlock() instanceof BulkCargoContainerBlock))
@@ -57,7 +57,7 @@ public final class BulkCargoContraptionHelper {
 		return new ControllerData(controllerPos, controllerInfo, sizeX, sizeZ, height);
 	}
 
-	static IItemHandlerModifiable getItemHandler(Contraption contraption, BlockPos controllerPos) {
+	public static IItemHandlerModifiable getItemHandler(Contraption contraption, BlockPos controllerPos) {
 		MountedStorageManager manager = getStorageManager(contraption);
 		if (manager == null)
 			return null;
@@ -106,7 +106,7 @@ public final class BulkCargoContraptionHelper {
 		return true;
 	}
 
-	static void updateCargoLevels(AbstractContraptionEntity contraptionEntity, ControllerData data,
+	public static void updateCargoLevels(AbstractContraptionEntity contraptionEntity, ControllerData data,
 		IItemHandler inventory) {
 		float fillBlocks = BulkCargoStorage.getFillState(inventory) * data.height();
 		boolean xLong = data.sizeX() >= data.sizeZ();
@@ -142,7 +142,7 @@ public final class BulkCargoContraptionHelper {
 			updateCargoLevels(contraptionEntity, data, handler);
 	}
 
-	static void syncCargo(AbstractContraptionEntity entity, BlockPos controllerPos, IItemHandler inventory) {
+	public static void syncCargo(AbstractContraptionEntity entity, BlockPos controllerPos, IItemHandler inventory) {
 		ItemStack display = BulkCargoStorage.getDisplayStack(inventory);
 		int amount = BulkCargoStorage.getStoredAmount(inventory);
 		int capacity = BulkCargoStorage.getCapacityItems(inventory, display);
@@ -151,13 +151,13 @@ public final class BulkCargoContraptionHelper {
 				new BulkCargoSyncPacket(entity.getId(), controllerPos, display, amount, capacity));
 	}
 
-	static void syncCargo(AbstractContraptionEntity entity, ControllerData data) {
+	public static void syncCargo(AbstractContraptionEntity entity, ControllerData data) {
 		IItemHandlerModifiable handler = getItemHandler(entity.getContraption(), data.controllerPos());
 		if (handler != null)
 			syncCargo(entity, data.controllerPos(), handler);
 	}
 
-	static void syncAllCargo(AbstractContraptionEntity entity) {
+	public static void syncAllCargo(AbstractContraptionEntity entity) {
 		if (entity.level.isClientSide)
 			return;
 
@@ -215,7 +215,8 @@ public final class BulkCargoContraptionHelper {
 		return Math.max(1, tag.getInt(key));
 	}
 
-	record ControllerData(BlockPos controllerPos, StructureBlockInfo controllerInfo, int sizeX, int sizeZ, int height) {
+	public record ControllerData(BlockPos controllerPos, StructureBlockInfo controllerInfo, int sizeX, int sizeZ,
+		int height) {
 	}
 
 }

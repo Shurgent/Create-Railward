@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "railward:block/train/station/unloading_bunker"
+    },
+    "facing=east": {
+      "model": "railward:block/train/station/unloading_bunker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "railward:block/train/station/unloading_bunker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "railward:block/train/station/unloading_bunker",
+      "y": 270
+    }
+  }
+}

@@ -86,5 +86,13 @@
         "name": "railward:train/parts/coupler/coupler_auto"
       }
     ]
+  },
+  "unloading_bulk_cargo": {
+    "subtitle": "subtitle.railward.unloading_bulk_cargo",
+    "sounds": [
+      {
+        "name": "railward:train/station/unloading_bulk_cargo"
+      }
+    ]
   }
 }

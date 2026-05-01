@@ -41,6 +41,8 @@
   "block.railward.train.parts.bulk_cargo_container": "Bulk Cargo Container (Green)",
   "block.railward.train.parts.bulk_cargo_container_blue": "Bulk Cargo Container (Blue)",
   "block.railward.train.parts.bulk_cargo_container_light_blue": "Bulk Cargo Container (Light Blue)",
+  "block.railward.train.station.unloading_hatch": "Unloading Hatch",
+  "block.railward.train.station.unloading_bunker": "Unloading Bunker",
   "block.railward.train.signal.modern_signal_ground": "Modern Ground Signal",
   "block.railward.train.signal.modern_signal": "Modern Signal",
 
@@ -49,6 +51,7 @@
   "subtitle.railward.modern_whistle.whistle": "Modern whistle sounds whistle",
   "subtitle.railward.train_coupler.manual": "Train coupler clanks",
   "subtitle.railward.train_coupler.auto": "Train coupler locks automatically",
+  "subtitle.railward.unloading_bulk_cargo": "Bulk cargo pours",
 
   "railward.train_coupler.success.decoupled": "Train decoupled.",
   "railward.train_coupler.success.coupled": "Trains coupled.",

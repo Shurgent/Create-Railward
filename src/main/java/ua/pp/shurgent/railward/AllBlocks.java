@@ -2,6 +2,7 @@ package ua.pp.shurgent.railward;
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 import static com.simibubi.create.AllInteractionBehaviours.interactionBehaviour;
+import static com.simibubi.create.AllMovementBehaviours.movementBehaviour;
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -20,6 +21,9 @@ import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlock;
+import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlock;
+import ua.pp.shurgent.railward.block.train.station.UnloadingHatchMovement;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
@@ -360,6 +364,23 @@ public class AllBlocks {
 
 	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER_LIGHT_BLUE =
 			bulkCargoContainer("bulk_cargo_container_light_blue");
+
+	public static final BlockEntry<UnloadingHatchBlock> UNLOADING_HATCH = REGISTRATE
+			.block("train/station/unloading_hatch", UnloadingHatchBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(movementBehaviour(new UnloadingHatchMovement()))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<UnloadingBunkerBlock> UNLOADING_BUNKER = REGISTRATE
+			.block("train/station/unloading_bunker", UnloadingBunkerBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
 
 	public static final BlockEntry<ModernSignalGroundBlock> MODERN_SIGNAL_GROUND = REGISTRATE
 			.block("train/signal/modern_signal_ground", ModernSignalGroundBlock::new)

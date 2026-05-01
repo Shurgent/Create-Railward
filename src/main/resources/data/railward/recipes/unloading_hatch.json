@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    " C "
+  ],
+  "key": {
+    "S": { "item": "create:sturdy_sheet" },
+    "C": { "item": "create:chute" },
+    "I": { "item": "create:industrial_iron_block" }
+  },
+  "result": {
+    "item": "railward:train/station/unloading_hatch"
+  }
+}

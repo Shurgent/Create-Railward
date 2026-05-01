@@ -1,0 +1,144 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made for Create: Railward",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/station/unloading_bunker",
+		"side": "railward:block/train/station/unloading_bunker"
+	},
+	"elements": [
+		{
+			"name": "bottom",
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [8, 2, 16, 3], "texture": "#side"},
+				"east": {"uv": [8, 2, 16, 3], "texture": "#side"},
+				"south": {"uv": [8, 2, 16, 3], "texture": "#side"},
+				"west": {"uv": [8, 2, 16, 3], "texture": "#side"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#side"},
+				"down": {"uv": [16, 8, 8, 16], "texture": "#side"}
+			}
+		},
+		{
+			"name": "north_wall",
+			"from": [0, 2, 0],
+			"to": [16, 16, 2],
+			"faces": {
+				"north": {"uv": [8, 0, 16, 7], "texture": "#side"},
+				"east": {"uv": [15, 0, 16, 7], "texture": "#side"},
+				"south": {"uv": [0, 8, 8, 15], "texture": "#side"},
+				"west": {"uv": [8, 0, 9, 7], "texture": "#side"},
+				"up": {"uv": [0, 8, 8, 9], "texture": "#side"}
+			}
+		},
+		{
+			"name": "south_wall",
+			"from": [0, 2, 14],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 8, 8, 15], "texture": "#side"},
+				"east": {"uv": [15, 0, 16, 7], "texture": "#side"},
+				"south": {"uv": [8, 0, 16, 7], "texture": "#side"},
+				"west": {"uv": [8, 0, 9, 7], "texture": "#side"},
+				"up": {"uv": [0, 8, 8, 9], "texture": "#side"}
+			}
+		},
+		{
+			"name": "west_wall",
+			"from": [0, 2, 2],
+			"to": [2, 16, 14],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 7], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 15], "texture": "#side"},
+				"south": {"uv": [8, 0, 9, 7], "texture": "#side"},
+				"west": {"uv": [9, 0, 15, 7], "texture": "#side"},
+				"up": {"uv": [1, 8, 7, 9], "rotation": 90, "texture": "#side"}
+			}
+		},
+		{
+			"name": "east_wall",
+			"from": [14, 2, 2],
+			"to": [16, 16, 14],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 7], "texture": "#side"},
+				"east": {"uv": [9.5, 0, 15.5, 7], "texture": "#side"},
+				"south": {"uv": [8.5, 0, 9.5, 7], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 15], "texture": "#side"},
+				"up": {"uv": [1, 8, 7, 9], "rotation": 90, "texture": "#side"}
+			}
+		},
+		{
+			"name": "grate",
+			"from": [7.5, 14, 2],
+			"to": [8.5, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 14, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"south": {"uv": [1, 8, 1.5, 9], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"up": {"uv": [1, 8.5, 7, 9], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [1, 8, 7, 8.5], "rotation": 270, "texture": "#side"}
+			}
+		},
+		{
+			"name": "grate",
+			"from": [9.7, 14, 2],
+			"to": [10.7, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10.2, 14, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"south": {"uv": [1, 8, 1.5, 9], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"up": {"uv": [1, 8.5, 7, 9], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [1, 8, 7, 8.5], "rotation": 270, "texture": "#side"}
+			}
+		},
+		{
+			"name": "grate",
+			"from": [11.9, 14, 2],
+			"to": [12.9, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [12.4, 14, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"south": {"uv": [1, 8, 1.5, 9], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"up": {"uv": [1, 8.5, 7, 9], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [1, 8, 7, 8.5], "rotation": 270, "texture": "#side"}
+			}
+		},
+		{
+			"name": "grate",
+			"from": [5.3, 14, 2],
+			"to": [6.3, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5.8, 14, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"south": {"uv": [1, 8, 1.5, 9], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"up": {"uv": [1, 8.5, 7, 9], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [1, 8, 7, 8.5], "rotation": 270, "texture": "#side"}
+			}
+		},
+		{
+			"name": "grate",
+			"from": [3.1, 14, 2],
+			"to": [4.1, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3.6, 14, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9], "texture": "#side"},
+				"east": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"south": {"uv": [1, 8, 1.5, 9], "texture": "#side"},
+				"west": {"uv": [1, 8, 7, 9], "texture": "#side"},
+				"up": {"uv": [1, 8.5, 7, 9], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [1, 8, 7, 8.5], "rotation": 270, "texture": "#side"}
+			}
+		}
+	]
+}

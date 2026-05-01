@@ -11,10 +11,14 @@ import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
+import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
+import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.BulkCargoContainerRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
+import ua.pp.shurgent.railward.client.renderer.UnloadingBunkerRenderer;
+import ua.pp.shurgent.railward.client.renderer.UnloadingHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
@@ -54,6 +58,18 @@ public class AllBlockEntities {
 			.validBlocks(AllBlocks.BULK_CARGO_CONTAINER, AllBlocks.BULK_CARGO_CONTAINER_BLUE,
 				AllBlocks.BULK_CARGO_CONTAINER_LIGHT_BLUE)
 			.renderer(() -> BulkCargoContainerRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<UnloadingHatchBlockEntity> UNLOADING_HATCH = REGISTRATE
+			.blockEntity("train/station/unloading_hatch", UnloadingHatchBlockEntity::new)
+			.validBlocks(AllBlocks.UNLOADING_HATCH)
+			.renderer(() -> UnloadingHatchRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<UnloadingBunkerBlockEntity> UNLOADING_BUNKER = REGISTRATE
+			.blockEntity("train/station/unloading_bunker", UnloadingBunkerBlockEntity::new)
+			.validBlocks(AllBlocks.UNLOADING_BUNKER)
+			.renderer(() -> UnloadingBunkerRenderer::new)
 			.register();
 
 	public static void register() {
