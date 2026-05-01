@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:train_wall_variants/blue"
+  },
+  "result": "railward:train/parts/train_wall_panel_blue_grille",
+  "count": 4
+}

@@ -15,7 +15,7 @@ public class UnloadingBunkerRenderer extends SafeBlockEntityRenderer<UnloadingBu
 	@Override
 	protected void renderSafe(UnloadingBunkerBlockEntity be, float partialTicks, PoseStack ms,
 		MultiBufferSource buffer, int light, int overlay) {
-		UnloadingFallingItemRenderer.render(be.getFallingItems(), true, be.getLevel(), partialTicks, ms, buffer, light,
+		UnloadingFallingItemRenderer.render(be.getFallingItems(), be.getLevel(), partialTicks, ms, buffer, light,
 			overlay);
 	}
 

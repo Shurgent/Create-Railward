@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "railward:train/parts/train_wall_panel_green_stripe_yellow_grille" },
+    { "item": "railward:train/parts/train_wall_panel_green_stripe_yellow_grille" },
+    { "item": "railward:train/parts/train_wall_panel_green_stripe_yellow_grille" },
+    { "item": "railward:train/parts/train_wall_panel_green_stripe_yellow_grille" }
+  ],
+  "result": {
+    "item": "railward:train/parts/train_wall_green_stripe_yellow_grille"
+  }
+}

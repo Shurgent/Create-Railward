@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:train_wall_variants/light_blue_stripe_yellow"
+  },
+  "result": "railward:train/parts/train_wall_panel_light_blue_stripe_yellow_smooth",
+  "count": 4
+}

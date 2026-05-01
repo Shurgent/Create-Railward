@@ -31,6 +31,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
+import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionHelper;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoStorage;
 import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoLoopSound;
@@ -39,10 +40,12 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 
 	private static final int MAX_STACKS_PER_TICK = 4;
 	private static final int TRANSFER_EFFECT_TICKS = 20;
+	private static final float CONTAINER_FLOOR_HEIGHT = 2 / 16f;
 
 	private ItemStack transferStack = ItemStack.EMPTY;
 	private int transferEffectTicks;
 	private int transferDistance = 1;
+	private float transferVisualEndY = -1;
 	private int transferVisualItems;
 	private int transferVisualSequence;
 	private int lastClientTransferVisualSequence;
@@ -68,10 +71,39 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> tickClientEffects());
 			return;
 		}
+		if (level.hasNeighborSignal(worldPosition))
+			return;
 
 		IItemHandler source = getSourceInventory();
 		if (source == null)
 			return;
+
+		BunkerTarget bunker = findBunkerTarget();
+		if (bunker != null) {
+			bunker.bunker()
+				.startUnloadingFrom(source, worldPosition);
+			bunker.bunker().keepAlive = 2;
+			return;
+		}
+
+		StaticContainerTarget staticContainer = findStaticContainerTarget();
+		if (staticContainer != null) {
+			boolean movedAny = false;
+			for (int i = 0; i < MAX_STACKS_PER_TICK; i++) {
+				ItemStack moved = transferOneStack(source, staticContainer);
+				if (moved.isEmpty())
+					break;
+
+				movedAny = true;
+				float endY = getStaticContainerEndY(staticContainer);
+				showTransfer(moved, staticContainer.distance(), endY);
+				UnloadingTransferEffects.emit(level, Vec3.atCenterOf(worldPosition), getEffectTarget(endY), moved);
+			}
+
+			if (movedAny)
+				sendData();
+			return;
+		}
 
 		ContainerTarget target = findContainerTarget();
 		if (target == null)
@@ -84,9 +116,9 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 				break;
 
 			movedAny = true;
-			showTransfer(moved, target.distance());
-			UnloadingTransferEffects.emit(level, Vec3.atCenterOf(worldPosition),
-				Vec3.atBottomCenterOf(worldPosition.below(target.distance())), moved);
+			float endY = getContraptionContainerEndY(target);
+			showTransfer(moved, target.distance(), endY);
+			UnloadingTransferEffects.emit(level, Vec3.atCenterOf(worldPosition), getEffectTarget(endY), moved);
 		}
 
 		if (!movedAny)
@@ -105,6 +137,26 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 		return blockEntity.getCapability(itemCapability, Direction.DOWN)
 			.resolve()
 			.orElse(null);
+	}
+
+	private BunkerTarget findBunkerTarget() {
+		for (int distance = 1; distance <= 3; distance++) {
+			BlockEntity blockEntity = level.getBlockEntity(worldPosition.below(distance));
+			if (blockEntity instanceof UnloadingBunkerBlockEntity bunker)
+				return new BunkerTarget(bunker);
+		}
+		return null;
+	}
+
+	private StaticContainerTarget findStaticContainerTarget() {
+		for (int distance = 1; distance <= 3; distance++) {
+			BlockEntity blockEntity = level.getBlockEntity(worldPosition.below(distance));
+			if (!(blockEntity instanceof BulkCargoContainerBlockEntity container))
+				continue;
+			if (container.getControllerBE() != null)
+				return new StaticContainerTarget(container, distance);
+		}
+		return null;
 	}
 
 	private ContainerTarget findContainerTarget() {
@@ -164,6 +216,48 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 			&& localPos.z >= minZ && localPos.z < maxZ;
 	}
 
+	private float getStaticContainerEndY(StaticContainerTarget target) {
+		BulkCargoContainerBlockEntity controller = target.container()
+			.getControllerBE();
+		if (controller == null)
+			return -target.distance();
+		return controller.getBlockPos()
+			.getY() + getCargoCollisionSurfaceOffset(controller.getFillState(), controller.getHeight())
+			- worldPosition.getY();
+	}
+
+	private float getContraptionContainerEndY(ContainerTarget target) {
+		float surfaceLocalY = target.data()
+			.controllerPos()
+			.getY() + getCargoCollisionSurfaceOffset(BulkCargoStorage.getFillState(target.handler()),
+				target.data().height());
+		Vec3 surfaceGlobal = target.entity()
+			.toGlobalVector(new Vec3(target.data()
+				.controllerPos()
+				.getX() + .5, surfaceLocalY, target.data()
+					.controllerPos()
+					.getZ() + .5), 0);
+		return (float) (surfaceGlobal.y - worldPosition.getY());
+	}
+
+	private Vec3 getEffectTarget(float endY) {
+		return new Vec3(worldPosition.getX() + .5, worldPosition.getY() + endY, worldPosition.getZ() + .5);
+	}
+
+	private static float getCargoCollisionSurfaceOffset(float fill, int height) {
+		float fillBlocks = Mth.clamp(fill, 0, 1) * height;
+		if (fillBlocks <= 0)
+			return CONTAINER_FLOOR_HEIGHT;
+		if (fillBlocks >= height)
+			return height;
+
+		int layer = Mth.clamp(Mth.floor(fillBlocks - 1.0E-5f), 0, height - 1);
+		float localFill = Mth.clamp(fillBlocks - layer, 0, 1);
+		int cargoLevel = localFill <= 0 ? 0 : Mth.clamp(Mth.ceil(localFill * 16), 1, 16);
+		float surface = layer + cargoLevel / 16f;
+		return layer == 0 ? Math.max(surface, CONTAINER_FLOOR_HEIGHT) : surface;
+	}
+
 	private ItemStack transferOneStack(IItemHandler source, ContainerTarget target) {
 		for (int slot = 0; slot < source.getSlots(); slot++) {
 			ItemStack simulatedExtract = source.extractItem(slot, 64, true);
@@ -193,10 +287,42 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 		return ItemStack.EMPTY;
 	}
 
-	private void showTransfer(ItemStack stack, int distance) {
+	private ItemStack transferOneStack(IItemHandler source, StaticContainerTarget target) {
+		for (int slot = 0; slot < source.getSlots(); slot++) {
+			ItemStack simulatedExtract = source.extractItem(slot, 64, true);
+			if (simulatedExtract.isEmpty())
+				continue;
+
+			ItemStack simulatedRemainder = target.container()
+				.tryInsert(simulatedExtract, true);
+			int accepted = simulatedExtract.getCount() - simulatedRemainder.getCount();
+			if (accepted <= 0)
+				continue;
+
+			ItemStack extracted = source.extractItem(slot, accepted, false);
+			if (extracted.isEmpty())
+				continue;
+
+			ItemStack remainder = target.container()
+				.tryInsert(extracted, false);
+			int moved = extracted.getCount() - remainder.getCount();
+			if (!remainder.isEmpty())
+				source.insertItem(slot, remainder, false);
+			if (moved <= 0)
+				continue;
+
+			ItemStack movedStack = extracted.copy();
+			movedStack.setCount(moved);
+			return movedStack;
+		}
+		return ItemStack.EMPTY;
+	}
+
+	private void showTransfer(ItemStack stack, int distance, float endY) {
 		transferStack = stack.copy();
 		transferStack.setCount(1);
 		transferDistance = Mth.clamp(distance, 1, 3);
+		transferVisualEndY = endY;
 		transferVisualItems = UnloadingFallingItemVisual.itemCountFor(stack);
 		transferVisualSequence++;
 		transferEffectTicks = TRANSFER_EFFECT_TICKS;
@@ -216,7 +342,7 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		return new AABB(worldPosition).expandTowards(0, -4, 0)
+		return new AABB(worldPosition).expandTowards(0, -BulkCargoContainerBlockEntity.MAX_HEIGHT - 4, 0)
 			.inflate(.5);
 	}
 
@@ -242,7 +368,8 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 		Random random = new Random(worldPosition.asLong() ^ (long) transferVisualSequence * 0x9E3779B9L);
 		for (int i = 0; i < transferVisualItems; i++) {
 			long startTick = gameTime + (long) i * UnloadingFallingItemVisual.SPAWN_INTERVAL_TICKS;
-			fallingItems.add(UnloadingFallingItemVisual.create(transferStack, startTick, transferDistance, random));
+			fallingItems.add(UnloadingFallingItemVisual.create(transferStack, startTick, .5f, transferVisualEndY,
+				random));
 		}
 		while (fallingItems.size() > UnloadingFallingItemVisual.MAX_ACTIVE_ITEMS)
 			fallingItems.remove(0);
@@ -283,6 +410,7 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 			tag.put("TransferStack", transferStack.save(new CompoundTag()));
 		tag.putInt("TransferEffectTicks", transferEffectTicks);
 		tag.putInt("TransferDistance", transferDistance);
+		tag.putFloat("TransferVisualEndY", transferVisualEndY);
 		tag.putInt("TransferVisualItems", transferVisualItems);
 		tag.putInt("TransferVisualSequence", transferVisualSequence);
 	}
@@ -294,6 +422,8 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 			: ItemStack.EMPTY;
 		transferEffectTicks = tag.getInt("TransferEffectTicks");
 		transferDistance = Mth.clamp(tag.getInt("TransferDistance"), 1, 3);
+		transferVisualEndY = tag.contains("TransferVisualEndY") ? tag.getFloat("TransferVisualEndY")
+			: -transferDistance;
 		transferVisualItems = Mth.clamp(tag.getInt("TransferVisualItems"), 0,
 			UnloadingFallingItemVisual.MAX_ITEMS_PER_TRANSFER);
 		transferVisualSequence = tag.getInt("TransferVisualSequence");
@@ -325,5 +455,11 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 
 	private record ContainerTarget(AbstractContraptionEntity entity, BulkCargoContraptionHelper.ControllerData data,
 		IItemHandlerModifiable handler, int distance) {
+	}
+
+	private record StaticContainerTarget(BulkCargoContainerBlockEntity container, int distance) {
+	}
+
+	private record BunkerTarget(UnloadingBunkerBlockEntity bunker) {
 	}
 }

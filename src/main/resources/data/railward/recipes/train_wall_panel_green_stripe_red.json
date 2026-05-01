@@ -1,7 +1,7 @@
-﻿{
+{
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "railward:train/parts/train_wall_green_stripe_red"
+    "tag": "railward:train_wall_variants/green_stripe_red"
   },
   "result": "railward:train/parts/train_wall_panel_green_stripe_red",
   "count": 4

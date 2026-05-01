@@ -42,6 +42,7 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	private int transferTimer;
 	int keepAlive;
 	private Entity connectedEntity;
+	private IItemHandler connectedInventory;
 	private LazyOptional<IItemHandler> itemCapability;
 	private Vec3 sourcePosition;
 	private ItemStack transferStack = ItemStack.EMPTY;
@@ -63,19 +64,32 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	}
 
 	public void startUnloadingFrom(Contraption contraption, BlockPos hatchPos) {
-		if (connectedEntity == contraption.entity) {
-			sourcePosition = Vec3.atCenterOf(hatchPos);
-			transferDistance = Mth.clamp(hatchPos.getY() - worldPosition.getY(), 1, 3);
+		IItemHandlerModifiable inventory = contraption.getSharedInventory();
+		if (connectedEntity == contraption.entity && connectedInventory == inventory) {
+			updateSource(hatchPos);
 			return;
 		}
 
+		connectTo(inventory, contraption.entity, hatchPos);
+	}
+
+	public void startUnloadingFrom(IItemHandler inventory, BlockPos hatchPos) {
+		if (connectedEntity == null && connectedInventory == inventory) {
+			updateSource(hatchPos);
+			return;
+		}
+
+		connectTo(inventory, null, hatchPos);
+	}
+
+	private void connectTo(IItemHandler inventory, Entity entity, BlockPos hatchPos) {
 		LazyOptional<IItemHandler> oldCapability = itemCapability;
-		itemCapability = LazyOptional.of(() -> new PullOnlyContraptionHandler(contraption.getSharedInventory()));
+		itemCapability = LazyOptional.of(() -> new PullOnlySourceHandler(inventory));
 		oldCapability.invalidate();
 
-		connectedEntity = contraption.entity;
-		sourcePosition = Vec3.atCenterOf(hatchPos);
-		transferDistance = Mth.clamp(hatchPos.getY() - worldPosition.getY(), 1, 3);
+		connectedEntity = entity;
+		connectedInventory = inventory;
+		updateSource(hatchPos);
 		transferTimer = 6 + ANIMATION * 2;
 		setChanged();
 		sendData();
@@ -84,17 +98,23 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	}
 
 	private LazyOptional<IItemHandler> createEmptyHandler() {
-		return LazyOptional.of(() -> new PullOnlyContraptionHandler(new ItemStackHandler(0)));
+		return LazyOptional.of(() -> new PullOnlySourceHandler(new ItemStackHandler(0)));
+	}
+
+	private void updateSource(BlockPos hatchPos) {
+		sourcePosition = Vec3.atCenterOf(hatchPos);
+		transferDistance = Mth.clamp(hatchPos.getY() - worldPosition.getY(), 1, 3);
 	}
 
 	private void stopTransferring() {
-		if (connectedEntity == null)
+		if (connectedInventory == null)
 			return;
 
 		LazyOptional<IItemHandler> oldCapability = itemCapability;
 		itemCapability = createEmptyHandler();
 		oldCapability.invalidate();
 		connectedEntity = null;
+		connectedInventory = null;
 		keepAlive = 0;
 		setChanged();
 		if (level != null)
@@ -108,7 +128,7 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	private boolean canTransfer() {
 		if (connectedEntity != null && !connectedEntity.isAlive())
 			stopTransferring();
-		return connectedEntity != null && isConnected();
+		return connectedInventory != null && isConnected();
 	}
 
 	private boolean isConnected() {
@@ -233,7 +253,8 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 		Random random = new Random(worldPosition.asLong() ^ (long) transferVisualSequence * 0x9E3779B9L);
 		for (int i = 0; i < transferVisualItems; i++) {
 			long startTick = gameTime + (long) i * UnloadingFallingItemVisual.SPAWN_INTERVAL_TICKS;
-			fallingItems.add(UnloadingFallingItemVisual.create(transferStack, startTick, transferDistance, random));
+			fallingItems.add(UnloadingFallingItemVisual.create(transferStack, startTick, transferDistance + .5f, 0,
+				random));
 		}
 		while (fallingItems.size() > UnloadingFallingItemVisual.MAX_ACTIVE_ITEMS)
 			fallingItems.remove(0);
@@ -302,10 +323,10 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 		return AllConfigs.server().logistics.psiTimeout.get();
 	}
 
-	private class PullOnlyContraptionHandler implements IItemHandlerModifiable {
-		private final IItemHandlerModifiable wrapped;
+	private class PullOnlySourceHandler implements IItemHandlerModifiable {
+		private final IItemHandler wrapped;
 
-		private PullOnlyContraptionHandler(IItemHandlerModifiable wrapped) {
+		private PullOnlySourceHandler(IItemHandler wrapped) {
 			this.wrapped = wrapped;
 		}
 

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:train_wall_variants/green_window_small"
+  },
+  "result": "railward:train/parts/train_wall_green_window_small",
+  "count": 1
+}

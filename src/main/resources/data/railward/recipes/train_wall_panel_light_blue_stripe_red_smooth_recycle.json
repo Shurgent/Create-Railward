@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "railward:train/parts/train_wall_panel_light_blue_stripe_red_smooth" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_stripe_red_smooth" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_stripe_red_smooth" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_stripe_red_smooth" }
+  ],
+  "result": {
+    "item": "railward:train/parts/train_wall_light_blue_stripe_red_smooth"
+  }
+}

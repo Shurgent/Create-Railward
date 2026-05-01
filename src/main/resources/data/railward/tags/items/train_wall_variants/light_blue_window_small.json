@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "railward:train/parts/train_wall_light_blue_window_small",
+    "railward:train/parts/train_wall_light_blue_window_small_smooth",
+    "railward:train/parts/train_wall_light_blue_window_round",
+    "railward:train/parts/train_wall_light_blue_window_round_smooth"
+  ]
+}

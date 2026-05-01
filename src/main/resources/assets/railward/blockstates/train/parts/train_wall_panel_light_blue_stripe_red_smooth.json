@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "railward:block/train/parts/train_wall_panel_light_blue_stripe_red_smooth", "y": 180 },
+    "facing=south": { "model": "railward:block/train/parts/train_wall_panel_light_blue_stripe_red_smooth" },
+    "facing=west": { "model": "railward:block/train/parts/train_wall_panel_light_blue_stripe_red_smooth", "y": 90 },
+    "facing=east": { "model": "railward:block/train/parts/train_wall_panel_light_blue_stripe_red_smooth", "y": 270 }
+  }
+}

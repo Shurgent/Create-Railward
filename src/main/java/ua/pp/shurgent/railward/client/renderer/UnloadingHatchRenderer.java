@@ -15,7 +15,7 @@ public class UnloadingHatchRenderer extends SafeBlockEntityRenderer<UnloadingHat
 	@Override
 	protected void renderSafe(UnloadingHatchBlockEntity be, float partialTicks, PoseStack ms,
 		MultiBufferSource buffer, int light, int overlay) {
-		UnloadingFallingItemRenderer.render(be.getFallingItems(), false, be.getLevel(), partialTicks, ms, buffer, light,
+		UnloadingFallingItemRenderer.render(be.getFallingItems(), be.getLevel(), partialTicks, ms, buffer, light,
 			overlay);
 	}
 

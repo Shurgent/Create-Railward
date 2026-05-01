@@ -19,8 +19,8 @@ final class UnloadingFallingItemRenderer {
 	private UnloadingFallingItemRenderer() {
 	}
 
-	static void render(List<UnloadingFallingItemVisual> items, boolean startsAboveBlock, Level level, float partialTicks,
-		PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
+	static void render(List<UnloadingFallingItemVisual> items, Level level, float partialTicks, PoseStack ms,
+		MultiBufferSource buffer, int light, int overlay) {
 		if (items.isEmpty() || level == null)
 			return;
 
@@ -33,8 +33,8 @@ final class UnloadingFallingItemRenderer {
 			if (age < 0)
 				continue;
 
-			float startY = startsAboveBlock ? item.distance() + .5f : .5f;
-			float endY = startsAboveBlock ? 0 : -item.distance();
+			float startY = item.startY();
+			float endY = item.endY();
 			float fall = .5f * UnloadingFallingItemVisual.GRAVITY * age * age;
 			float y = Math.max(endY, startY - fall);
 

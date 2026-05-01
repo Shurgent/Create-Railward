@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "railward:train/parts/train_wall_green",
+    "railward:train/parts/train_wall_green_smooth",
+    "railward:train/parts/train_wall_green_grille"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "railward:block/train/parts/train_wall_panel_blue",
+  "textures": {
+    "1": "railward:block/train/parts/train_wall_panel_blue_window_big_smooth_frame_white",
+    "particle": "railward:block/train/parts/train_wall_panel_blue_window_big_smooth_frame_white"
+  }
+}

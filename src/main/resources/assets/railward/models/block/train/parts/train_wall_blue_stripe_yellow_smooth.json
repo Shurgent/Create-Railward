@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "railward:block/train/parts/train_wall_blue_stripe_yellow_smooth"
+  }
+}

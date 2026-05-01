@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "railward:train/parts/train_wall_panel_light_blue_window_big_smooth_frame_white" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_window_big_smooth_frame_white" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_window_big_smooth_frame_white" },
+    { "item": "railward:train/parts/train_wall_panel_light_blue_window_big_smooth_frame_white" }
+  ],
+  "result": {
+    "item": "railward:train/parts/train_wall_light_blue_window_big_smooth_frame_white"
+  }
+}

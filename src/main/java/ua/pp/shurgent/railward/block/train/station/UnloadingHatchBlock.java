@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
@@ -26,9 +25,6 @@ public class UnloadingHatchBlock extends HorizontalDirectionalBlock implements I
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-	private static final VoxelShape FRAME = Block.box(0, 12, 0, 16, 16, 16);
-	private static final VoxelShape CHUTE = Block.box(4, 0, 4, 12, 12, 12);
-	private static final VoxelShape SHAPE = Shapes.or(FRAME, CHUTE);
 	private static final VoxelShape COLLISION_SHAPE = Block.box(0, 8, 0, 16, 16, 16);
 
 	public UnloadingHatchBlock(Properties properties) {
@@ -65,7 +61,7 @@ public class UnloadingHatchBlock extends HorizontalDirectionalBlock implements I
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return SHAPE;
+		return COLLISION_SHAPE;
 	}
 
 	@Override

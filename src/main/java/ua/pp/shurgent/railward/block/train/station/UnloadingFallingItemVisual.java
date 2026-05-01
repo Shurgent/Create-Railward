@@ -5,8 +5,8 @@ import java.util.Random;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-public record UnloadingFallingItemVisual(ItemStack stack, long startTick, int distance, float offsetX, float offsetZ,
-	float yaw) {
+public record UnloadingFallingItemVisual(ItemStack stack, long startTick, float startY, float endY, float offsetX,
+	float offsetZ, float yaw) {
 
 	public static final int SPAWN_INTERVAL_TICKS = 2;
 	public static final int MAX_ITEMS_PER_TRANSFER = 6;
@@ -21,19 +21,20 @@ public record UnloadingFallingItemVisual(ItemStack stack, long startTick, int di
 		return stack.getCount() == 1 ? 1 : Mth.clamp(stack.getCount(), 2, MAX_ITEMS_PER_TRANSFER);
 	}
 
-	public static UnloadingFallingItemVisual create(ItemStack stack, long startTick, int distance, Random random) {
+	public static UnloadingFallingItemVisual create(ItemStack stack, long startTick, float startY, float endY,
+		Random random) {
 		ItemStack visualStack = stack.copy();
 		visualStack.setCount(1);
-		return new UnloadingFallingItemVisual(visualStack, startTick, Mth.clamp(distance, 1, 3),
-			randomOffset(random), randomOffset(random), random.nextFloat() * 360f);
+		return new UnloadingFallingItemVisual(visualStack, startTick, startY, endY, randomOffset(random),
+			randomOffset(random), random.nextFloat() * 360f);
 	}
 
 	public boolean isFinished(long gameTime) {
-		return gameTime > startTick + getFallDurationTicks(distance) + 2;
+		return gameTime > startTick + getFallDurationTicks(startY - endY) + 2;
 	}
 
-	public static int getFallDurationTicks(int distance) {
-		float fallDistance = Mth.clamp(distance, 1, 3) + .5f;
+	public static int getFallDurationTicks(float distance) {
+		float fallDistance = Math.max(distance, .25f);
 		return Mth.ceil(Mth.sqrt(2f * fallDistance / GRAVITY));
 	}
 
