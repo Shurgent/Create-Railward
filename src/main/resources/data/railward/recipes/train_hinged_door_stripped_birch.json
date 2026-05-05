@@ -1,0 +1,17 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        {
+                            "tag":  "minecraft:wooden_doors"
+                        },
+                        {
+                            "item":  "create:andesite_casing"
+                        },
+                        {
+                            "item":  "minecraft:stripped_birch_log"
+                        }
+                    ],
+    "result":  {
+                   "item":  "railward:train/parts/train_hinged_door_stripped_birch"
+               }
+}

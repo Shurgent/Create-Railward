@@ -8,15 +8,25 @@ import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simibubi.create.AllTags.AllBlockTags;
+import com.simibubi.create.AllTags.AllItemTags;
+import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
+import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorMovementBehaviour;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.client.model.generators.ModelFile;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
@@ -26,6 +36,8 @@ import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
+import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchMovement;
@@ -38,6 +50,29 @@ public class AllBlocks {
 	static final String PATH_TRAINPARTS = "block/train/parts/";
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<TrainDoorBlock>> HINGED_TRAIN_DOOR_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<TrainDoorBlock>> SLIDING_TRAIN_DOOR_ENTRIES = new ArrayList<>();
+	private static final DyeColor[] TRAIN_DOOR_SOLID_COLORS = {
+			DyeColor.BLUE, DyeColor.GREEN, DyeColor.LIGHT_BLUE
+	};
+	private static final DyeColor[] TRAIN_DOOR_WINDOW_COLORS = {
+			DyeColor.BLUE, DyeColor.GREEN, DyeColor.LIGHT_BLUE
+	};
+	private static final String[] TRAIN_DOOR_STRIPPED_WOOD_TYPES = {
+			"stripped_oak",
+			"stripped_spruce",
+			"stripped_birch",
+			"stripped_jungle",
+			"stripped_acacia",
+			"stripped_dark_oak",
+			"stripped_crimson",
+			"stripped_warped"
+	};
+
+	static {
+		registerTrainDoorSet("train_hinged_door", TrainDoorAnimation.HINGED, HINGED_TRAIN_DOOR_ENTRIES);
+		registerTrainDoorSet("train_sliding_door", TrainDoorAnimation.SLIDING, SLIDING_TRAIN_DOOR_ENTRIES);
+	}
 
 	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_BLUE = REGISTRATE
 			.block("train/parts/train_floor_blue", TrainFloorBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
@@ -492,6 +527,62 @@ public class AllBlocks {
 	public static boolean isTrainWallPanelVariantState(BlockState state) {
 		return TRAIN_WALL_PANEL_ENTRIES.stream()
 				.anyMatch(entry -> entry.has(state));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static NonNullSupplier<? extends net.minecraft.world.level.block.Block>[] hingedTrainDoorBlocks() {
+		return HINGED_TRAIN_DOOR_ENTRIES.toArray(new NonNullSupplier[0]);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static NonNullSupplier<? extends net.minecraft.world.level.block.Block>[] slidingTrainDoorBlocks() {
+		return SLIDING_TRAIN_DOOR_ENTRIES.toArray(new NonNullSupplier[0]);
+	}
+
+	private static void registerTrainDoorSet(String prefix, TrainDoorAnimation animation,
+			List<BlockEntry<TrainDoorBlock>> entries) {
+		for (DyeColor color : TRAIN_DOOR_SOLID_COLORS)
+			entries.add(trainDoor(prefix + "_" + color.getName(), animation, color.getMaterialColor()));
+
+		for (String wood : TRAIN_DOOR_STRIPPED_WOOD_TYPES)
+			entries.add(trainDoor(prefix + "_" + wood, animation, MaterialColor.WOOD));
+
+		for (DyeColor color : TRAIN_DOOR_WINDOW_COLORS) {
+			entries.add(trainDoor(prefix + "_" + color.getName() + "_window_small", animation,
+					color.getMaterialColor()));
+			entries.add(trainDoor(prefix + "_" + color.getName() + "_window_big", animation,
+					color.getMaterialColor()));
+		}
+	}
+
+	private static BlockEntry<TrainDoorBlock> trainDoor(String name, TrainDoorAnimation animation,
+			MaterialColor color) {
+		return REGISTRATE.block("train/parts/" + name, properties -> new TrainDoorBlock(properties, animation))
+				.initialProperties(() -> Blocks.OAK_DOOR)
+				.properties(p -> p.color(color)
+						.sound(SoundType.NETHERITE_BLOCK)
+						.strength(3.0f, 6.0f)
+						.noOcclusion()
+						.requiresCorrectToolForDrops())
+				.blockstate((ctx, prov) -> {
+					ModelFile bottom = prov.models()
+							.getExistingFile(prov.modLoc("block/" + ctx.getName() + "/block_bottom"));
+					ModelFile top = prov.models()
+							.getExistingFile(prov.modLoc("block/" + ctx.getName() + "/block_top"));
+					prov.doorBlock(ctx.get(), bottom, bottom, top, top);
+				})
+				.addLayer(() -> RenderType::cutout)
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.DOORS, BlockTags.WOODEN_DOORS,
+						AllBlockTags.NON_DOUBLE_DOOR.tag)
+				.onRegister(interactionBehaviour(new DoorMovingInteraction()))
+				.onRegister(movementBehaviour(new SlidingDoorMovementBehaviour()))
+				.loot((loot, block) -> loot.add(block, BlockLoot.createDoorTable(block)))
+				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.tag(ItemTags.DOORS, AllItemTags.CONTRAPTION_CONTROLLED.tag)
+				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.mcLoc("item/generated"))
+						.texture("layer0", prov.modLoc("item/" + ctx.getName())))
+				.build()
+				.register();
 	}
 
 	private static BlockEntry<TrainWallBlock> trainWallVariant(String name, MaterialColor color, boolean cutout) {

@@ -1,0 +1,14 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        {
+                            "item":  "minecraft:iron_door"
+                        },
+                        {
+                            "tag":  "railward:train_wall_variants/blue_window_small"
+                        }
+                    ],
+    "result":  {
+                   "item":  "railward:train/parts/train_sliding_door_blue_window_small"
+               }
+}

@@ -1,0 +1,23 @@
+{
+    "type":  "minecraft:block",
+    "pools":  [
+                  {
+                      "rolls":  1,
+                      "entries":  [
+                                      {
+                                          "type":  "minecraft:item",
+                                          "name":  "railward:train/parts/train_sliding_door_stripped_dark_oak"
+                                      }
+                                  ],
+                      "conditions":  [
+                                         {
+                                             "condition":  "minecraft:block_state_property",
+                                             "block":  "railward:train/parts/train_sliding_door_stripped_dark_oak",
+                                             "properties":  {
+                                                                "half":  "lower"
+                                                            }
+                                         }
+                                     ]
+                  }
+              ]
+}

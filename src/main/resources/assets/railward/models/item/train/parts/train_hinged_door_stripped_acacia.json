@@ -1,0 +1,6 @@
+{
+    "parent":  "minecraft:item/generated",
+    "textures":  {
+                     "layer0":  "railward:item/train/parts/train_hinged_door_stripped_acacia"
+                 }
+}

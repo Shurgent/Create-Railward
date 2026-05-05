@@ -13,6 +13,7 @@
     "create.ContraptionMixin",
     "create.MountedStorageAccessor",
     "create.MountedStorageManagerAccessor",
+    "create.SlidingDoorBlockEntityAccessor",
     "create.TrainAccessor"
   ],
   "client": [

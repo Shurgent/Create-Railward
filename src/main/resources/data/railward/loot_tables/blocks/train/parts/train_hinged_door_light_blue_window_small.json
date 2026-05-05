@@ -1,0 +1,23 @@
+{
+    "type":  "minecraft:block",
+    "pools":  [
+                  {
+                      "rolls":  1,
+                      "entries":  [
+                                      {
+                                          "type":  "minecraft:item",
+                                          "name":  "railward:train/parts/train_hinged_door_light_blue_window_small"
+                                      }
+                                  ],
+                      "conditions":  [
+                                         {
+                                             "condition":  "minecraft:block_state_property",
+                                             "block":  "railward:train/parts/train_hinged_door_light_blue_window_small",
+                                             "properties":  {
+                                                                "half":  "lower"
+                                                            }
+                                         }
+                                     ]
+                  }
+              ]
+}

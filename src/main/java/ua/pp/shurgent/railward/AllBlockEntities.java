@@ -2,6 +2,7 @@ package ua.pp.shurgent.railward;
 
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 
+import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlockEntity;
@@ -16,12 +17,26 @@ import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.BulkCargoContainerRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
+import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
+import ua.pp.shurgent.railward.client.renderer.RailwardSlidingDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingBunkerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
+
+	public static final BlockEntityEntry<SlidingDoorBlockEntity> HINGED_TRAIN_DOOR = REGISTRATE
+			.blockEntity("train/parts/hinged_train_door", SlidingDoorBlockEntity::new)
+			.validBlocks(AllBlocks.hingedTrainDoorBlocks())
+			.renderer(() -> RailwardHingedDoorRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<SlidingDoorBlockEntity> SLIDING_TRAIN_DOOR = REGISTRATE
+			.blockEntity("train/parts/sliding_train_door", SlidingDoorBlockEntity::new)
+			.validBlocks(AllBlocks.slidingTrainDoorBlocks())
+			.renderer(() -> RailwardSlidingDoorRenderer::new)
+			.register();
 
 	public static final BlockEntityEntry<ModernSignalGroundBlockEntity> MODERN_SIGNAL_GROUND = REGISTRATE
 			.blockEntity("train/signal/modern_signal_ground", ModernSignalGroundBlockEntity::new)

@@ -1,6 +1,12 @@
 package ua.pp.shurgent.railward;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jozufozu.flywheel.core.PartialModel;
+
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class AllPartialModels {
 
@@ -51,8 +57,78 @@ public class AllPartialModels {
 
 	;
 
+	private static final String[] TRAIN_DOOR_SOLID_VARIANTS = {
+			"blue",
+			"green",
+			"light_blue"
+	};
+	private static final String[] TRAIN_DOOR_WOOD_VARIANTS = {
+			"stripped_oak",
+			"stripped_spruce",
+			"stripped_birch",
+			"stripped_jungle",
+			"stripped_acacia",
+			"stripped_dark_oak",
+			"stripped_crimson",
+			"stripped_warped"
+	};
+	private static final String[] TRAIN_DOOR_WINDOW_COLORS = {
+			"blue",
+			"green",
+			"light_blue"
+	};
+
+	private static final Map<String, SlidingDoorPartialModels> SLIDING_TRAIN_DOORS = createSlidingTrainDoors();
+
 	private static PartialModel block(String path) {
 		return new PartialModel(Railward.asResource("block/" + path));
+	}
+
+	public static SlidingDoorPartialModels getSlidingDoorModels(String blockPath) {
+		return SLIDING_TRAIN_DOORS.get(blockPath);
+	}
+
+	private static Map<String, SlidingDoorPartialModels> createSlidingTrainDoors() {
+		Map<String, SlidingDoorPartialModels> models = new HashMap<>();
+		for (String variant : TRAIN_DOOR_SOLID_VARIANTS)
+			addSlidingDoor(models, "train_sliding_door_" + variant);
+		for (String variant : TRAIN_DOOR_WOOD_VARIANTS)
+			addSlidingDoor(models, "train_sliding_door_" + variant);
+		for (String color : TRAIN_DOOR_WINDOW_COLORS) {
+			addSlidingDoor(models, "train_sliding_door_" + color + "_window_small");
+			addSlidingDoor(models, "train_sliding_door_" + color + "_window_big");
+		}
+		return Collections.unmodifiableMap(models);
+	}
+
+	private static void addSlidingDoor(Map<String, SlidingDoorPartialModels> models, String id) {
+		String base = "train/parts/" + id;
+		models.put(base, new SlidingDoorPartialModels(
+				block(base + "/block_bottom_left"),
+				block(base + "/block_bottom_right"),
+				block(base + "/block_top_left"),
+				block(base + "/block_top_right")));
+	}
+
+	public static class SlidingDoorPartialModels {
+		private final PartialModel bottomLeft;
+		private final PartialModel bottomRight;
+		private final PartialModel topLeft;
+		private final PartialModel topRight;
+
+		public SlidingDoorPartialModels(PartialModel bottomLeft, PartialModel bottomRight, PartialModel topLeft,
+				PartialModel topRight) {
+			this.bottomLeft = bottomLeft;
+			this.bottomRight = bottomRight;
+			this.topLeft = topLeft;
+			this.topRight = topRight;
+		}
+
+		public PartialModel get(DoubleBlockHalf half, boolean left) {
+			if (half == DoubleBlockHalf.UPPER)
+				return left ? topLeft : topRight;
+			return left ? bottomLeft : bottomRight;
+		}
 	}
 	
 	public static void init() {
