@@ -1,0 +1,24 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/parts/bulk_cargo_container",
+		"all": "railward:block/train/parts/bulk_cargo_container"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 1],
+			"to": [16, 16, 2],
+			"faces": {
+				"north": {"uv": [0, 2.5, 8, 10.5], "texture": "#all"},
+				"east": {"uv": [0, 7.5, 0.5, 15.5], "texture": "#all"},
+				"south": {"uv": [8, 0, 16, 8], "texture": "#all"},
+				"west": {"uv": [7.5, 7.5, 8, 15.5], "texture": "#all"},
+				"up": {"uv": [8, 2.5, 0, 2], "texture": "#all"},
+				"down": {"uv": [8, 2.5, 0, 3], "texture": "#all"}
+			}
+		}
+	]
+}

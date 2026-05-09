@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "axis=x": { "model": "railward:block/train/parts/train_roof_light_blue" },
+    "axis=z": { "model": "railward:block/train/parts/train_roof_light_blue", "y": 90 }
+  }
+}

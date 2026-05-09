@@ -1,0 +1,10 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "top": "railward:block/train/parts/train_roof_light_blue",
+    "bottom": "railward:block/train/parts/train_roof_interior",
+    "side": "railward:block/train/parts/train_roof_light_blue_grille",
+    "particle": "railward:block/train/parts/train_roof_light_blue"
+  }
+}
+

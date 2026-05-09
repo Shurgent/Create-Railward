@@ -11,7 +11,8 @@
 
     {
       "when": {
-        "north": "true"
+        "north": "true",
+        "x_long": "true"
       },
       "apply": {
         "model": "railward:block/train/parts/bulk_cargo_container_wall_base"
@@ -19,7 +20,8 @@
     },
     {
       "when": {
-        "east": "true"
+        "east": "true",
+        "x_long": "false"
       },
       "apply": {
         "model": "railward:block/train/parts/bulk_cargo_container_wall_base",
@@ -28,7 +30,8 @@
     },
     {
       "when": {
-        "south": "true"
+        "south": "true",
+        "x_long": "true"
       },
       "apply": {
         "model": "railward:block/train/parts/bulk_cargo_container_wall_base",
@@ -37,10 +40,50 @@
     },
     {
       "when": {
-        "west": "true"
+        "west": "true",
+        "x_long": "false"
       },
       "apply": {
         "model": "railward:block/train/parts/bulk_cargo_container_wall_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "x_long": "false"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/bulk_cargo_container_wall_short_base"
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "x_long": "true"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/bulk_cargo_container_wall_short_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "x_long": "false"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/bulk_cargo_container_wall_short_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "x_long": "true"
+      },
+      "apply": {
+        "model": "railward:block/train/parts/bulk_cargo_container_wall_short_base",
         "y": 270
       }
     },

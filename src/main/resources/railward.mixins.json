@@ -14,7 +14,8 @@
     "create.MountedStorageAccessor",
     "create.MountedStorageManagerAccessor",
     "create.SlidingDoorBlockEntityAccessor",
-    "create.TrainAccessor"
+    "create.TrainAccessor",
+    "create.TrainCargoManagerAccessor"
   ],
   "client": [
     "create.client.ArrivalSoundQueueMixin",

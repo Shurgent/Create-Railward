@@ -1,6 +1,5 @@
 package ua.pp.shurgent.railward.client.renderer;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock;
@@ -50,8 +49,7 @@ public class RailwardHingedDoorRenderer extends SafeBlockEntityRenderer<SlidingD
 					.setValue(DoorBlock.OPEN, false)
 					.setValue(DoorBlock.HALF, half));
 
-			ms.pushPose();
-			TransformStack.cast(ms)
+			door
 					.centre()
 					.rotateY(blockStateRotation(facing))
 					.unCentre()
@@ -59,13 +57,10 @@ public class RailwardHingedDoorRenderer extends SafeBlockEntityRenderer<SlidingD
 					.rotateY(angle)
 					.translateBack(pivot);
 			if (half == DoubleBlockHalf.UPPER)
-				ms.translate(0, 1 - 1 / 512f, 0);
+				door.translate(0, 1 - 1 / 512f, 0);
 			door
-					.fullNormalTransform()
-					.diffuseCalculator(RailwardDoorDiffuse.CAMERA_CORRECTED)
 					.light(light)
 					.renderInto(ms, vb);
-			ms.popPose();
 		}
 	}
 

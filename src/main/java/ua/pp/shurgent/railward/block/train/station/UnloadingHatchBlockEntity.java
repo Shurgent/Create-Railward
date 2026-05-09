@@ -124,8 +124,7 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 		if (!movedAny)
 			return;
 
-		BulkCargoContraptionHelper.updateCargoLevels(target.entity(), target.data(), target.handler());
-		BulkCargoContraptionHelper.syncCargo(target.entity(), target.data().controllerPos(), target.handler());
+		BulkCargoContraptionHelper.onCargoContentsChanged(target.entity(), target.data(), target.handler());
 		sendData();
 	}
 
@@ -406,6 +405,9 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void write(CompoundTag tag, boolean clientPacket) {
 		super.write(tag, clientPacket);
+		if (!clientPacket || transferEffectTicks <= 0 || transferStack.isEmpty())
+			return;
+
 		if (!transferStack.isEmpty())
 			tag.put("TransferStack", transferStack.save(new CompoundTag()));
 		tag.putInt("TransferEffectTicks", transferEffectTicks);
@@ -418,6 +420,12 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void read(CompoundTag tag, boolean clientPacket) {
 		super.read(tag, clientPacket);
+		if (!clientPacket || !tag.contains("TransferStack")) {
+			clearTransferVisualState();
+			lastClientTransferVisualSequence = transferVisualSequence;
+			return;
+		}
+
 		transferStack = tag.contains("TransferStack") ? ItemStack.of(tag.getCompound("TransferStack"))
 			: ItemStack.EMPTY;
 		transferEffectTicks = tag.getInt("TransferEffectTicks");
@@ -433,6 +441,15 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 			lastClientTransferVisualSequence = transferVisualSequence;
 			spawnFallingItems();
 		}
+	}
+
+	private void clearTransferVisualState() {
+		transferStack = ItemStack.EMPTY;
+		transferEffectTicks = 0;
+		transferDistance = 1;
+		transferVisualEndY = -1;
+		transferVisualItems = 0;
+		transferVisualSequence = 0;
 	}
 
 	@Override

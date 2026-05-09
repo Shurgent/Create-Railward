@@ -1,0 +1,11 @@
+{
+  "ambientocclusion": false,
+  "loader": "forge:obj",
+  "textures": {
+    "particle": "railward:block/train/parts/train_roof_light_blue"
+  },
+  "model": "railward:models/block/train/parts/train_roof_slope_light_blue_outer_rotated.obj",
+  "flip-v": true,
+  "ambientToFullbright": false,
+  "diffuseLighting": true
+}

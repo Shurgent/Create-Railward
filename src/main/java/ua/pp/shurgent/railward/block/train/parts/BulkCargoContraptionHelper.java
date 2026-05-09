@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.MountedStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
+import com.simibubi.create.content.contraptions.minecart.TrainCargoManager;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 
 import net.minecraft.core.BlockPos;
@@ -22,11 +24,13 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import ua.pp.shurgent.railward.RailwardPackets;
 import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
 import ua.pp.shurgent.railward.mixin.create.ContraptionAccessor;
 import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.mixin.create.TrainCargoManagerAccessor;
 import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
 
 public final class BulkCargoContraptionHelper {
@@ -85,8 +89,7 @@ public final class BulkCargoContraptionHelper {
 		else
 			itemEntity.setItem(remainder);
 
-		updateCargoLevels(contraptionEntity, data, handler);
-		syncCargo(contraptionEntity, data.controllerPos(), handler);
+		onCargoContentsChanged(contraptionEntity, data, handler);
 		return true;
 	}
 
@@ -101,13 +104,56 @@ public final class BulkCargoContraptionHelper {
 			return false;
 
 		ItemHandlerHelper.giveItemToPlayer(player, extracted);
-		updateCargoLevels(contraptionEntity, data, handler);
-		syncCargo(contraptionEntity, data.controllerPos(), handler);
+		onCargoContentsChanged(contraptionEntity, data, handler);
 		return true;
+	}
+
+	public static void onCargoContentsChanged(AbstractContraptionEntity contraptionEntity, ControllerData data,
+		IItemHandlerModifiable handler) {
+		updateCargoLevels(contraptionEntity, data, handler, true);
+		markStorageChanged(contraptionEntity.getContraption());
+		syncCargo(contraptionEntity, data.controllerPos(), handler);
+	}
+
+	public static void updateAndSyncAllCargo(AbstractContraptionEntity entity) {
+		if (entity.level.isClientSide)
+			return;
+
+		Contraption contraption = entity.getContraption();
+		if (contraption == null)
+			return;
+
+		boolean changed = false;
+		Set<BlockPos> seenControllers = new HashSet<>();
+		for (Map.Entry<BlockPos, StructureBlockInfo> entry : contraption.getBlocks()
+			.entrySet()) {
+			if (!(entry.getValue().state.getBlock() instanceof BulkCargoContainerBlock))
+				continue;
+
+			ControllerData data = resolveController(contraption, entry.getKey());
+			if (data == null || !seenControllers.add(data.controllerPos()))
+				continue;
+
+			IItemHandlerModifiable handler = getItemHandler(contraption, data.controllerPos());
+			if (handler == null)
+				continue;
+
+			updateCargoLevels(entity, data, handler, true);
+			syncCargo(entity, data.controllerPos(), handler);
+			changed = true;
+		}
+
+		if (changed)
+			markStorageChanged(contraption);
 	}
 
 	public static void updateCargoLevels(AbstractContraptionEntity contraptionEntity, ControllerData data,
 		IItemHandler inventory) {
+		updateCargoLevels(contraptionEntity, data, inventory, false);
+	}
+
+	private static void updateCargoLevels(AbstractContraptionEntity contraptionEntity, ControllerData data,
+		IItemHandler inventory, boolean updateInventoryNbt) {
 		float fillBlocks = BulkCargoStorage.getFillState(inventory) * data.height();
 		boolean xLong = data.sizeX() >= data.sizeZ();
 		Contraption contraption = contraptionEntity.getContraption();
@@ -131,8 +177,10 @@ public final class BulkCargoContraptionHelper {
 						.setValue(BulkCargoContainerBlock.TOP, y == data.height() - 1)
 						.setValue(BulkCargoContainerBlock.X_LONG, xLong)
 						.setValue(BulkCargoContainerBlock.CARGO_LEVEL, cargoLevel);
-					if (updated != info.state)
-						contraptionEntity.setBlock(localPos, new StructureBlockInfo(localPos, updated, info.nbt));
+					CompoundTag nbt = updateInventoryNbt && localPos.equals(data.controllerPos())
+						? updatedControllerNbt(info.nbt, data, inventory) : info.nbt;
+					if (updated != info.state || nbt != info.nbt)
+						contraptionEntity.setBlock(localPos, new StructureBlockInfo(localPos, updated, nbt));
 				}
 	}
 
@@ -207,6 +255,38 @@ public final class BulkCargoContraptionHelper {
 				return storageProxy;
 		}
 		return ((ContraptionAccessor) contraption).railward$getStorage();
+	}
+
+	private static void markStorageChanged(Contraption contraption) {
+		if (contraption == null)
+			return;
+		MountedStorageManager manager = getStorageManager(contraption);
+		if (manager instanceof TrainCargoManager) {
+			((TrainCargoManagerAccessor) manager).railward$changeDetected();
+			Create.RAILWAYS.markTracksDirty();
+		}
+	}
+
+	private static CompoundTag updatedControllerNbt(CompoundTag source, ControllerData data, IItemHandler inventory) {
+		CompoundTag nbt = source == null ? new CompoundTag() : source.copy();
+		nbt.put("Controller", NbtUtils.writeBlockPos(data.controllerPos()));
+		nbt.putInt("SizeX", data.sizeX());
+		nbt.putInt("SizeZ", data.sizeZ());
+		nbt.putInt("Height", data.height());
+		nbt.remove("LastKnownPos");
+		if (inventory != null)
+			nbt.put("Inventory", snapshotInventory(inventory));
+		else
+			nbt.remove("Inventory");
+		return nbt;
+	}
+
+	private static CompoundTag snapshotInventory(IItemHandler inventory) {
+		ItemStackHandler snapshot = new ItemStackHandler(inventory.getSlots());
+		for (int slot = 0; slot < inventory.getSlots(); slot++)
+			snapshot.setStackInSlot(slot, inventory.getStackInSlot(slot)
+				.copy());
+		return snapshot.serializeNBT();
 	}
 
 	private static int readPositiveInt(CompoundTag tag, String key, int fallback) {

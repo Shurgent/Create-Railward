@@ -248,6 +248,97 @@ function Draw-PanelDetails([System.Drawing.Bitmap] $Bmp, [string] $Animation, [s
     }
 }
 
+function New-DoorItemTexture([string] $Animation, [hashtable] $ColorDef, [hashtable] $WoodDef, [string] $Window) {
+    $border = [System.Drawing.Color]::FromArgb(255, 30, 30, 34)
+    $seal = [System.Drawing.Color]::FromArgb(255, 18, 18, 20)
+    $sealHi = [System.Drawing.Color]::FromArgb(255, 62, 62, 66)
+    $handle = [System.Drawing.Color]::FromArgb(255, 210, 210, 190)
+    $glass = [System.Drawing.Color]::FromArgb(0, 128, 190, 220)
+    $glassHi = [System.Drawing.Color]::FromArgb(255, 215, 245, 255)
+
+    $source = New-BaseTexture $ColorDef $WoodDef 0
+    try {
+        $bmp = New-Object System.Drawing.Bitmap 16, 16
+        $graphics = [System.Drawing.Graphics]::FromImage($bmp)
+        $graphics.Clear([System.Drawing.Color]::FromArgb(0, 0, 0, 0))
+        $graphics.Dispose()
+
+        if ($Animation -eq "sliding") {
+            $minX = 1
+            $maxX = 14
+        } else {
+            $minX = 4
+            $maxX = 11
+        }
+        $width = $maxX - $minX + 1
+
+        for ($y = 0; $y -lt 16; $y++) {
+            for ($x = $minX; $x -le $maxX; $x++) {
+                $sourceX = [Math]::Min(15, [Math]::Floor((($x - $minX) * 16) / $width))
+                $bmp.SetPixel($x, $y, $source.GetPixel($sourceX, $y))
+            }
+        }
+
+        for ($x = $minX; $x -le $maxX; $x++) {
+            $bmp.SetPixel($x, 0, $border)
+            $bmp.SetPixel($x, 15, $border)
+        }
+        for ($y = 0; $y -lt 16; $y++) {
+            $bmp.SetPixel($minX, $y, $border)
+            $bmp.SetPixel($maxX, $y, $border)
+        }
+
+        if ($Animation -eq "sliding") {
+            for ($y = 0; $y -lt 16; $y++) {
+                $bmp.SetPixel(7, $y, $sealHi)
+                $bmp.SetPixel(8, $y, $seal)
+            }
+        }
+
+        function Draw-ItemWindow([int] $windowMinX, [int] $windowMaxX, [int] $windowMinY, [int] $windowMaxY) {
+            for ($wy = $windowMinY; $wy -le $windowMaxY; $wy++) {
+                for ($wx = $windowMinX; $wx -le $windowMaxX; $wx++) {
+                    $edge = $wx -eq $windowMinX -or $wx -eq $windowMaxX -or $wy -eq $windowMinY -or $wy -eq $windowMaxY
+                    if ($edge) {
+                        $bmp.SetPixel($wx, $wy, $border)
+                    } else {
+                        $bmp.SetPixel($wx, $wy, $glass)
+                    }
+                }
+            }
+            $bmp.SetPixel($windowMinX + 1, $windowMinY + 1, $glassHi)
+        }
+
+        if ($Window -eq "small") {
+            if ($Animation -eq "sliding") {
+                Draw-ItemWindow 2 5 3 6
+                Draw-ItemWindow 10 13 3 6
+            } else {
+                Draw-ItemWindow 5 10 3 6
+            }
+        } elseif ($Window -eq "big") {
+            if ($Animation -eq "sliding") {
+                Draw-ItemWindow 2 6 1 8
+                Draw-ItemWindow 9 13 1 8
+            } else {
+                Draw-ItemWindow 5 10 1 8
+            }
+        }
+
+        if ($Animation -eq "hinged") {
+            foreach ($point in @(@(($maxX - 2), 9), @(($maxX - 1), 9), @(($maxX - 2), 10), @(($maxX - 1), 10))) {
+                $bmp.SetPixel($point[0], $point[1], $handle)
+            }
+            $bmp.SetPixel($maxX - 3, 9, $border)
+            $bmp.SetPixel($maxX - 3, 10, $border)
+        }
+
+        return $bmp
+    } finally {
+        $source.Dispose()
+    }
+}
+
 function Save-Bitmap([System.Drawing.Bitmap] $Bmp, [string] $Path) {
     Ensure-Dir $Path
     $Bmp.Save($Path, [System.Drawing.Imaging.ImageFormat]::Png)
@@ -280,12 +371,7 @@ function Write-DoorTextures([string] $Id, [string] $Animation, [hashtable] $Colo
     Draw-PanelDetails $side $Animation $null "side" $null "full"
     Save-Bitmap $side (Join-Path $textureBase "$($Id)_side.png")
 
-    $item = New-BaseTexture $ColorDef $WoodDef 0
-    $itemHandle = $null
-    if ($Animation -eq "hinged") {
-        $itemHandle = "right"
-    }
-    Draw-PanelDetails $item $Animation $Window "item" $itemHandle "full"
+    $item = New-DoorItemTexture $Animation $ColorDef $WoodDef $Window
     Save-Bitmap $item (Join-Path $AssetsRoot "textures/item/train/parts/$Id.png")
 }
 

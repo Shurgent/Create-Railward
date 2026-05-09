@@ -1,0 +1,48 @@
+{
+  "variants": {
+    "facing=north,shape=straight,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_flipped" },
+    "facing=north,shape=straight,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_rotated_flipped" },
+    "facing=east,shape=straight,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_rotated", "y": 90 },
+    "facing=east,shape=straight,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_flipped", "y": 90 },
+    "facing=south,shape=straight,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue", "y": 180 },
+    "facing=south,shape=straight,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_rotated", "y": 180 },
+    "facing=west,shape=straight,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_rotated_flipped", "y": 270 },
+    "facing=west,shape=straight,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue", "y": 270 },
+
+    "facing=north,shape=outer_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_flipped" },
+    "facing=north,shape=outer_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated_flipped" },
+    "facing=east,shape=outer_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated", "y": 90 },
+    "facing=east,shape=outer_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_flipped", "y": 90 },
+    "facing=south,shape=outer_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer", "y": 180 },
+    "facing=south,shape=outer_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated", "y": 180 },
+    "facing=west,shape=outer_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated_flipped", "y": 270 },
+    "facing=west,shape=outer_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer", "y": 270 },
+
+    "facing=north,shape=outer_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated", "y": 90 },
+    "facing=north,shape=outer_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_flipped", "y": 90 },
+    "facing=east,shape=outer_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer", "y": 180 },
+    "facing=east,shape=outer_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated", "y": 180 },
+    "facing=south,shape=outer_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated_flipped", "y": 270 },
+    "facing=south,shape=outer_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer", "y": 270 },
+    "facing=west,shape=outer_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_flipped" },
+    "facing=west,shape=outer_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_outer_rotated_flipped" },
+
+    "facing=north,shape=inner_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_flipped" },
+    "facing=north,shape=inner_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated_flipped" },
+    "facing=east,shape=inner_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated", "y": 90 },
+    "facing=east,shape=inner_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_flipped", "y": 90 },
+    "facing=south,shape=inner_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner", "y": 180 },
+    "facing=south,shape=inner_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated", "y": 180 },
+    "facing=west,shape=inner_left,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated_flipped", "y": 270 },
+    "facing=west,shape=inner_left,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner", "y": 270 },
+
+    "facing=north,shape=inner_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated", "y": 90 },
+    "facing=north,shape=inner_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_flipped", "y": 90 },
+    "facing=east,shape=inner_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner", "y": 180 },
+    "facing=east,shape=inner_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated", "y": 180 },
+    "facing=south,shape=inner_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated_flipped", "y": 270 },
+    "facing=south,shape=inner_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner", "y": 270 },
+    "facing=west,shape=inner_right,axis=x": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_flipped" },
+    "facing=west,shape=inner_right,axis=z": { "model": "railward:block/train/parts/train_roof_slope_light_blue_inner_rotated_flipped" }
+  }
+}

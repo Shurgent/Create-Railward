@@ -198,7 +198,7 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 		transferTimer = getTransferTimeout() + ANIMATION;
 		showTransfer(stack);
 		if (connectedEntity instanceof AbstractContraptionEntity contraptionEntity)
-			BulkCargoContraptionHelper.syncAllCargo(contraptionEntity);
+			BulkCargoContraptionHelper.updateAndSyncAllCargo(contraptionEntity);
 		if (level != null)
 			UnloadingTransferEffects.emit(level, sourcePosition == null ? Vec3.atCenterOf(worldPosition.above())
 				: sourcePosition, Vec3.atBottomCenterOf(worldPosition), stack);
@@ -291,7 +291,13 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void write(CompoundTag tag, boolean clientPacket) {
 		super.write(tag, clientPacket);
+		if (!clientPacket)
+			return;
+
 		tag.putInt("Timer", transferTimer);
+		if (transferEffectTicks <= 0 || transferStack.isEmpty())
+			return;
+
 		if (!transferStack.isEmpty())
 			tag.put("TransferStack", transferStack.save(new CompoundTag()));
 		tag.putInt("TransferEffectTicks", transferEffectTicks);
@@ -303,7 +309,20 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void read(CompoundTag tag, boolean clientPacket) {
 		super.read(tag, clientPacket);
+		if (!clientPacket) {
+			transferTimer = 0;
+			clearTransferVisualState();
+			lastClientTransferVisualSequence = transferVisualSequence;
+			return;
+		}
+
 		transferTimer = tag.getInt("Timer");
+		if (!tag.contains("TransferStack")) {
+			clearTransferVisualState();
+			lastClientTransferVisualSequence = transferVisualSequence;
+			return;
+		}
+
 		transferStack = tag.contains("TransferStack") ? ItemStack.of(tag.getCompound("TransferStack"))
 			: ItemStack.EMPTY;
 		transferEffectTicks = tag.getInt("TransferEffectTicks");
@@ -317,6 +336,14 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 			lastClientTransferVisualSequence = transferVisualSequence;
 			spawnFallingItems();
 		}
+	}
+
+	private void clearTransferVisualState() {
+		transferStack = ItemStack.EMPTY;
+		transferEffectTicks = 0;
+		transferDistance = 1;
+		transferVisualItems = 0;
+		transferVisualSequence = 0;
 	}
 
 	private int getTransferTimeout() {

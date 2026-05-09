@@ -1,0 +1,40 @@
+{
+  "parent": "builtin/entity",
+  "loader": "forge:obj",
+  "model": "railward:models/block/train/parts/train_roof_slope_light_blue.obj",
+  "flip-v": true,
+  "ambientToFullbright": false,
+  "diffuseLighting": true,
+  "display": {
+    "fixed": {
+      "rotation": [0, 90, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.625, 0.625, 0.625]
+    },
+    "thirdperson_righthand": {
+      "rotation": [10, -45, 170],
+      "translation": [0, 1.5, -2.75],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [10, -45, 170],
+      "translation": [0, 1.5, -2.75],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, -45, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.4, 0.4, 0.4]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, -45, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.4, 0.4, 0.4]
+    },
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.625, 0.625, 0.625]
+    }
+  }
+}

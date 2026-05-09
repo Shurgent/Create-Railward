@@ -34,6 +34,8 @@ import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
@@ -443,6 +445,23 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_SMOOTH = trainWallPanelVariant("train_wall_panel_light_blue_window_big_smooth", MaterialColor.COLOR_LIGHT_BLUE, true);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_smooth_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
+
+	public static final BlockEntry<TrainRoofBlock> TRAIN_ROOF_LIGHT_BLUE = REGISTRATE
+			.block("train/parts/train_roof_light_blue", TrainRoofBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainRoofSlopeBlock> TRAIN_ROOF_SLOPE_LIGHT_BLUE = REGISTRATE
+			.block("train/parts/train_roof_slope_light_blue", TrainRoofSlopeBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
 
 	public static final BlockEntry<TrainBufferBlock> TRAIN_BUFFER = REGISTRATE
 			.block("train/parts/train_buffer", TrainBufferBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)

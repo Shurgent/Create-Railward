@@ -1,12 +1,12 @@
 package ua.pp.shurgent.railward.client.renderer;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlockEntity;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
+import com.simibubi.create.foundation.render.SuperByteBuffer;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -60,19 +60,16 @@ public class RailwardSlidingDoorRenderer extends SafeBlockEntityRenderer<Sliding
 
 	private static void renderHalf(SlidingDoorPartialModels models, BlockState state, Direction facing,
 			DoubleBlockHalf half, boolean left, Vec3 offset, PoseStack ms, VertexConsumer vb, int light) {
-		ms.pushPose();
-		TransformStack.cast(ms)
+		SuperByteBuffer door = CachedBufferer.partial(models.get(half, left), state);
+		door
 				.centre()
 				.rotateY(blockStateRotation(facing))
 				.unCentre()
 				.translate(offset)
 				.translate(0, half == DoubleBlockHalf.UPPER ? 1 - 1 / 512f : 0, 0);
-		CachedBufferer.partial(models.get(half, left), state)
-				.fullNormalTransform()
-				.diffuseCalculator(RailwardDoorDiffuse.CAMERA_CORRECTED)
+		door
 				.light(light)
 				.renderInto(ms, vb);
-		ms.popPose();
 	}
 
 	private static int blockStateRotation(Direction facing) {

@@ -1,0 +1,5 @@
+newmtl roof
+map_Kd railward:block/train/parts/train_roof_light_blue
+newmtl interior
+map_Kd railward:block/train/parts/train_roof_interior
+
