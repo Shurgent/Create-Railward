@@ -7,7 +7,6 @@ import com.simibubi.create.content.decoration.steamWhistle.WhistleBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -16,14 +15,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import ua.pp.shurgent.railward.client.sound.ModernWhistleLoopSound;
+import ua.pp.shurgent.railward.client.sound.ModernWhistleBlockEntityAudio;
 
 public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 
 	private boolean wasPowered;
 	private ModernWhistleSoundType activeSoundType;
 	private int loopStartDelay = -1;
-	private ModernWhistleLoopSound soundInstance;
 
 	public ModernWhistleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -108,27 +106,11 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 			return;
 		}
 
-		ensureLoop(soundType);
-		if (soundInstance != null)
-			soundInstance.keepAlive();
-	}
-
-	private void ensureLoop(ModernWhistleSoundType soundType) {
-		if (soundInstance != null && !soundInstance.isStopped()) {
-			if (soundInstance.getSoundType() == soundType)
-				return;
-			soundInstance.stopLoop();
-		}
-
-		soundInstance = new ModernWhistleLoopSound(soundType, worldPosition);
-		Minecraft.getInstance().getSoundManager().play(soundInstance);
+		ModernWhistleBlockEntityAudio.keepLoopAlive(this, soundType);
 	}
 
 	private void stopLoop() {
-		if (soundInstance == null)
-			return;
-		soundInstance.stopLoop();
-		soundInstance = null;
+		ModernWhistleBlockEntityAudio.stopLoop(this);
 	}
 
 	private void playOneShot(SoundEvent event) {

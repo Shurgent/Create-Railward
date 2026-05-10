@@ -12,7 +12,6 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +31,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionHelper;
-import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoLoopSound;
+import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoAudio;
 
 public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 
@@ -52,7 +51,6 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	private int transferVisualSequence;
 	private int lastClientTransferVisualSequence;
 	private final List<UnloadingFallingItemVisual> fallingItems = new ArrayList<>();
-	private UnloadingBulkCargoLoopSound soundInstance;
 
 	public UnloadingBunkerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -262,30 +260,15 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 
 	private void tickClientAudio() {
 		if (transferEffectTicks > 0) {
-			ensureLoop();
-			if (soundInstance != null)
-				soundInstance.keepAlive();
+			UnloadingBulkCargoAudio.keepLoopAlive(this);
 			return;
 		}
 
 		stopLoop();
 	}
 
-	private void ensureLoop() {
-		if (soundInstance != null && !soundInstance.isStopped())
-			return;
-
-		soundInstance = new UnloadingBulkCargoLoopSound(worldPosition);
-		Minecraft.getInstance()
-			.getSoundManager()
-			.play(soundInstance);
-	}
-
 	private void stopLoop() {
-		if (soundInstance == null)
-			return;
-		soundInstance.stopLoop();
-		soundInstance = null;
+		UnloadingBulkCargoAudio.stopLoop(this);
 	}
 
 	@Override

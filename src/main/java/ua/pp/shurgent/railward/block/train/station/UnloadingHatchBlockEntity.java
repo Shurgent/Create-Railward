@@ -12,7 +12,6 @@ import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +33,7 @@ import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionHelper;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoStorage;
-import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoLoopSound;
+import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoAudio;
 
 public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 
@@ -50,7 +49,6 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 	private int transferVisualSequence;
 	private int lastClientTransferVisualSequence;
 	private final List<UnloadingFallingItemVisual> fallingItems = new ArrayList<>();
-	private UnloadingBulkCargoLoopSound soundInstance;
 
 	public UnloadingHatchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -376,30 +374,15 @@ public class UnloadingHatchBlockEntity extends SmartBlockEntity {
 
 	private void tickClientAudio() {
 		if (transferEffectTicks > 0) {
-			ensureLoop();
-			if (soundInstance != null)
-				soundInstance.keepAlive();
+			UnloadingBulkCargoAudio.keepLoopAlive(this);
 			return;
 		}
 
 		stopLoop();
 	}
 
-	private void ensureLoop() {
-		if (soundInstance != null && !soundInstance.isStopped())
-			return;
-
-		soundInstance = new UnloadingBulkCargoLoopSound(worldPosition);
-		Minecraft.getInstance()
-			.getSoundManager()
-			.play(soundInstance);
-	}
-
 	private void stopLoop() {
-		if (soundInstance == null)
-			return;
-		soundInstance.stopLoop();
-		soundInstance = null;
+		UnloadingBulkCargoAudio.stopLoop(this);
 	}
 
 	@Override
