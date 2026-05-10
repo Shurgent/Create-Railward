@@ -2,8 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "I#I",
-    "#B#",
-    "I#I"
+    "#B#"
   ],
   "key": {
     "#": { "item": "create:sturdy_sheet" },
@@ -12,6 +11,6 @@
   },
   "result": {
     "item": "railward:train/parts/train_roof_light_blue",
-    "count": 4
+    "count": 3
   }
 }
