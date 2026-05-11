@@ -29,7 +29,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Inventory {
 
-	public static final int MAX_SIDE = 9;
+	public static final int MAX_SIDE = 11;
 	public static final int MAX_HEIGHT = 16;
 	public static final int STACKS_PER_BLOCK = 27;
 	private static final double TOP_INTAKE_MARGIN = .75;
