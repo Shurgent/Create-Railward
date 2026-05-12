@@ -64,6 +64,16 @@ public class WagonFrameBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void write(CompoundTag tag, boolean clientPacket) {
 		super.write(tag, clientPacket);
+		writeConfiguration(tag);
+	}
+
+	@Override
+	public void writeSafe(CompoundTag tag) {
+		super.writeSafe(tag);
+		writeConfiguration(tag);
+	}
+
+	private void writeConfiguration(CompoundTag tag) {
 		CompoundTag membersTag = new CompoundTag();
 		for (WagonFrameSide side : WagonFrameSide.values())
 			membersTag.putString(side.getSerializedName(), getMember(side).getSerializedName());

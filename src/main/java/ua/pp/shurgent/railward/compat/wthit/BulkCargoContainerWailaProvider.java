@@ -3,7 +3,6 @@ package ua.pp.shurgent.railward.compat.wthit;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.ContraptionHandlerClient;
-import com.simibubi.create.foundation.utility.Couple;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
@@ -17,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
@@ -55,6 +55,12 @@ public class BulkCargoContainerWailaProvider implements IBlockComponentProvider,
 		if (data == null)
 			return;
 
+		BulkCargoContainerBlockEntity clientContainer = getClientCargoView(contraption, data.controllerPos());
+		if (clientContainer != null) {
+			appendCargo(tooltip, clientContainer.getDisplayStack(), clientContainer.getStoredAmount());
+			return;
+		}
+
 		IItemHandler handler = BulkCargoContraptionHelper.getItemHandler(contraption, data.controllerPos());
 		if (handler == null)
 			return;
@@ -63,14 +69,30 @@ public class BulkCargoContainerWailaProvider implements IBlockComponentProvider,
 	}
 
 	private static BlockPos getLookedAtContraptionPos(AbstractContraptionEntity entity) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null)
+		Minecraft minecraft = Minecraft.getInstance();
+		LocalPlayer player = minecraft.player;
+		if (player == null || minecraft.gameMode == null)
 			return null;
 
-		Couple<Vec3> rayInputs = ContraptionHandlerClient.getRayInputs(player);
-		BlockHitResult result = ContraptionHandlerClient.rayTraceContraption(rayInputs.getFirst(), rayInputs.getSecond(),
-			entity);
+		float partialTicks = minecraft.getFrameTime();
+		Vec3 start = player.getEyePosition(partialTicks);
+		Vec3 end = start.add(player.getViewVector(partialTicks)
+			.scale(minecraft.gameMode.getPickRange()));
+		BlockHitResult result = ContraptionHandlerClient.rayTraceContraption(start, end, entity);
 		return result == null ? null : result.getBlockPos();
+	}
+
+	private static BulkCargoContainerBlockEntity getClientCargoView(Contraption contraption, BlockPos controllerPos) {
+		BlockEntity controllerBlockEntity = contraption.presentBlockEntities.get(controllerPos);
+		if (controllerBlockEntity instanceof BulkCargoContainerBlockEntity container && container.hasClientCargoView())
+			return container;
+
+		for (BlockEntity blockEntity : contraption.presentBlockEntities.values())
+			if (blockEntity instanceof BulkCargoContainerBlockEntity container && container.hasClientCargoView()
+				&& controllerPos.equals(container.getController()))
+				return container;
+
+		return null;
 	}
 
 	private static void appendCargo(ITooltip tooltip, ItemStack displayStack, int amount) {
