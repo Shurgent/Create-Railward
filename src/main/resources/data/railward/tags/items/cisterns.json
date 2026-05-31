@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "railward:train/parts/cistern",
+    "railward:train/parts/cistern_blue",
+    "railward:train/parts/cistern_light_blue",
+    "railward:train/parts/cistern_black",
+    "railward:train/parts/cistern_light_gray",
+    "railward:train/parts/cistern_yellow",
+    "railward:train/parts/cistern_orange"
+  ]
+}

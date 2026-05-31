@@ -17,7 +17,7 @@ public class UnloadingBulkCargoAudio {
 			LOOPS.put(blockEntity, soundInstance);
 			Minecraft.getInstance()
 				.getSoundManager()
-				.play(soundInstance);
+				.queueTickingSound(soundInstance);
 		}
 		soundInstance.keepAlive();
 	}

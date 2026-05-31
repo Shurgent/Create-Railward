@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:cisterns"
+  },
+  "result": "railward:train/parts/cistern_blue",
+  "count": 1
+}

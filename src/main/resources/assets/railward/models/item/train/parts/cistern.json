@@ -1,0 +1,29 @@
+{
+  "parent": "builtin/entity",
+  "gui_light": "side",
+  "textures": {
+    "particle": "railward:block/train/parts/cistern"
+  },
+  "display": {
+    "fixed": {
+      "rotation": [0, 90, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.75, 0.75, 0.75]
+    },
+    "thirdperson": {
+      "rotation": [10, -45, 170],
+      "translation": [0, 1.5, -2.75],
+      "scale": [0.45, 0.45, 0.45]
+    },
+    "firstperson": {
+      "rotation": [0, -45, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.72, 0.72, 0.72]
+    }
+  }
+}

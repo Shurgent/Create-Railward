@@ -53,7 +53,12 @@ public class AllPartialModels {
 	WAGON_FRAME_HAND_BRAKE_VALVE = block("train/parts/wagon_frame_hand_brake_valve"),
 
 	// Train Coupler
-	TRAIN_COUPLER = block("train/parts/train_coupler")
+	TRAIN_COUPLER = block("train/parts/train_coupler"),
+
+	// Fluid Loading
+	CISTERN_HATCH_LID = block("train/station/cistern_hatch_lid"),
+	FLUID_TERMINAL_HOSE_UPPER = block("train/station/fluid_terminal_hose_upper"),
+	FLUID_TERMINAL_HOSE_LOWER = block("train/station/fluid_terminal_hose_lower")
 
 	;
 

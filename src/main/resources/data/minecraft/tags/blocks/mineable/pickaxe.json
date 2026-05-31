@@ -4,6 +4,13 @@
     "railward:train/parts/bulk_cargo_container",
     "railward:train/parts/bulk_cargo_container_blue",
     "railward:train/parts/bulk_cargo_container_light_blue",
+    "railward:train/parts/cistern",
+    "railward:train/parts/cistern_blue",
+    "railward:train/parts/cistern_light_blue",
+    "railward:train/parts/cistern_black",
+    "railward:train/parts/cistern_light_gray",
+    "railward:train/parts/cistern_yellow",
+    "railward:train/parts/cistern_orange",
     "railward:train/parts/modern_whistle",
     "railward:train/parts/train_buffer",
     "railward:train/parts/train_coupler",
@@ -151,6 +158,8 @@
     "railward:train/parts/wagon_frame",
     "railward:train/signal/modern_signal",
     "railward:train/signal/modern_signal_ground",
+    "railward:train/station/cistern_hatch",
+    "railward:train/station/fluid_terminal",
     "railward:train/station/unloading_bunker",
     "railward:train/station/unloading_hatch"
   ]

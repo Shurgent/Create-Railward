@@ -1,0 +1,60 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/station/fluid_terminal",
+		"metal": "railward:block/train/station/fluid_terminal",
+		"hose": "railward:block/train/station/fluid_hose"
+	},
+	"elements": [
+		{
+			"name": "casing",
+			"from": [0, 5, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 8, 8, 13.5], "texture": "#metal"},
+				"east": {"uv": [0, 8, 8, 13.5], "texture": "#metal"},
+				"south": {"uv": [0, 8, 8, 13.5], "texture": "#metal"},
+				"west": {"uv": [0, 8, 8, 13.5], "texture": "#metal"},
+				"up": {"uv": [8, 8, 0, 0], "texture": "#metal"},
+				"down": {"uv": [16, 0, 8, 8], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "bottom_socket",
+			"from": [4, 0, 4],
+			"to": [12, 5, 12],
+			"faces": {
+				"north": {"uv": [12, 8, 16, 10.5], "texture": "#metal"},
+				"east": {"uv": [12, 8, 16, 10.5], "texture": "#metal"},
+				"south": {"uv": [12, 8, 16, 10.5], "texture": "#metal"},
+				"west": {"uv": [12, 8, 16, 10.5], "texture": "#metal"},
+				"down": {"uv": [8, 8, 12, 12], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "hose_shadow",
+			"from": [6, -0.1, 6],
+			"to": [10, 0.9, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -0.1, 0]},
+			"faces": {
+				"down": {"uv": [0, 0, 4, 4], "texture": "#hose"}
+			}
+		},
+		{
+			"name": "top_pipe",
+			"from": [5, 16, 5],
+			"to": [11, 17, 11],
+			"faces": {
+				"north": {"uv": [8.5, 8, 11.5, 8.5], "texture": "#metal"},
+				"east": {"uv": [8.5, 8, 11.5, 8.5], "texture": "#metal"},
+				"south": {"uv": [8.5, 8, 11.5, 8.5], "texture": "#metal"},
+				"west": {"uv": [8.5, 8, 11.5, 8.5], "texture": "#metal"},
+				"up": {"uv": [8.5, 8.5, 11.5, 11.5], "texture": "#metal"}
+			}
+		}
+	]
+}

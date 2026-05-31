@@ -108,7 +108,8 @@ public class ModernWhistleTrainAudio {
 		if (minecraft == null || minecraft.getSoundManager() == null)
 			return;
 
-		minecraft.getSoundManager().play(new MovingTrainOneShotSound(soundEvent, carriageEntity, volume, pitch));
+		minecraft.getSoundManager()
+			.queueTickingSound(new MovingTrainOneShotSound(soundEvent, carriageEntity, volume, pitch));
 	}
 
 	public static void playDelayedTrainSound(CarriageContraptionEntity carriageEntity, SoundEvent soundEvent,
@@ -370,7 +371,9 @@ public class ModernWhistleTrainAudio {
 				}
 
 				loopSound = new ManualTrainLoopSound(soundType, carriageEntity, 1f, 1f);
-				Minecraft.getInstance().getSoundManager().play(loopSound);
+				Minecraft.getInstance()
+					.getSoundManager()
+					.queueTickingSound(loopSound);
 				loopStarted = true;
 			}
 

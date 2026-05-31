@@ -11,11 +11,17 @@ import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
+import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
+import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.BulkCargoContainerRenderer;
+import ua.pp.shurgent.railward.client.renderer.CisternHatchRenderer;
+import ua.pp.shurgent.railward.client.renderer.CisternRenderer;
+import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardSlidingDoorRenderer;
@@ -73,6 +79,26 @@ public class AllBlockEntities {
 			.validBlocks(AllBlocks.BULK_CARGO_CONTAINER, AllBlocks.BULK_CARGO_CONTAINER_BLUE,
 				AllBlocks.BULK_CARGO_CONTAINER_LIGHT_BLUE)
 			.renderer(() -> BulkCargoContainerRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<CisternBlockEntity> CISTERN = REGISTRATE
+			.blockEntity("train/parts/cistern", CisternBlockEntity::new)
+			.validBlocks(AllBlocks.CISTERN, AllBlocks.CISTERN_BLUE, AllBlocks.CISTERN_LIGHT_BLUE,
+				AllBlocks.CISTERN_BLACK, AllBlocks.CISTERN_LIGHT_GRAY, AllBlocks.CISTERN_YELLOW,
+				AllBlocks.CISTERN_ORANGE)
+			.renderer(() -> CisternRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<CisternHatchBlockEntity> CISTERN_HATCH = REGISTRATE
+			.blockEntity("train/station/cistern_hatch", CisternHatchBlockEntity::new)
+			.validBlocks(AllBlocks.CISTERN_HATCH)
+			.renderer(() -> CisternHatchRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<FluidTerminalBlockEntity> FLUID_TERMINAL = REGISTRATE
+			.blockEntity("train/station/fluid_terminal", FluidTerminalBlockEntity::new)
+			.validBlocks(AllBlocks.FLUID_TERMINAL)
+			.renderer(() -> FluidTerminalRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<UnloadingHatchBlockEntity> UNLOADING_HATCH = REGISTRATE

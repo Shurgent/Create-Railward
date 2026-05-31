@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "railward:block/train/parts/cistern_orange"
+    },
+    "axis=z": {
+      "model": "railward:block/train/parts/cistern_orange"
+    }
+  }
+}

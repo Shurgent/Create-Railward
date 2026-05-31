@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/cistern",
+  "textures": {
+    "particle": "railward:block/train/parts/cistern_blue"
+  }
+}

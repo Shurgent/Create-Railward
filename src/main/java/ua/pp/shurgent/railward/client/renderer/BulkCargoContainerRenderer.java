@@ -46,11 +46,11 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	private static final Map<ResourceLocation, Integer> AVERAGE_COLOR_CACHE = new HashMap<>();
 
 	private static final Decoration[] BLOCK_DECORATIONS = {
-		new Decoration(.20f, .23f, .37f, 13),
-		new Decoration(.67f, .25f, .39f, -21),
-		new Decoration(.43f, .54f, .35f, 43),
-		new Decoration(.79f, .73f, .35f, 78),
-		new Decoration(.18f, .80f, .38f, -52)
+		new Decoration(.20f, .23f, .37f, 13, 7, -5),
+		new Decoration(.67f, .25f, .39f, -21, -6, 8),
+		new Decoration(.43f, .54f, .35f, 43, 10, 4),
+		new Decoration(.79f, .73f, .35f, 78, -8, -7),
+		new Decoration(.18f, .80f, .38f, -52, 5, 11)
 	};
 	private static final Decoration[] ITEM_DECORATIONS = {
 		new Decoration(.17f, .18f, .41f, 40),
@@ -186,8 +186,10 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 				ms.pushPose();
 				ms.translate(x, y + DECORATION_LIFT, z);
 				ms.mulPose(Vector3f.YP.rotationDegrees(decoration.yaw()));
+				ms.mulPose(Vector3f.XP.rotationDegrees(decoration.pitch()));
+				ms.mulPose(Vector3f.ZP.rotationDegrees(decoration.roll()));
 				ms.scale(size, size, size);
-				renderTexturedCube(ms.last(), vb, sprite, WHITE, light, decoration.yaw(), shades);
+				renderTexturedCube(ms.last(), vb, sprite, WHITE, light, decoration, shades);
 				ms.popPose();
 			}
 		});
@@ -228,22 +230,31 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	}
 
 	private void renderTexturedCube(PoseStack.Pose pose, VertexConsumer vb, TextureAtlasSprite sprite, int color,
-		int light, float yaw, FaceShades shades) {
+		int light, Decoration decoration, FaceShades shades) {
 		float min = -.5f;
 		float max = .5f;
 		float top = 1;
-		quad(pose, vb, sprite, shadeColor(color, shades.up()), light, min, top, max, max, top, max, max, top,
-			min, min, top, min, 0, 1, 0);
-		quad(pose, vb, sprite, shadeColor(color, shades.down()), light, min, 0, min, max, 0, min, max, 0, max,
-			min, 0, max, 0, -1, 0);
-		quad(pose, vb, sprite, shadeColor(color, horizontalShade(0, -1, yaw, shades)), light, max, 0, min, min,
-			0, min, min, top, min, max, top, min, 0, 0, -1);
-		quad(pose, vb, sprite, shadeColor(color, horizontalShade(0, 1, yaw, shades)), light, min, 0, max, max,
-			0, max, max, top, max, min, top, max, 0, 0, 1);
-		quad(pose, vb, sprite, shadeColor(color, horizontalShade(-1, 0, yaw, shades)), light, min, 0, min, min,
-			0, max, min, top, max, min, top, min, -1, 0, 0);
-		quad(pose, vb, sprite, shadeColor(color, horizontalShade(1, 0, yaw, shades)), light, max, 0, max, max,
-			0, min, max, top, min, max, top, max, 1, 0, 0);
+		float rollRadians = (float) Math.toRadians(decoration.roll());
+		float rollCos = Mth.cos(rollRadians);
+		float rollSin = Mth.sin(rollRadians);
+		float pitchRadians = (float) Math.toRadians(decoration.pitch());
+		float pitchCos = Mth.cos(pitchRadians);
+		float pitchSin = Mth.sin(pitchRadians);
+		float yawRadians = (float) Math.toRadians(decoration.yaw());
+		float yawCos = Mth.cos(yawRadians);
+		float yawSin = Mth.sin(yawRadians);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(0, 1, 0, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, min, top, max, max, top, max, max, top, min, min, top, min, 0, 1, 0);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(0, -1, 0, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, min, 0, min, max, 0, min, max, 0, max, min, 0, max, 0, -1, 0);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(0, 0, -1, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, max, 0, min, min, 0, min, min, top, min, max, top, min, 0, 0, -1);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(0, 0, 1, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, min, 0, max, max, 0, max, max, top, max, min, top, max, 0, 0, 1);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(-1, 0, 0, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, min, 0, min, min, 0, max, min, top, max, min, top, min, -1, 0, 0);
+		quad(pose, vb, sprite, shadeColor(color, faceShade(1, 0, 0, shades, rollCos, rollSin, pitchCos, pitchSin,
+			yawCos, yawSin)), light, max, 0, max, max, 0, min, max, top, min, max, top, max, 1, 0, 0);
 	}
 
 	private void renderFlatItemSprite(PoseStack.Pose pose, VertexConsumer vb, TextureAtlasSprite sprite, int light) {
@@ -385,20 +396,24 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 			level.getShade(Direction.WEST, true), level.getShade(Direction.EAST, true));
 	}
 
-	private float horizontalShade(float x, float z, float yaw, FaceShades shades) {
-		float radians = (float) Math.toRadians(yaw);
-		float cos = Mth.cos(radians);
-		float sin = Mth.sin(radians);
-		float rotatedX = x * cos + z * sin;
-		float rotatedZ = z * cos - x * sin;
-		float xWeight = Math.abs(rotatedX);
-		float zWeight = Math.abs(rotatedZ);
-		float weight = xWeight + zWeight;
+	private float faceShade(float x, float y, float z, FaceShades shades, float rollCos, float rollSin,
+		float pitchCos, float pitchSin, float yawCos, float yawSin) {
+		float rolledX = x * rollCos - y * rollSin;
+		float rolledY = x * rollSin + y * rollCos;
+		float pitchedY = rolledY * pitchCos - z * pitchSin;
+		float pitchedZ = rolledY * pitchSin + z * pitchCos;
+		float yawedX = rolledX * yawCos + pitchedZ * yawSin;
+		float yawedZ = pitchedZ * yawCos - rolledX * yawSin;
+		float xWeight = Math.abs(yawedX);
+		float yWeight = Math.abs(pitchedY);
+		float zWeight = Math.abs(yawedZ);
+		float weight = xWeight + yWeight + zWeight;
 		if (weight <= 1.0E-4f)
 			return 1;
-		float xShade = rotatedX < 0 ? shades.west() : shades.east();
-		float zShade = rotatedZ < 0 ? shades.north() : shades.south();
-		return (xShade * xWeight + zShade * zWeight) / weight;
+		float xShade = yawedX < 0 ? shades.west() : shades.east();
+		float yShade = pitchedY < 0 ? shades.down() : shades.up();
+		float zShade = yawedZ < 0 ? shades.north() : shades.south();
+		return (xShade * xWeight + yShade * yWeight + zShade * zWeight) / weight;
 	}
 
 	private int shadeColor(int color, float shade) {
@@ -442,7 +457,10 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		return be.isController() || be.hasClientCargoView();
 	}
 
-	private record Decoration(float x, float z, float size, float yaw) {
+	private record Decoration(float x, float z, float size, float yaw, float pitch, float roll) {
+		Decoration(float x, float z, float size, float yaw) {
+			this(x, z, size, yaw, 0, 0);
+		}
 	}
 
 	private record FaceShades(float down, float up, float north, float south, float west, float east) {

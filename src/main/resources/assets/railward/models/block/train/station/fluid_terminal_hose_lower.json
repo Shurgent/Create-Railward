@@ -1,0 +1,36 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "railward:block/train/station/fluid_hose",
+		"hose": "railward:block/train/station/fluid_hose"
+	},
+	"elements": [
+		{
+			"name": "lower_hose",
+			"from": [6, 0, 6],
+			"to": [10, 16, 10],
+			"faces": {
+				"north": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"east": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"south": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"west": {"uv": [0, 0, 5, 16], "texture": "#hose"}
+			}
+		},
+		{
+			"name": "nozzle",
+			"from": [5, -2, 5],
+			"to": [11, 0, 11],
+			"faces": {
+				"north": {"uv": [9, 12, 15, 14], "texture": "#hose"},
+				"east": {"uv": [9, 12, 15, 14], "texture": "#hose"},
+				"south": {"uv": [9, 12, 15, 14], "texture": "#hose"},
+				"west": {"uv": [9, 12, 15, 14], "texture": "#hose"},
+				"up": {"uv": [9, 6, 15, 12], "texture": "#hose"},
+				"down": {"uv": [9, 0, 15, 6], "texture": "#hose"}
+			}
+		}
+	]
+}

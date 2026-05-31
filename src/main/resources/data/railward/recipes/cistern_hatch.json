@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "IPI",
+    " A "
+  ],
+  "key": {
+    "S": { "item": "create:sturdy_sheet" },
+    "I": { "item": "create:iron_sheet" },
+    "P": { "item": "create:fluid_pipe" },
+    "A": { "item": "create:andesite_alloy" }
+  },
+  "result": {
+    "item": "railward:train/station/cistern_hatch"
+  }
+}

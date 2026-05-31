@@ -25,7 +25,7 @@ public class ModernWhistleBlockEntityAudio {
 		LOOPS.put(blockEntity, soundInstance);
 		Minecraft.getInstance()
 			.getSoundManager()
-			.play(soundInstance);
+			.queueTickingSound(soundInstance);
 	}
 
 	public static void stopLoop(ModernWhistleBlockEntity blockEntity) {

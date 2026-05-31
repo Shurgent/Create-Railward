@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I",
+    "L"
+  ],
+  "key": {
+    "I": { "item": "create:portable_fluid_interface" },
+    "L": { "item": "minecraft:dried_kelp_block" }
+  },
+  "result": {
+    "item": "railward:train/station/fluid_terminal"
+  }
+}

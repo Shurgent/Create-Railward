@@ -1,0 +1,129 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "railward:block/train/station/cistern_hatch",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/station/cistern_hatch",
+		"metal": "railward:block/train/station/cistern_hatch"
+	},
+	"elements": [
+		{
+			"name": "lower_skirt",
+			"from": [1, -1, 1],
+			"to": [15, 0, 15],
+			"faces": {
+				"north": {"uv": [0, 14.5, 7, 15], "texture": "#metal"},
+				"east": {"uv": [0, 14.5, 7, 15], "texture": "#metal"},
+				"south": {"uv": [0, 14.5, 7, 15], "texture": "#metal"},
+				"west": {"uv": [0, 14.5, 7, 15], "texture": "#metal"},
+				"down": {"uv": [0, 7, 7, 14], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "base_plate",
+			"from": [1, 0, 1],
+			"to": [15, 1, 15],
+			"faces": {
+				"north": {"uv": [0, 14, 7, 14.5], "texture": "#metal"},
+				"east": {"uv": [0, 14, 7, 14.5], "texture": "#metal"},
+				"south": {"uv": [0, 14, 7, 14.5], "texture": "#metal"},
+				"west": {"uv": [0, 14, 7, 14.5], "texture": "#metal"},
+				"up": {"uv": [0, 0, 7, 7], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "north_rim",
+			"from": [2, 1, 2],
+			"to": [14, 4, 4],
+			"faces": {
+				"north": {"uv": [0.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"east": {"uv": [5.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"south": {"uv": [0.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"west": {"uv": [0.5, 0.5, 1.5, 2], "texture": "#metal"},
+				"up": {"uv": [0.5, 0, 6.5, 1], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "south_rim",
+			"from": [2, 1, 12],
+			"to": [14, 4, 14],
+			"faces": {
+				"north": {"uv": [0.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"east": {"uv": [0.5, 0.5, 1.5, 2], "texture": "#metal"},
+				"south": {"uv": [0.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"west": {"uv": [5.5, 0.5, 6.5, 2], "texture": "#metal"},
+				"up": {"uv": [0.5, 13, 6.5, 14], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "west_rim",
+			"from": [2, 1, 4],
+			"to": [4, 4, 12],
+			"faces": {
+				"east": {"uv": [2, 0.5, 6, 2], "texture": "#metal"},
+				"west": {"uv": [2, 0.5, 6, 2], "texture": "#metal"},
+				"up": {"uv": [0, 1.5, 1, 5.5], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "east_rim",
+			"from": [12, 1, 4],
+			"to": [14, 4, 12],
+			"faces": {
+				"east": {"uv": [2, 0.5, 6, 2], "texture": "#metal"},
+				"west": {"uv": [2, 0.5, 6, 2], "texture": "#metal"},
+				"up": {"uv": [6, 1.5, 7, 5.5], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "inner_seal",
+			"from": [4, 1, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"up": {"uv": [1.5, 8.5, 5.5, 12.5], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "lid",
+			"from": [3, 3.3, 3],
+			"to": [13, 4.3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0.3, 0]},
+			"faces": {
+				"north": {"uv": [7.5, 5.5, 12.5, 6], "texture": "#metal"},
+				"east": {"uv": [7.5, 5.5, 12.5, 6], "texture": "#metal"},
+				"south": {"uv": [7.5, 5.5, 12.5, 6], "texture": "#metal"},
+				"west": {"uv": [7.5, 5.5, 12.5, 6], "texture": "#metal"},
+				"up": {"uv": [7.5, 0.5, 12.5, 5.5], "texture": "#metal"},
+				"down": {"uv": [7.5, 0.5, 12.5, 5.5], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "handle",
+			"from": [6, 4, 6],
+			"to": [10, 5, 10],
+			"faces": {
+				"north": {"uv": [9, 4, 11, 4.5], "texture": "#metal"},
+				"east": {"uv": [9, 4, 11, 4.5], "texture": "#metal"},
+				"south": {"uv": [9, 4, 11, 4.5], "texture": "#metal"},
+				"west": {"uv": [9, 4, 11, 4.5], "texture": "#metal"},
+				"up": {"uv": [9, 2, 11, 4], "texture": "#metal"}
+			}
+		},
+		{
+			"name": "hinge",
+			"from": [5, 3, 1.8],
+			"to": [11, 5, 3.8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, -4.2]},
+			"faces": {
+				"north": {"uv": [3.5, 6.5, 6.5, 7.5], "texture": "#metal"},
+				"east": {"uv": [9.5, 2.5, 10.5, 3.5], "texture": "#metal"},
+				"south": {"uv": [0.5, 6.5, 3.5, 7.5], "texture": "#metal"},
+				"west": {"uv": [9.5, 2.5, 10.5, 3.5], "texture": "#metal"},
+				"up": {"uv": [3.5, 7.5, 0.5, 6.5], "texture": "#metal"},
+				"down": {"uv": [6.5, 6.5, 3.5, 7.5], "texture": "#metal"}
+			}
+		}
+	]
+}

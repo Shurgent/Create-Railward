@@ -1,0 +1,24 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "railward:block/train/station/fluid_hose",
+		"hose": "railward:block/train/station/fluid_hose"
+	},
+	"elements": [
+		{
+			"name": "upper_hose",
+			"from": [6, 0, 6],
+			"to": [10, 16, 10],
+			"faces": {
+				"north": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"east": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"south": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"west": {"uv": [0, 0, 5, 16], "texture": "#hose"},
+				"down": {"uv": [5, 0, 9, 4], "texture": "#hose"}
+			}
+		}
+	]
+}

@@ -29,6 +29,8 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ModelFile;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
+import ua.pp.shurgent.railward.block.train.parts.CisternBlock;
+import ua.pp.shurgent.railward.block.train.parts.CisternBlockItem;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
@@ -40,6 +42,9 @@ import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
+import ua.pp.shurgent.railward.block.train.station.CisternHatchBlock;
+import ua.pp.shurgent.railward.block.train.station.CisternHatchMovement;
+import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchMovement;
@@ -503,6 +508,37 @@ public class AllBlocks {
 	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER_LIGHT_BLUE =
 			bulkCargoContainer("bulk_cargo_container_light_blue");
 
+	public static final BlockEntry<CisternBlock> CISTERN = cistern("cistern");
+	public static final BlockEntry<CisternBlock> CISTERN_BLUE = cistern("cistern_blue");
+	public static final BlockEntry<CisternBlock> CISTERN_LIGHT_BLUE = cistern("cistern_light_blue");
+	public static final BlockEntry<CisternBlock> CISTERN_BLACK = cistern("cistern_black");
+	public static final BlockEntry<CisternBlock> CISTERN_LIGHT_GRAY = cistern("cistern_light_gray");
+	public static final BlockEntry<CisternBlock> CISTERN_YELLOW = cistern("cistern_yellow");
+	public static final BlockEntry<CisternBlock> CISTERN_ORANGE = cistern("cistern_orange");
+
+	public static final BlockEntry<CisternHatchBlock> CISTERN_HATCH = REGISTRATE
+			.block("train/station/cistern_hatch", CisternHatchBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops()
+				.isRedstoneConductor((state, level, pos) -> false)
+				.isSuffocating((state, level, pos) -> false)
+				.isViewBlocking((state, level, pos) -> false))
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(movementBehaviour(new CisternHatchMovement()))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<FluidTerminalBlock> FLUID_TERMINAL = REGISTRATE
+			.block("train/station/fluid_terminal", FluidTerminalBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops()
+				.isRedstoneConductor((state, level, pos) -> false)
+				.isSuffocating((state, level, pos) -> false)
+				.isViewBlocking((state, level, pos) -> false))
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
 	public static final BlockEntry<UnloadingHatchBlock> UNLOADING_HATCH = REGISTRATE
 			.block("train/station/unloading_hatch", UnloadingHatchBlock::new)
 			.initialProperties(() -> Blocks.IRON_BLOCK)
@@ -649,6 +685,19 @@ public class AllBlocks {
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 				.onRegister(interactionBehaviour(new BulkCargoContainerInteractionBehaviour()))
 				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.transform(customItemModel()).register();
+	}
+
+	private static BlockEntry<CisternBlock> cistern(String name) {
+		return REGISTRATE.block("train/parts/" + name, CisternBlock::new)
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.properties(p -> p.noOcclusion()
+					.requiresCorrectToolForDrops()
+					.isRedstoneConductor((state, level, pos) -> false)
+					.isSuffocating((state, level, pos) -> false)
+					.isViewBlocking((state, level, pos) -> false))
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.item((block, properties) -> new CisternBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.transform(customItemModel()).register();
 	}
 

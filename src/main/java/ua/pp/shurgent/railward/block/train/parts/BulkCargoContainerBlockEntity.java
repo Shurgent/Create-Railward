@@ -4,15 +4,20 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.LangBuilder;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -26,8 +31,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import ua.pp.shurgent.railward.Railward;
 
-public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Inventory {
+public class BulkCargoContainerBlockEntity extends SmartBlockEntity
+	implements IHaveGoggleInformation, IMultiBlockEntityContainer.Inventory {
 
 	public static final int MAX_SIDE = 11;
 	public static final int MAX_HEIGHT = 16;
@@ -236,6 +243,44 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity implements I
 		if (isVirtualCargoView())
 			return clientCapacity;
 		return BulkCargoStorage.getCapacityItems(inventory, getDisplayStack());
+	}
+
+	@Override
+	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		BulkCargoContainerBlockEntity tooltipSource = isVirtualCargoView() ? this : getControllerBE();
+		if (tooltipSource == null)
+			return false;
+
+		ItemStack displayStack = tooltipSource.getDisplayStack();
+		railwardLang("gui.goggles.bulk_cargo_container").forGoggles(tooltip);
+
+		LangBuilder cargoLine = Lang.builder()
+			.add(railwardLang("gui.goggles.bulk_cargo_container.cargo").style(ChatFormatting.GRAY))
+			.space();
+		if (displayStack.isEmpty())
+			cargoLine.add(railwardLang("gui.goggles.bulk_cargo_container.empty").style(ChatFormatting.DARK_GRAY));
+		else
+			cargoLine.add(Lang.itemName(displayStack).style(ChatFormatting.GRAY));
+		cargoLine.forGoggles(tooltip, 1);
+
+		Lang.builder()
+			.add(railwardLang("gui.goggles.bulk_cargo_container.amount").style(ChatFormatting.GRAY))
+			.space()
+			.add(Lang.number(tooltipSource.getStoredAmount())
+				.style(ChatFormatting.GOLD))
+			.text(ChatFormatting.GRAY, " / ")
+			.add(Lang.number(tooltipSource.getCapacityItems())
+				.style(ChatFormatting.DARK_GRAY))
+			.space()
+			.add(railwardLang("gui.goggles.bulk_cargo_container.items").style(ChatFormatting.GRAY))
+			.forGoggles(tooltip, 1);
+
+		return true;
+	}
+
+	private static LangBuilder railwardLang(String key) {
+		return Lang.builder(Railward.MOD_ID)
+			.translate(key);
 	}
 
 	private boolean isVirtualCargoView() {

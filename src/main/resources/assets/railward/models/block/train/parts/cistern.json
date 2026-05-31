@@ -1,0 +1,7 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "railward:block/train/parts/cistern"
+  },
+  "elements": []
+}

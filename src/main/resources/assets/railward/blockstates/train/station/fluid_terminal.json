@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "railward:block/train/station/fluid_terminal"
+    },
+    "facing=east": {
+      "model": "railward:block/train/station/fluid_terminal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "railward:block/train/station/fluid_terminal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "railward:block/train/station/fluid_terminal",
+      "y": 270
+    }
+  }
+}

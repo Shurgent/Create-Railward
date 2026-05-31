@@ -4,6 +4,7 @@
   "package": "ua.pp.shurgent.railward.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "railward.refmap.json",
+  "plugin": "ua.pp.shurgent.railward.mixin.RailwardMixinPlugin",
   "mixins": [
     "create.AbstractContraptionEntityMixin",
     "create.CarriageBogeyAccessor",
@@ -11,8 +12,10 @@
     "create.CarriageContraptionMixin",
     "create.ContraptionAccessor",
     "create.ContraptionMixin",
+    "create.FluidNetworkMixin",
     "create.MountedStorageAccessor",
     "create.MountedStorageManagerAccessor",
+    "create.PipeConnectionAccessor",
     "create.SlidingDoorBlockEntityAccessor",
     "create.TrainAccessor",
     "create.TrainCargoManagerAccessor"
