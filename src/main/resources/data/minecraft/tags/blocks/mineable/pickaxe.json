@@ -158,6 +158,8 @@
     "railward:train/parts/wagon_frame",
     "railward:train/signal/modern_signal",
     "railward:train/signal/modern_signal_ground",
+    "railward:train/signal/speed_sign",
+    "railward:train/signal/whistle_sign",
     "railward:train/station/cistern_hatch",
     "railward:train/station/fluid_terminal",
     "railward:train/station/unloading_bunker",

@@ -21,6 +21,8 @@ public class RailwardConfig {
 		public final ForgeConfigSpec.BooleanValue trainCouplerAutoCoupling;
 		public final ForgeConfigSpec.IntValue trainCouplerAutoScanIntervalTicks;
 		public final ForgeConfigSpec.DoubleValue trainCouplerAutoMaxSpeed;
+		public final ForgeConfigSpec.IntValue speedSignStepKmh;
+		public final ForgeConfigSpec.IntValue speedSignMaxSpeedKmh;
 
 		private Common(ForgeConfigSpec.Builder builder) {
 			builder.push("trainCoupler");
@@ -33,6 +35,15 @@ public class RailwardConfig {
 			trainCouplerAutoMaxSpeed = builder
 				.comment("Maximum train speed for automatic coupling. Default is slightly above Create's lowest train speed notch.")
 				.defineInRange("trainCouplerAutoMaxSpeed", 0.09D, 0.01D, 0.2D);
+			builder.pop();
+
+			builder.push("speedSign");
+			speedSignStepKmh = builder
+				.comment("Speed Sign speed increment in km/h. The minimum selectable speed is equal to this value.")
+				.defineInRange("speedSignStepKmh", 5, 1, 1000);
+			speedSignMaxSpeedKmh = builder
+				.comment("Maximum selectable Speed Sign speed in km/h. Values not divisible by the step are rounded down in the UI.")
+				.defineInRange("speedSignMaxSpeedKmh", 150, 1, 1000);
 			builder.pop();
 
 			builder.push("debug");

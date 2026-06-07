@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "railward:block/train/signal/speed_sign" }
+  }
+}

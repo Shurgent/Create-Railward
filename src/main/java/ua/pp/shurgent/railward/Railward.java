@@ -50,6 +50,7 @@ public class Railward {
 		RailwardSoundEvents.register(modEventBus);
 		RailwardPackets.registerPackets();
 		
+		AllEdgePointTypes.register();
 		AllBlocks.register();
 		AllBlockEntities.register();
 		

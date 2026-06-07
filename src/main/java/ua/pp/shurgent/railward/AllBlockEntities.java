@@ -7,8 +7,12 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
+import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlockEntity;
+import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
+import ua.pp.shurgent.railward.client.renderer.SpeedSignRenderer;
+import ua.pp.shurgent.railward.client.renderer.WhistleSignRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
@@ -54,6 +58,18 @@ public class AllBlockEntities {
 			.blockEntity("train/signal/modern_signal", ModernSignalBlockEntity::new)
 			.validBlocks(AllBlocks.MODERN_SIGNAL)
 			.renderer(() -> ModernSignalRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<WhistleSignBlockEntity> WHISTLE_SIGN = REGISTRATE
+			.blockEntity("train/signal/whistle_sign", WhistleSignBlockEntity::new)
+			.validBlocks(AllBlocks.WHISTLE_SIGN)
+			.renderer(() -> WhistleSignRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<SpeedSignBlockEntity> SPEED_SIGN = REGISTRATE
+			.blockEntity("train/signal/speed_sign", SpeedSignBlockEntity::new)
+			.validBlocks(AllBlocks.SPEED_SIGN)
+			.renderer(() -> SpeedSignRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<ModernWhistleBlockEntity> MODERN_WHISTLE = REGISTRATE

@@ -1,0 +1,50 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "railward:block/train/signal/whistle_sign",
+		"3": "railward:block/train/signal/whistle_sign"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [4, 0, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"north": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"east": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"south": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"west": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"up": {"uv": [16, 4, 12, 0], "texture": "#3"},
+				"down": {"uv": [16, 0, 12, 4], "texture": "#3"}
+			}
+		},
+		{
+			"name": "pole",
+			"from": [7, 2, 7],
+			"to": [9, 18, 9],
+			"faces": {
+				"north": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"east": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"south": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"west": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"up": {"uv": [16, 8, 15, 7], "texture": "#3"}
+			}
+		},
+		{
+			"name": "plate",
+			"from": [5, 16, 6],
+			"to": [11, 24, 7],
+			"faces": {
+				"north": {"uv": [3, 0, 0, 4], "texture": "#3"},
+				"east": {"uv": [6.5, 0, 6, 4], "texture": "#3"},
+				"south": {"uv": [6, 0, 3, 4], "texture": "#3"},
+				"west": {"uv": [6.5, 0, 6, 4], "texture": "#3"},
+				"up": {"uv": [0, 4.5, 3, 4], "texture": "#3"},
+				"down": {"uv": [3, 4, 6, 4.5], "texture": "#3"}
+			}
+		}
+	]
+}

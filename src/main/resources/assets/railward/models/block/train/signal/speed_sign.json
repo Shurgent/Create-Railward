@@ -1,0 +1,51 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"3": "railward:block/train/signal/speed_sign",
+		"particle": "railward:block/train/signal/speed_sign"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [4, 0, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"north": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"east": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"south": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"west": {"uv": [12, 4, 16, 5], "texture": "#3"},
+				"up": {"uv": [16, 4, 12, 0], "texture": "#3"},
+				"down": {"uv": [16, 0, 12, 4], "texture": "#3"}
+			}
+		},
+		{
+			"name": "pole",
+			"from": [7, 2, 7],
+			"to": [9, 18, 9],
+			"faces": {
+				"north": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"east": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"south": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"west": {"uv": [15, 8, 16, 16], "texture": "#3"},
+				"up": {"uv": [16, 8, 15, 7], "texture": "#3"}
+			}
+		},
+		{
+			"name": "plate",
+			"from": [0, 15, 6],
+			"to": [12, 27, 7],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 23, 6]},
+			"faces": {
+				"north": {"uv": [8, 0, 0, 8], "texture": "#3"},
+				"east": {"uv": [8, 8, 7.5, 16], "texture": "#3"},
+				"south": {"uv": [8, 8, 0, 16], "texture": "#3"},
+				"west": {"uv": [8, 8, 7.5, 16], "texture": "#3"},
+				"up": {"uv": [0, 8.5, 8, 8], "texture": "#3"},
+				"down": {"uv": [0, 8, 8, 8.5], "texture": "#3"}
+			}
+		}
+	]
+}

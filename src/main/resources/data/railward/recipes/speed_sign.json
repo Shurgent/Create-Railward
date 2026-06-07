@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S",
+    "D",
+    "A"
+  ],
+  "key": {
+    "S": { "item": "minecraft:oak_sign" },
+    "D": { "item": "minecraft:yellow_dye" },
+    "A": { "item": "create:andesite_alloy" }
+  },
+  "result": {
+    "item": "railward:train/signal/speed_sign"
+  }
+}

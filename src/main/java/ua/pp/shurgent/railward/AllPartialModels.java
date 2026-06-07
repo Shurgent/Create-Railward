@@ -33,6 +33,10 @@ public class AllPartialModels {
 	SIGNAL_GREEN_LAMP = block("train/signal/lamp_green_lamp"),
 	SIGNAL_GREEN_GLOW = block("train/signal/lamp_green_glow"),
 
+	// Whistle Sign
+	WHISTLE_SIGN = block("train/signal/whistle_sign"),
+	SPEED_SIGN = block("train/signal/speed_sign"),
+
 	// Modern Whistle
 	MODERN_WHISTLE_BASE = block("train/parts/modern_whistle_base"),
 	MODERN_WHISTLE_HORN_1 = block("train/parts/modern_whistle_horn_1"),

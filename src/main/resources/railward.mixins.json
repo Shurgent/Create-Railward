@@ -17,6 +17,7 @@
     "create.MountedStorageManagerAccessor",
     "create.PipeConnectionAccessor",
     "create.SlidingDoorBlockEntityAccessor",
+    "create.TrainMixin",
     "create.TrainAccessor",
     "create.TrainCargoManagerAccessor"
   ],

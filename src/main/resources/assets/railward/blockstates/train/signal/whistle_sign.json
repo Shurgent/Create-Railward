@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "railward:block/train/signal/whistle_sign" }
+  }
+}

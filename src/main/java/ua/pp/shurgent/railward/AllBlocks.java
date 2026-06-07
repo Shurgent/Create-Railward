@@ -12,6 +12,7 @@ import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorMovementBehaviour;
+import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
@@ -51,6 +52,8 @@ import ua.pp.shurgent.railward.block.train.station.UnloadingHatchMovement;
 import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
+import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlock;
+import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
 
 public class AllBlocks {
 
@@ -569,6 +572,26 @@ public class AllBlocks {
 			.properties(p -> p.noOcclusion()).addLayer(() -> RenderType::translucent)
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<WhistleSignBlock> WHISTLE_SIGN = REGISTRATE
+			.block("train/signal/whistle_sign", WhistleSignBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.addLayer(() -> RenderType::cutout)
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new TrackTargetingBlockItem(block,
+				properties.tab(Railward.RAILWARD_TAB), AllEdgePointTypes.WHISTLE_SIGN))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<SpeedSignBlock> SPEED_SIGN = REGISTRATE
+			.block("train/signal/speed_sign", SpeedSignBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.addLayer(() -> RenderType::cutout)
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new TrackTargetingBlockItem(block,
+				properties.tab(Railward.RAILWARD_TAB), AllEdgePointTypes.SPEED_SIGN))
 			.transform(customItemModel()).register();
 
 	public static void register() {
