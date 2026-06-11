@@ -1,0 +1,26 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Drawbar partial for TrainCouplerBlock",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "railward:block/train/parts/train_coupler",
+		"particle": "railward:block/train/parts/train_coupler"
+	},
+	"elements": [
+		{
+			"name": "drawbar",
+			"from": [7, 7, 2],
+			"to": [9, 9, 9],
+			"faces": {
+				"north": {"uv": [12, 2, 13, 3], "texture": "#0"},
+				"east": {"uv": [10.5, 1, 14, 2], "texture": "#0"},
+				"south": {"uv": [13, 2, 14, 3], "texture": "#0"},
+				"west": {"uv": [10.5, 0, 14, 1], "texture": "#0"},
+				"up": {"uv": [15, 3.5, 14, 0], "texture": "#0"},
+				"down": {"uv": [16, 0, 15, 3.5], "texture": "#0"}
+			}
+		}
+	]
+}

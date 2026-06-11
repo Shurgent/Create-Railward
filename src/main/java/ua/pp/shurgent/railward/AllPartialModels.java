@@ -58,6 +58,10 @@ public class AllPartialModels {
 
 	// Train Coupler
 	TRAIN_COUPLER = block("train/parts/train_coupler"),
+	TRAIN_COUPLER_STATIC = block("train/parts/train_coupler_static"),
+	TRAIN_COUPLER_DRAWBAR = block("train/parts/train_coupler_drawbar"),
+	TRAIN_COUPLER_HEAD = block("train/parts/train_coupler_head"),
+	TRAIN_COUPLER_LEVER_DYNAMIC = block("train/parts/train_coupler_lever_dynamic"),
 
 	// Fluid Loading
 	CISTERN_HATCH_LID = block("train/station/cistern_hatch_lid"),

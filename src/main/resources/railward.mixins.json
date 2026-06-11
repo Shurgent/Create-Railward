@@ -23,7 +23,8 @@
   ],
   "client": [
     "create.client.ArrivalSoundQueueMixin",
-    "create.client.CarriageSoundsMixin"
+    "create.client.CarriageSoundsMixin",
+    "create.client.ContraptionRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,27 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Moving lever partial for TrainCouplerBlock",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "railward:block/train/parts/train_coupler",
+		"particle": "railward:block/train/parts/train_coupler"
+	},
+	"elements": [
+		{
+			"name": "lever",
+			"from": [8, 13, 0.5],
+			"to": [9, 14, 10.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0.3, 0]},
+			"faces": {
+				"north": {"uv": [5, 12, 5.5, 12.5], "texture": "#0"},
+				"east": {"uv": [0, 12, 5, 12.5], "texture": "#0"},
+				"south": {"uv": [5.5, 12, 6, 12.5], "texture": "#0"},
+				"west": {"uv": [0, 12.5, 5, 13], "texture": "#0"},
+				"up": {"uv": [10, 12.5, 5, 12], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [10, 12.5, 5, 13], "rotation": 90, "texture": "#0"}
+			}
+		}
+	]
+}
