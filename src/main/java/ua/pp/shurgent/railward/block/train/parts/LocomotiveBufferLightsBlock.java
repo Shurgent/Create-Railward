@@ -12,10 +12,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
@@ -74,15 +72,6 @@ public class LocomotiveBufferLightsBlock extends HorizontalDirectionalBlock
 		BlockState supportState = level.getBlockState(supportPos);
 		return !supportState.getMaterial()
 			.isReplaceable();
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-		LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-		if (direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos))
-			return Blocks.AIR.defaultBlockState();
-		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
 	}
 
 	@Override
