@@ -21,7 +21,7 @@ public class CarriageContraptionEntityMixin {
 		CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValueZ())
 			LocomotiveBufferLightsTrainState.syncManualControls((CarriageContraptionEntity) (Object) this,
-				controlsLocalPos);
+				controlsLocalPos, player);
 	}
 
 	@Inject(method = "control", at = @At("RETURN"), remap = false)
@@ -36,6 +36,6 @@ public class CarriageContraptionEntityMixin {
 		if (cir.getReturnValueZ() && entity.getControllingPlayer()
 			.filter(player.getUUID()::equals)
 			.isPresent())
-			LocomotiveBufferLightsTrainState.syncManualControls(entity, controlsLocalPos);
+			LocomotiveBufferLightsTrainState.syncManualControls(entity, controlsLocalPos, player);
 	}
 }

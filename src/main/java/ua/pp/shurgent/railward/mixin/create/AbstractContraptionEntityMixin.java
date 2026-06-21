@@ -20,7 +20,7 @@ public class AbstractContraptionEntityMixin {
 		BulkCargoContraptionCollector.tick((AbstractContraptionEntity) (Object) this);
 	}
 
-	@Inject(method = "stopControlling", at = @At("TAIL"), remap = false)
+	@Inject(method = "stopControlling", at = @At("HEAD"), remap = false)
 	private void railward$clearBufferLightsManualDirection(BlockPos controlsLocalPos, CallbackInfo ci) {
 		if ((Object) this instanceof CarriageContraptionEntity carriageEntity)
 			LocomotiveBufferLightsTrainState.clearManualControls(carriageEntity);

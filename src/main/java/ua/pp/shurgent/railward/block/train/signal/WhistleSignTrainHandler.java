@@ -33,8 +33,6 @@ public class WhistleSignTrainHandler {
 	private static boolean isNpcControlled(Train train) {
 		return train.runtime != null
 			&& train.runtime.getSchedule() != null
-			&& !train.runtime.paused
-			&& train.navigation != null
-			&& train.navigation.isActive();
+			&& !train.runtime.paused;
 	}
 }

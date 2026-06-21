@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.simibubi.create.content.contraptions.Contraption;
+import com.simibubi.create.content.trains.entity.ArrivalSoundQueue;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
@@ -139,6 +140,24 @@ public class ModernWhistleTrainAudio {
 			new MovingTrainLoopSound(soundType, carriageEntity, volume, pitch, loopDurationTicks), loopDelayTicks);
 		playDelayedTrainSound(carriageEntity, soundType.getEndEvent(), volume, pitch,
 			loopDelayTicks + loopDurationTicks);
+	}
+
+	public static boolean playWhistleSignSequence(CarriageContraptionEntity carriageEntity, float volume, float pitch) {
+		if (carriageEntity == null)
+			return false;
+
+		ModernWhistleSoundType soundType = resolveTrainLeadSoundType(carriageEntity);
+		if (soundType != null) {
+			playArrivalSequence(carriageEntity, soundType, volume, pitch);
+			return true;
+		}
+
+		WhistleCandidate candidate = findFirstWhistleCandidate(carriageEntity);
+		if (candidate == null)
+			return false;
+
+		ArrivalSoundQueue.play(carriageEntity, candidate.blockInfo);
+		return true;
 	}
 
 	@Nullable
