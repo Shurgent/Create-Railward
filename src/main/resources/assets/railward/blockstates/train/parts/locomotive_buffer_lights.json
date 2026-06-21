@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "railward:block/train/parts/locomotive_buffer_lights_1_inventory" }
+  }
+}

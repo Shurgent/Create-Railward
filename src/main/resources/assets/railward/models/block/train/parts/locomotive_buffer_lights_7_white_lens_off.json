@@ -1,0 +1,85 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench by Shurgent",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [
+		32,
+		32
+	],
+	"textures": {
+		"0": "railward:block/train/parts/locomotive_buffer_lights",
+		"particle": "railward:block/train/parts/locomotive_buffer_lights"
+	},
+	"elements": [
+		{
+			"name": "white_lens_off",
+			"from": [
+				4,
+				6,
+				14.5
+			],
+			"to": [
+				8,
+				10,
+				15.5
+			],
+			"rotation": {
+				"angle": 0,
+				"axis": "y",
+				"origin": [
+					4,
+					6,
+					13.5
+				]
+			},
+			"faces": {
+				"north": {
+					"uv": [
+						0.5,
+						8,
+						2.5,
+						10
+					],
+					"texture": "#0"
+				},
+				"east": {
+					"uv": [
+						0,
+						8,
+						0.5,
+						10
+					],
+					"texture": "#0"
+				},
+				"west": {
+					"uv": [
+						0,
+						8,
+						0.5,
+						10
+					],
+					"texture": "#0"
+				},
+				"up": {
+					"uv": [
+						2.5,
+						8,
+						0.5,
+						7.5
+					],
+					"texture": "#0"
+				},
+				"down": {
+					"uv": [
+						2.5,
+						7.5,
+						0.5,
+						8
+					],
+					"texture": "#0"
+				}
+			}
+		}
+	]
+}

@@ -32,6 +32,7 @@ import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
@@ -60,6 +61,7 @@ public class AllBlocks {
 	static final String PATH_TRAINPARTS = "block/train/parts/";
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainDoorBlock>> HINGED_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainDoorBlock>> SLIDING_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final DyeColor[] TRAIN_DOOR_SOLID_COLORS = {
@@ -471,6 +473,15 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
+	public static final BlockEntry<LocomotiveBufferLightsBlock> LOCOMOTIVE_BUFFER_LIGHTS = REGISTRATE
+			.block("train/parts/locomotive_buffer_lights", LocomotiveBufferLightsBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::translucent)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
 	public static final BlockEntry<TrainBufferBlock> TRAIN_BUFFER = REGISTRATE
 			.block("train/parts/train_buffer", TrainBufferBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops().noOcclusion())
@@ -607,6 +618,42 @@ public class AllBlocks {
 				.anyMatch(entry -> entry.has(state));
 	}
 
+	public static boolean isAttachableTrainWallPanelState(BlockState state) {
+		return TRAIN_WALL_PANEL_BLUE.has(state)
+				|| TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.has(state)
+				|| TRAIN_WALL_PANEL_BLUE_STRIPE_RED.has(state)
+				|| TRAIN_WALL_PANEL_GREEN.has(state)
+				|| TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW.has(state)
+				|| TRAIN_WALL_PANEL_GREEN_STRIPE_RED.has(state)
+				|| TRAIN_WALL_PANEL_LIGHT_BLUE.has(state)
+				|| TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW.has(state)
+				|| TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED.has(state)
+				|| TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.stream()
+						.anyMatch(entry -> entry.has(state));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static NonNullSupplier<? extends net.minecraft.world.level.block.Block>[] trainWallPanelBlocks() {
+		List<NonNullSupplier<? extends net.minecraft.world.level.block.Block>> blocks = new ArrayList<>();
+		blocks.add(TRAIN_WALL_PANEL_BLUE);
+		blocks.add(TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW);
+		blocks.add(TRAIN_WALL_PANEL_BLUE_STRIPE_RED);
+		blocks.add(TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL);
+		blocks.add(TRAIN_WALL_PANEL_BLUE_WINDOW_BIG);
+		blocks.add(TRAIN_WALL_PANEL_GREEN);
+		blocks.add(TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW);
+		blocks.add(TRAIN_WALL_PANEL_GREEN_STRIPE_RED);
+		blocks.add(TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL);
+		blocks.add(TRAIN_WALL_PANEL_GREEN_WINDOW_BIG);
+		blocks.add(TRAIN_WALL_PANEL_LIGHT_BLUE);
+		blocks.add(TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW);
+		blocks.add(TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_RED);
+		blocks.add(TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL);
+		blocks.add(TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG);
+		blocks.addAll(TRAIN_WALL_PANEL_ENTRIES);
+		return blocks.toArray(new NonNullSupplier[0]);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static NonNullSupplier<? extends net.minecraft.world.level.block.Block>[] hingedTrainDoorBlocks() {
 		return HINGED_TRAIN_DOOR_ENTRIES.toArray(new NonNullSupplier[0]);
@@ -696,6 +743,8 @@ public class AllBlocks {
 				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 				.build().register();
 		TRAIN_WALL_PANEL_ENTRIES.add(entry);
+		if (!cutout)
+			TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
 		return entry;
 	}
 

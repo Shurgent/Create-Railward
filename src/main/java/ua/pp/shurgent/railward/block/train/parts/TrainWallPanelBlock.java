@@ -3,7 +3,9 @@ package ua.pp.shurgent.railward.block.train.parts;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.placement.PlacementOffset;
@@ -12,30 +14,38 @@ import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import ua.pp.shurgent.railward.AllBlockEntities;
 import ua.pp.shurgent.railward.AllBlocks;
+import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveBufferLightsAttachment;
+import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
 
-public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements IWrenchable {
+public class TrainWallPanelBlock extends HorizontalDirectionalBlock
+	implements IBE<TrainWallPanelBlockEntity>, IWrenchable {
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -48,7 +58,13 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext ctx) {
-		return SHAPE.get(state.getValue(FACING));
+		VoxelShape shape = SHAPE.get(state.getValue(FACING));
+		if (w.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) {
+			TrainPanelAttachment attachment = panel.getAttachment();
+			if (attachment != null)
+				shape = Shapes.or(shape, attachment.getInteractionShape(state));
+		}
+		return shape;
 	}
 
 	public TrainWallPanelBlock(BlockBehaviour.Properties properties) {
@@ -82,6 +98,9 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
 			ItemStack heldItem = player.getItemInHand(hand);
+			if (AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(heldItem))
+				return tryAttachLocomotiveBufferLights(state, world, pos, player, hand);
+
 			IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
 			if (placementHelper.matchesItem(heldItem)) {
 				placementHelper.getOffset(player, world, state, pos, ray).placeInWorld(world,
@@ -91,6 +110,94 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 		}
 
 		return super.use(state, world, pos, player, hand, ray);
+	}
+
+	private InteractionResult tryAttachLocomotiveBufferLights(BlockState state, Level level, BlockPos pos,
+		Player player, InteractionHand hand) {
+		if (!AllBlocks.isAttachableTrainWallPanelState(state))
+			return InteractionResult.PASS;
+		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel))
+			return InteractionResult.PASS;
+		if (panel.hasAttachment())
+			return InteractionResult.PASS;
+
+		if (level.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		ItemStack heldItem = player.getItemInHand(hand);
+		panel.setAttachment(new LocomotiveBufferLightsAttachment(getLocomotiveBufferLightsVariant(heldItem)));
+		if (!player.isCreative())
+			heldItem.shrink(1);
+		return InteractionResult.SUCCESS;
+	}
+
+	private static LocomotiveBufferLightsVariant getLocomotiveBufferLightsVariant(ItemStack stack) {
+		CompoundTag blockStateTag = stack.getTagElement("BlockStateTag");
+		if (blockStateTag == null)
+			return LocomotiveBufferLightsVariant.TYPE_1;
+		return LocomotiveBufferLightsVariant.byName(blockStateTag.getString(LocomotiveBufferLightsBlock.VARIANT
+			.getName()));
+	}
+
+	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+
+		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel))
+			return InteractionResult.FAIL;
+		TrainPanelAttachment attachment = panel.getAttachment();
+		if (attachment == null || !isAttachmentHit(state, pos, context.getClickLocation(), attachment))
+			return InteractionResult.FAIL;
+
+		if (level.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		if (attachment instanceof LocomotiveBufferLightsAttachment bufferLights) {
+			bufferLights.cycleVariant();
+			panel.attachmentChanged();
+			playRotateSound(level, pos);
+			return InteractionResult.SUCCESS;
+		}
+
+		return InteractionResult.FAIL;
+	}
+
+	@Override
+	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+
+		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) || !panel.hasAttachment())
+			return IWrenchable.super.onSneakWrenched(state, context);
+
+		if (level.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		ItemStack drop = panel.removeAttachment();
+		Player player = context.getPlayer();
+		if (!drop.isEmpty() && player != null && !player.isCreative())
+			player.getInventory()
+				.placeItemBackInInventory(drop);
+		playRemoveSound(level, pos);
+		return InteractionResult.SUCCESS;
+	}
+
+	public static boolean isAttachmentHit(BlockState state, BlockPos pos, Vec3 hit, TrainPanelAttachment attachment) {
+		VoxelShape shape = attachment.getInteractionShape(state);
+		if (shape.isEmpty())
+			return false;
+		return shape.toAabbs()
+			.stream()
+			.anyMatch(box -> box.inflate(1.0E-5D)
+				.move(pos)
+				.contains(hit));
+	}
+
+	@Override
+	public void playRotateSound(Level level, BlockPos pos) {
+		float pitch = level.getRandom().nextFloat() + 0.5f;
+		AllSoundEvents.WRENCH_ROTATE.playOnServer(level, pos, 1f, pitch);
 	}
 
 	public static boolean isTrainWallPanelItem(ItemStack stack) {
@@ -131,6 +238,24 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock implements I
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.has(state)
 				|| AllBlocks.TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG.has(state)
 				|| AllBlocks.isTrainWallPanelVariantState(state);
+	}
+
+	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!level.isClientSide && !isMoving && !state.is(newState.getBlock())
+			&& level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel)
+			panel.dropAttachment(level, pos);
+		IBE.onRemove(state, level, pos, newState);
+	}
+
+	@Override
+	public Class<TrainWallPanelBlockEntity> getBlockEntityClass() {
+		return TrainWallPanelBlockEntity.class;
+	}
+
+	@Override
+	public BlockEntityType<? extends TrainWallPanelBlockEntity> getBlockEntityType() {
+		return AllBlockEntities.TRAIN_WALL_PANEL.get();
 	}
 
 	@MethodsReturnNonnullByDefault

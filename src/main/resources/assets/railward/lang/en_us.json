@@ -175,6 +175,7 @@
     "block.railward.train.parts.train_wall_panel_light_blue_window_big_frame_white":  "Train Wall Panel (Light Blue with big window and white frame)",
     "block.railward.train.parts.train_wall_light_blue_window_big_smooth_frame_white":  "Train Wall (Light Blue, smooth with big window and white frame)",
     "block.railward.train.parts.train_wall_panel_light_blue_window_big_smooth_frame_white":  "Train Wall Panel (Light Blue, smooth with big window and white frame)",
+    "block.railward.train.parts.locomotive_buffer_lights":  "Locomotive Buffer Lights",
     "block.railward.train.parts.train_hinged_door_blue":  "Hinged Train Door (Blue)",
     "block.railward.train.parts.train_hinged_door_blue_window_big":  "Hinged Train Door (Blue, Big Window)",
     "block.railward.train.parts.train_hinged_door_blue_window_small":  "Hinged Train Door (Blue, Small Window)",

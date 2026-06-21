@@ -70,6 +70,27 @@ public class AllPartialModels {
 
 	;
 
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_1 =
+		locomotiveBufferLights("1");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_2 =
+		locomotiveBufferLights("2");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_3 =
+		locomotiveBufferLights("3");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_4 =
+		locomotiveBufferLights("4");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_5 =
+		locomotiveBufferLights("5");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_6 =
+		locomotiveBufferLights("6");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_7 =
+		locomotiveBufferLights("7");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_8 =
+		locomotiveBufferLights("8");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_9 =
+		locomotiveBufferLights("9");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_10 =
+		locomotiveBufferLights("10");
+
 	private static final String[] TRAIN_DOOR_SOLID_VARIANTS = {
 			"blue",
 			"green",
@@ -95,6 +116,20 @@ public class AllPartialModels {
 
 	private static PartialModel block(String path) {
 		return new PartialModel(Railward.asResource("block/" + path));
+	}
+
+	private static LocomotiveBufferLightsPartialModels locomotiveBufferLights(String suffix) {
+		String base = "train/parts/locomotive_buffer_lights_" + suffix;
+		return new LocomotiveBufferLightsPartialModels(
+			block(base + "_base"),
+			block(base + "_white_lamp_on"),
+			block(base + "_white_lamp_off"),
+			block(base + "_white_lens_off"),
+			block(base + "_white_glow"),
+			block(base + "_red_lamp_on"),
+			block(base + "_red_lamp_off"),
+			block(base + "_red_lens_off"),
+			block(base + "_red_glow"));
 	}
 
 	public static SlidingDoorPartialModels getSlidingDoorModels(String blockPath) {
@@ -142,6 +177,11 @@ public class AllPartialModels {
 				return left ? topLeft : topRight;
 			return left ? bottomLeft : bottomRight;
 		}
+	}
+
+	public record LocomotiveBufferLightsPartialModels(PartialModel base, PartialModel whiteLampOn,
+		PartialModel whiteLampOff, PartialModel whiteLensOff, PartialModel whiteGlow, PartialModel redLampOn,
+		PartialModel redLampOff, PartialModel redLensOff, PartialModel redGlow) {
 	}
 	
 	public static void init() {

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "T",
+    "#"
+  ],
+  "key": {
+    "T": { "item": "create:nixie_tube" },
+    "#": { "item": "create:sturdy_sheet" }
+  },
+  "result": {
+    "item": "railward:train/parts/locomotive_buffer_lights"
+  }
+}

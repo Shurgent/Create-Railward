@@ -46,6 +46,104 @@ function Write-Json([string] $Path, $Object, [int] $Depth = 20) {
     Write-Text $Path ($json + "`n")
 }
 
+function Test-JsonScalar($Value) {
+    return $null -eq $Value -or
+        $Value -is [string] -or
+        $Value -is [System.ValueType]
+}
+
+function Test-JsonScalarArray($Value) {
+    if ($null -eq $Value -or !($Value -is [System.Array])) {
+        return $false
+    }
+    foreach ($item in $Value) {
+        if (!(Test-JsonScalar $item)) {
+            return $false
+        }
+    }
+    return $true
+}
+
+function Get-JsonObjectProperties($Value) {
+    if ($Value -is [System.Collections.IDictionary]) {
+        foreach ($key in $Value.Keys) {
+            [pscustomobject]@{ Name = [string]$key; Value = $Value[$key] }
+        }
+        return
+    }
+    foreach ($prop in $Value.PSObject.Properties) {
+        [pscustomobject]@{ Name = $prop.Name; Value = $prop.Value }
+    }
+}
+
+function Test-InlineJsonObject($Value) {
+    if ($null -eq $Value -or $Value -is [System.Array] -or (Test-JsonScalar $Value)) {
+        return $false
+    }
+    $props = @(Get-JsonObjectProperties $Value)
+    if ($props.Count -eq 0 -or $props.Count -gt 3) {
+        return $false
+    }
+    if ($null -eq ($props | Where-Object { $_.Name -eq "uv" } | Select-Object -First 1)) {
+        return $false
+    }
+    foreach ($prop in $props) {
+        if (!(Test-JsonScalar $prop.Value) -and !(Test-JsonScalarArray $prop.Value)) {
+            return $false
+        }
+    }
+    return $true
+}
+
+function Format-CompactJson($Value, [int] $Indent = 0, [bool] $ForceInlineObject = $false) {
+    if (Test-JsonScalar $Value) {
+        return ConvertTo-Json -InputObject $Value -Compress
+    }
+    if (Test-JsonScalarArray $Value) {
+        $items = @()
+        foreach ($item in $Value) {
+            $items += (Format-CompactJson $item 0)
+        }
+        return "[$($items -join ', ')]"
+    }
+    if ($Value -is [System.Array]) {
+        if ($Value.Count -eq 0) {
+            return "[]"
+        }
+        $childIndent = $Indent + 1
+        $lines = @("[")
+        for ($i = 0; $i -lt $Value.Count; $i++) {
+            $suffix = if ($i -lt $Value.Count - 1) { "," } else { "" }
+            $lines += ("`t" * $childIndent) + (Format-CompactJson $Value[$i] $childIndent) + $suffix
+        }
+        $lines += ("`t" * $Indent) + "]"
+        return $lines -join "`n"
+    }
+
+    $props = @(Get-JsonObjectProperties $Value)
+    if ($ForceInlineObject -or (Test-InlineJsonObject $Value)) {
+        $pairs = @()
+        foreach ($prop in $props) {
+            $pairs += "$(ConvertTo-Json -InputObject $prop.Name -Compress): $(Format-CompactJson $prop.Value 0)"
+        }
+        return "{$($pairs -join ', ')}"
+    }
+
+    $childIndent = $Indent + 1
+    $lines = @("{")
+    for ($i = 0; $i -lt $props.Count; $i++) {
+        $prop = $props[$i]
+        $suffix = if ($i -lt $props.Count - 1) { "," } else { "" }
+        $lines += ("`t" * $childIndent) + "$(ConvertTo-Json -InputObject $prop.Name -Compress): $(Format-CompactJson $prop.Value $childIndent)$suffix"
+    }
+    $lines += ("`t" * $Indent) + "}"
+    return $lines -join "`n"
+}
+
+function Write-ModelJson([string] $Path, $Object) {
+    Write-Text $Path ((Format-CompactJson $Object 0) + "`n")
+}
+
 function Assert-ProjectPath([string] $Path) {
     $root = [System.IO.Path]::GetFullPath($ProjectRoot).TrimEnd('\', '/')
     $full = [System.IO.Path]::GetFullPath($Path)
@@ -66,7 +164,25 @@ function Remove-GeneratedMatches([string] $Dir, [string] $Filter, [bool] $Direct
     }
     foreach ($match in $matches) {
         Assert-ProjectPath $match.FullName
-        Remove-Item -LiteralPath $match.FullName -Recurse -Force -ErrorAction Stop
+        if ($Directories) {
+            foreach ($file in (Get-ChildItem -LiteralPath $match.FullName -Recurse -Force -File -ErrorAction SilentlyContinue)) {
+                Assert-ProjectPath $file.FullName
+                Remove-Item -LiteralPath $file.FullName -Force -ErrorAction Stop
+            }
+            foreach ($dir in (Get-ChildItem -LiteralPath $match.FullName -Recurse -Force -Directory -ErrorAction SilentlyContinue | Sort-Object FullName -Descending)) {
+                Assert-ProjectPath $dir.FullName
+                Remove-Item -LiteralPath $dir.FullName -Force -ErrorAction SilentlyContinue
+            }
+            Remove-Item -LiteralPath $match.FullName -Force -ErrorAction SilentlyContinue
+            if (Test-Path -LiteralPath $match.FullName) {
+                $remaining = Get-ChildItem -LiteralPath $match.FullName -Force -ErrorAction SilentlyContinue | Select-Object -First 1
+                if ($null -ne $remaining) {
+                    throw "Could not clear generated directory: $($match.FullName)"
+                }
+            }
+        } else {
+            Remove-Item -LiteralPath $match.FullName -Recurse -Force -ErrorAction Stop
+        }
     }
 }
 
@@ -375,12 +491,49 @@ function Write-DoorTextures([string] $Id, [string] $Animation, [hashtable] $Colo
     Save-Bitmap $item (Join-Path $AssetsRoot "textures/item/train/parts/$Id.png")
 }
 
-function DoorModel([string] $Id, [string] $Half, [string] $TextureSuffix,
+function DoorModel([string] $Id, [string] $Animation, [string] $Window, [string] $Half, [string] $TextureSuffix,
         [int] $FromX = 0, [int] $ToX = 16, [int] $UvMin = 0, [int] $UvMax = 16,
         [bool] $RightHinge = $false) {
+    $isSolid = [string]::IsNullOrEmpty($Window)
+    $isBigWindow = $Window -eq "big"
+    $useInsetUv = !($Animation -eq "sliding" -and !$isSolid)
+
     $verticalUv = if ($Half -eq "top") { @(0, 4, 16, 7) } else { @(0, 12, 16, 15) }
+    $eastUv = $verticalUv
+    $westUv = $verticalUv
+    if ($useInsetUv) {
+        if ($Half -eq "top") {
+            $eastUv = @(1, 4, 15, 7)
+            $westUv = @(1, 4, 15, 7)
+            if ($Animation -eq "hinged" -and ($isSolid -or $isBigWindow)) {
+                $eastUv = @(1, 1, 15, 4)
+                $westUv = @(1, 4, 15, 7)
+                if ($RightHinge -and $isSolid) {
+                    $eastUv = @(1, 4, 15, 7)
+                    $westUv = @(1, 1, 15, 4)
+                }
+            }
+        } else {
+            $eastUv = @(1, 12, 15, 15)
+            $westUv = @(1, 12, 15, 15)
+            if ($Animation -eq "hinged" -and ($isSolid -or $isBigWindow)) {
+                $eastUv = @(1, 9, 15, 12)
+                $westUv = @(1, 12, 15, 15)
+            }
+        }
+    }
+
     $cap = if ($Half -eq "top") { "up" } else { "down" }
     $capUv = if ($Half -eq "top") { @(0, 0, 16, 3) } else { @(0, 8, 16, 11) }
+    if ($useInsetUv) {
+        $capUv = if ($Half -eq "top") { @(1, 1, 15, 4) } else { @(1, 8, 15, 11) }
+        if ($Animation -eq "hinged" -and $isSolid) {
+            $capUv = if ($Half -eq "top" -or $RightHinge) { @(1, 1, 4, 15) } else { @(1, 15, 4, 1) }
+        } elseif ($Animation -eq "hinged" -and $isBigWindow) {
+            $capUv = @(1, 1, 4, 15)
+        }
+    }
+
     $southUv = @($UvMin, 0, $UvMax, 16)
     $northUv = @($UvMax, 0, $UvMin, 16)
     if ($RightHinge) {
@@ -388,6 +541,7 @@ function DoorModel([string] $Id, [string] $Half, [string] $TextureSuffix,
         $northUv = @($UvMin, 0, $UvMax, 16)
     }
     return [ordered]@{
+        format_version = "1.21.11"
         credit = "Generated by tools/generate_train_doors.ps1"
         parent = "block/block"
         ambientocclusion = $false
@@ -402,9 +556,9 @@ function DoorModel([string] $Id, [string] $Half, [string] $TextureSuffix,
                 to = @($ToX, 16, 16)
                 faces = [ordered]@{
                     north = [ordered]@{ uv = $northUv; texture = "#2" }
-                    east = [ordered]@{ uv = $verticalUv; rotation = $(if ($Half -eq "top") { 90 } else { 270 }); texture = "#0" }
+                    east = [ordered]@{ uv = $eastUv; rotation = $(if ($Half -eq "top") { 90 } else { 270 }); texture = "#0" }
                     south = [ordered]@{ uv = $southUv; texture = "#2" }
-                    west = [ordered]@{ uv = $verticalUv; rotation = $(if ($Half -eq "top") { 90 } else { 270 }); texture = "#0" }
+                    west = [ordered]@{ uv = $westUv; rotation = $(if ($Half -eq "top") { 90 } else { 270 }); texture = "#0" }
                     $cap = [ordered]@{ uv = $capUv; rotation = 90; texture = "#0" }
                 }
             }
@@ -520,18 +674,18 @@ function Register-Door([string] $Id, [string] $Animation, [string] $LabelEn, [st
     $DoorIds.Add($Id)
     Write-DoorTextures $Id $Animation $ColorDef $WoodDef $Window
 
-    Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom.json") (DoorModel $Id "bottom" "bottom")
-    Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top.json") (DoorModel $Id "top" "top")
+    Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom.json") (DoorModel $Id $Animation $Window "bottom" "bottom")
+    Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top.json") (DoorModel $Id $Animation $Window "top" "top")
 
     if ($Animation -eq "hinged") {
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom.json") (DoorModel $Id "bottom" "bottom_handle_right")
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_hinge.json") (DoorModel $Id "bottom" "bottom_handle_right" 0 16 0 16 $true)
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_hinge.json") (DoorModel $Id "top" "top" 0 16 0 16 $true)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom.json") (DoorModel $Id $Animation $Window "bottom" "bottom_handle_right")
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_hinge.json") (DoorModel $Id $Animation $Window "bottom" "bottom_handle_right" 0 16 0 16 $true)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_hinge.json") (DoorModel $Id $Animation $Window "top" "top" 0 16 0 16 $true)
     } else {
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_left.json") (DoorModel $Id "bottom" "bottom" 0 8 0 8)
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_right.json") (DoorModel $Id "bottom" "bottom" 8 16 8 16)
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_left.json") (DoorModel $Id "top" "top" 0 8 0 8)
-        Write-Json (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_right.json") (DoorModel $Id "top" "top" 8 16 8 16)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_left.json") (DoorModel $Id $Animation $Window "bottom" "bottom" 0 8 0 8)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_bottom_right.json") (DoorModel $Id $Animation $Window "bottom" "bottom" 8 16 8 16)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_left.json") (DoorModel $Id $Animation $Window "top" "top" 0 8 0 8)
+        Write-ModelJson (Join-Path $AssetsRoot "models/block/train/parts/$Id/block_top_right.json") (DoorModel $Id $Animation $Window "top" "top" 8 16 8 16)
     }
 
     Write-Json (Join-Path $AssetsRoot "blockstates/train/parts/$Id.json") (DoorBlockState $Id $Animation)

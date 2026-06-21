@@ -16,7 +16,9 @@ import ua.pp.shurgent.railward.client.renderer.WhistleSignRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
@@ -26,9 +28,11 @@ import ua.pp.shurgent.railward.client.renderer.BulkCargoContainerRenderer;
 import ua.pp.shurgent.railward.client.renderer.CisternHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.CisternRenderer;
 import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
+import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardSlidingDoorRenderer;
+import ua.pp.shurgent.railward.client.renderer.TrainWallPanelAttachmentRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingBunkerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingHatchRenderer;
@@ -46,6 +50,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/sliding_train_door", SlidingDoorBlockEntity::new)
 			.validBlocks(AllBlocks.slidingTrainDoorBlocks())
 			.renderer(() -> RailwardSlidingDoorRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<TrainWallPanelBlockEntity> TRAIN_WALL_PANEL = REGISTRATE
+			.blockEntity("train/parts/train_wall_panel", TrainWallPanelBlockEntity::new)
+			.validBlocks(AllBlocks.trainWallPanelBlocks())
+			.renderer(() -> TrainWallPanelAttachmentRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<ModernSignalGroundBlockEntity> MODERN_SIGNAL_GROUND = REGISTRATE
@@ -76,6 +86,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/modern_whistle", ModernWhistleBlockEntity::new)
 			.validBlocks(AllBlocks.MODERN_WHISTLE)
 			.renderer(() -> ModernWhistleRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<LocomotiveBufferLightsBlockEntity> LOCOMOTIVE_BUFFER_LIGHTS = REGISTRATE
+			.blockEntity("train/parts/locomotive_buffer_lights", LocomotiveBufferLightsBlockEntity::new)
+			.validBlocks(AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS)
+			.renderer(() -> LocomotiveBufferLightsRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<WagonFrameBlockEntity> WAGON_FRAME = REGISTRATE

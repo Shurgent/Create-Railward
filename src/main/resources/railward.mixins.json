@@ -8,6 +8,7 @@
   "mixins": [
     "create.AbstractContraptionEntityMixin",
     "create.CarriageBogeyAccessor",
+    "create.CarriageContraptionEntityMixin",
     "create.CarriageContraptionAccessor",
     "create.CarriageContraptionMixin",
     "create.ContraptionAccessor",
