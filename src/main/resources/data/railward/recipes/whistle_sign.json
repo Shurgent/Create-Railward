@@ -6,7 +6,7 @@
     "A"
   ],
   "key": {
-    "S": { "item": "minecraft:oak_sign" },
+    "S": { "tag": "minecraft:signs" },
     "D": { "item": "minecraft:green_dye" },
     "A": { "item": "create:andesite_alloy" }
   },
