@@ -13,7 +13,9 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
+import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
 import ua.pp.shurgent.railward.network.LocomotiveBufferLightsTrainStatePacket;
+import ua.pp.shurgent.railward.network.ModernWhistleArrivalPacket;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
 import ua.pp.shurgent.railward.network.WhistleSignHonkPacket;
 
@@ -35,9 +37,11 @@ public class RailwardPackets {
 
 		register(TrainCouplerSyncPacket.class, TrainCouplerSyncPacket::new, PLAY_TO_CLIENT);
 		register(BulkCargoSyncPacket.class, BulkCargoSyncPacket::new, PLAY_TO_CLIENT);
+		register(CisternFluidSyncPacket.class, CisternFluidSyncPacket::new, PLAY_TO_CLIENT);
 		register(WhistleSignHonkPacket.class, WhistleSignHonkPacket::new, PLAY_TO_CLIENT);
 		register(LocomotiveBufferLightsTrainStatePacket.class, LocomotiveBufferLightsTrainStatePacket::new,
 			PLAY_TO_CLIENT);
+		register(ModernWhistleArrivalPacket.class, ModernWhistleArrivalPacket::new, PLAY_TO_CLIENT);
 	}
 
 	public static SimpleChannel getChannel() {

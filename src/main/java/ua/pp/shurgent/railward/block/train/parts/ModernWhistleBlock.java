@@ -15,7 +15,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -62,6 +64,38 @@ public class ModernWhistleBlock extends WhistleBlock {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		if (rotation == Rotation.NONE)
+			return state;
+
+		Direction attachedFace = state.getValue(ATTACHED_FACE);
+		BlockState rotated = state.setValue(ATTACHED_FACE, rotation.rotate(attachedFace));
+		if (attachedFace.getAxis()
+			.isVertical()) {
+			Direction facing = rotation.rotate(resolveTrainFacing(state));
+			rotated = rotated.setValue(ROTATION, rotationFromFacing(facing));
+		}
+		return syncCompatibilityState(rotated);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		if (mirror == Mirror.NONE)
+			return state;
+
+		Direction attachedFace = state.getValue(ATTACHED_FACE);
+		BlockState mirrored = state.setValue(ATTACHED_FACE, mirror.mirror(attachedFace));
+		if (attachedFace.getAxis()
+			.isVertical()) {
+			Direction facing = mirror.mirror(resolveTrainFacing(state));
+			mirrored = mirrored.setValue(ROTATION, rotationFromFacing(facing));
+		}
+		return syncCompatibilityState(mirrored);
+	}
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		Direction attachedFace = context.getClickedFace().getOpposite();
 		BlockState state = syncCompatibilityState(defaultBlockState().setValue(ATTACHED_FACE, attachedFace)
@@ -85,6 +119,15 @@ public class ModernWhistleBlock extends WhistleBlock {
 		case 1 -> Direction.EAST;
 		case 2 -> Direction.SOUTH;
 		default -> Direction.WEST;
+		};
+	}
+
+	private static int rotationFromFacing(Direction facing) {
+		return switch (facing) {
+		case EAST -> 1;
+		case SOUTH -> 2;
+		case WEST -> 3;
+		default -> 0;
 		};
 	}
 

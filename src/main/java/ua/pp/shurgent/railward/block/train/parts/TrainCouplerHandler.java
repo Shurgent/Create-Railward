@@ -1462,6 +1462,7 @@ public class TrainCouplerHandler {
 	private static void syncMergedTrain(Train train, UUID removedTrainId, Collection<RebaseInstruction> rebases) {
 		List<CarriageContraptionEntity> entities = new ArrayList<>();
 		collectEntities(train, entities);
+		LocomotiveBufferLightsTrainState.removeServerDirection(removedTrainId);
 
 		RailwardPackets.getChannel()
 			.send(PacketDistributor.ALL.noArg(),

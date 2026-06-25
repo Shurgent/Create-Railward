@@ -73,12 +73,13 @@ public class LocomotiveBufferLightsTrainState {
 		if (level.isClientSide || train == null || isManuallyControlled(train))
 			return;
 
+		boolean clearedManual = SERVER_MANUAL_DIRECTIONS.remove(train.id) != null;
 		DirectionState direction = hasScheduledControls(train) ? resolveScheduledDirection(train) : DirectionState.NONE;
 		DirectionState previous = SERVER_SCHEDULED_DIRECTIONS.get(train.id);
 		boolean forceSync = SERVER_FORCE_SCHEDULED_SYNC.remove(train.id);
 		boolean periodicSync = direction != DirectionState.NONE && shouldResyncScheduled(train, level);
 		if (direction == DirectionState.NONE) {
-			if (previous == null && !forceSync)
+			if (previous == null && !forceSync && !clearedManual)
 				return;
 			SERVER_SCHEDULED_DIRECTIONS.remove(train.id);
 		} else {
@@ -87,8 +88,7 @@ public class LocomotiveBufferLightsTrainState {
 			SERVER_SCHEDULED_DIRECTIONS.put(train.id, direction);
 		}
 
-		RailwardPackets.getChannel().send(PacketDistributor.ALL.noArg(),
-			new LocomotiveBufferLightsTrainStatePacket(train.id, direction));
+		sendToTracking(train, direction);
 	}
 
 	public static void syncCurrentControls(CarriageContraptionEntity entity, ServerPlayer player) {
@@ -106,6 +106,39 @@ public class LocomotiveBufferLightsTrainState {
 
 		for (Train train : Create.RAILWAYS.trains.values())
 			sendToPlayer(player, train.id, resolveServerDirection(train));
+	}
+
+	public static void clearManualControls(UUID playerId) {
+		if (playerId == null || Create.RAILWAYS == null || Create.RAILWAYS.trains == null)
+			return;
+
+		for (Train train : Create.RAILWAYS.trains.values()) {
+			if (train.carriages == null)
+				continue;
+			for (Carriage carriage : train.carriages) {
+				CarriageContraptionEntity entity = carriage.anyAvailableEntity();
+				if (entity == null || entity.level.isClientSide)
+					continue;
+				if (entity.getControllingPlayer()
+					.filter(playerId::equals)
+					.isEmpty())
+					continue;
+
+				clearManualControls(entity);
+			}
+		}
+	}
+
+	public static void removeServerDirection(UUID trainId) {
+		SERVER_MANUAL_DIRECTIONS.remove(trainId);
+		SERVER_SCHEDULED_DIRECTIONS.remove(trainId);
+		SERVER_FORCE_SCHEDULED_SYNC.remove(trainId);
+	}
+
+	public static void clearServerDirections() {
+		SERVER_MANUAL_DIRECTIONS.clear();
+		SERVER_SCHEDULED_DIRECTIONS.clear();
+		SERVER_FORCE_SCHEDULED_SYNC.clear();
 	}
 
 	public static void writeScheduledDirection(Train train, CompoundTag tag) {
@@ -145,6 +178,14 @@ public class LocomotiveBufferLightsTrainState {
 
 	public static void setClientDirection(UUID trainId, DirectionState direction) {
 		CLIENT_DIRECTIONS.put(trainId, direction);
+	}
+
+	public static void removeClientDirection(UUID trainId) {
+		CLIENT_DIRECTIONS.remove(trainId);
+	}
+
+	public static void clearClientDirections() {
+		CLIENT_DIRECTIONS.clear();
 	}
 
 	public static DirectionState resolve(CarriageContraptionEntity entity) {
@@ -190,6 +231,14 @@ public class LocomotiveBufferLightsTrainState {
 	private static void sendToTracking(CarriageContraptionEntity entity, UUID trainId, DirectionState direction) {
 		RailwardPackets.getChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
 			new LocomotiveBufferLightsTrainStatePacket(trainId, direction));
+	}
+
+	private static void sendToTracking(Train train, DirectionState direction) {
+		LocomotiveBufferLightsTrainStatePacket packet =
+			new LocomotiveBufferLightsTrainStatePacket(train.id, direction);
+		for (Carriage carriage : train.carriages)
+			carriage.forEachPresentEntity(entity -> RailwardPackets.getChannel()
+				.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), packet));
 	}
 
 	private static void sendToPlayer(Player player, UUID trainId, DirectionState direction) {

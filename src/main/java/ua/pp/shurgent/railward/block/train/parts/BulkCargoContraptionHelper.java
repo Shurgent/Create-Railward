@@ -1,7 +1,9 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import com.simibubi.create.Create;
@@ -13,11 +15,13 @@ import com.simibubi.create.content.contraptions.minecart.TrainCargoManager;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -52,22 +56,118 @@ public final class BulkCargoContraptionHelper {
 		StructureBlockInfo controllerInfo = contraption.getBlocks()
 			.get(controllerPos);
 		if (controllerInfo == null || !(controllerInfo.state.getBlock() instanceof BulkCargoContainerBlock))
-			return null;
+			return inferController(contraption, localPos, info.state.getBlock());
 
 		CompoundTag controllerNbt = controllerInfo.nbt;
 		int sizeX = readPositiveInt(controllerNbt, "SizeX", readPositiveInt(nbt, "SizeX", 1));
 		int sizeZ = readPositiveInt(controllerNbt, "SizeZ", readPositiveInt(nbt, "SizeZ", 1));
 		int height = readPositiveInt(controllerNbt, "Height", readPositiveInt(nbt, "Height", 1));
-		return new ControllerData(controllerPos, controllerInfo, sizeX, sizeZ, height);
+		ControllerData data = new ControllerData(controllerPos, controllerInfo, sizeX, sizeZ, height);
+		if (data.volume() <= 1) {
+			ControllerData inferred = inferController(contraption, localPos, info.state.getBlock());
+			if (inferred != null && inferred.volume() > data.volume())
+				return inferred;
+		}
+		return data;
+	}
+
+	private static ControllerData inferController(Contraption contraption, BlockPos localPos, Block block) {
+		Set<BlockPos> component = collectComponent(contraption, localPos, block);
+		Bounds bounds = Bounds.of(component);
+		if (bounds == null || !bounds.isValid(component))
+			return null;
+
+		BlockPos controllerPos = new BlockPos(bounds.minX(), bounds.minY(), bounds.minZ());
+		StructureBlockInfo controllerInfo = contraption.getBlocks()
+			.get(controllerPos);
+		if (controllerInfo == null || !(controllerInfo.state.getBlock() instanceof BulkCargoContainerBlock))
+			return null;
+		return new ControllerData(controllerPos, controllerInfo, bounds.sizeX(), bounds.sizeZ(), bounds.height());
+	}
+
+	private static Set<BlockPos> collectComponent(Contraption contraption, BlockPos start, Block block) {
+		Set<BlockPos> visited = new HashSet<>();
+		Queue<BlockPos> frontier = new ArrayDeque<>();
+		frontier.add(start);
+
+		int limit = BulkCargoContainerBlockEntity.MAX_SIDE * BulkCargoContainerBlockEntity.MAX_SIDE
+			* BulkCargoContainerBlockEntity.MAX_HEIGHT + 1;
+		while (!frontier.isEmpty() && visited.size() <= limit) {
+			BlockPos current = frontier.poll();
+			if (!visited.add(current))
+				continue;
+			if (!isSameBulkCargoBlock(contraption, current, block))
+				continue;
+
+			for (Direction direction : Direction.values()) {
+				BlockPos next = current.relative(direction);
+				if (!visited.contains(next) && isSameBulkCargoBlock(contraption, next, block))
+					frontier.add(next);
+			}
+		}
+
+		visited.removeIf(pos -> !isSameBulkCargoBlock(contraption, pos, block));
+		return visited;
+	}
+
+	private static boolean isSameBulkCargoBlock(Contraption contraption, BlockPos localPos, Block block) {
+		StructureBlockInfo info = contraption.getBlocks()
+			.get(localPos);
+		return info != null && info.state.getBlock() == block
+			&& info.state.getBlock() instanceof BulkCargoContainerBlock;
 	}
 
 	public static IItemHandlerModifiable getItemHandler(Contraption contraption, BlockPos controllerPos) {
-		MountedStorageManager manager = getStorageManager(contraption);
+		MountedStorageManager primary = getStorageManager(contraption);
+		IItemHandlerModifiable primaryHandler = getItemHandler(primary, contraption, controllerPos);
+		MountedStorageManager base = getBaseStorageManager(contraption);
+		if (base != primary) {
+			IItemHandlerModifiable baseHandler = getItemHandler(base, contraption, controllerPos);
+			if (isBetterCargoView(baseHandler, primaryHandler))
+				return baseHandler;
+		}
+		return primaryHandler;
+	}
+
+	private static IItemHandlerModifiable getItemHandler(MountedStorageManager manager, Contraption contraption,
+		BlockPos controllerPos) {
+		IItemHandlerModifiable direct = getItemHandler(manager, controllerPos);
+		if (direct != null)
+			return direct;
+
+		ControllerData data = resolveController(contraption, controllerPos);
+		return data == null ? null : findComponentItemHandler(manager, data);
+	}
+
+	private static IItemHandlerModifiable getItemHandler(MountedStorageManager manager, BlockPos controllerPos) {
 		if (manager == null)
 			return null;
 		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
 		MountedStorage mountedStorage = storage.get(controllerPos);
 		return mountedStorage == null ? null : mountedStorage.getItemHandler();
+	}
+
+	private static IItemHandlerModifiable findComponentItemHandler(MountedStorageManager manager, ControllerData data) {
+		if (manager == null)
+			return null;
+		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
+		BlockPos origin = data.controllerPos();
+		IItemHandlerModifiable fallback = null;
+		for (int x = 0; x < data.sizeX(); x++)
+			for (int y = 0; y < data.height(); y++)
+				for (int z = 0; z < data.sizeZ(); z++) {
+					MountedStorage mountedStorage = storage.get(origin.offset(x, y, z));
+					if (mountedStorage == null)
+						continue;
+					IItemHandlerModifiable handler = mountedStorage.getItemHandler();
+					if (handler == null)
+						continue;
+					if (BulkCargoStorage.getStoredAmount(handler) > 0)
+						return handler;
+					if (fallback == null)
+						fallback = handler;
+				}
+		return fallback;
 	}
 
 	static boolean tryInsertItemEntity(AbstractContraptionEntity contraptionEntity, ControllerData data,
@@ -234,12 +334,17 @@ public final class BulkCargoContraptionHelper {
 			return false;
 
 		boolean applied = false;
+		ControllerData controllerData = resolveController(contraption, controllerPos);
 		for (Map.Entry<BlockPos, BlockEntity> entry : contraption.presentBlockEntities.entrySet()) {
 			if (!(entry.getValue() instanceof BulkCargoContainerBlockEntity be))
 				continue;
 			ControllerData data = resolveController(contraption, entry.getKey());
-			if (data == null || !data.controllerPos()
-				.equals(controllerPos))
+			boolean matchesController = data != null && data.controllerPos()
+				.equals(controllerPos);
+			if (!matchesController && controllerData != null)
+				matchesController = isInside(controllerData, entry.getKey())
+					&& isBulkCargoBlock(contraption, entry.getKey());
+			if (!matchesController)
 				continue;
 			be.applyClientCargo(displayStack, amount, capacity, entry.getKey(), controllerPos);
 			applied = true;
@@ -247,14 +352,46 @@ public final class BulkCargoContraptionHelper {
 		return applied;
 	}
 
-	private static MountedStorageManager getStorageManager(Contraption contraption) {
-		if (contraption instanceof CarriageContraption carriageContraption) {
-			MountedStorageManager storageProxy =
-				((CarriageContraptionAccessor) carriageContraption).railward$getStorageProxy();
-			if (storageProxy != null)
-				return storageProxy;
-		}
+	private static boolean isInside(ControllerData data, BlockPos localPos) {
+		BlockPos origin = data.controllerPos();
+		return localPos.getX() >= origin.getX() && localPos.getX() < origin.getX() + data.sizeX()
+			&& localPos.getY() >= origin.getY() && localPos.getY() < origin.getY() + data.height()
+			&& localPos.getZ() >= origin.getZ() && localPos.getZ() < origin.getZ() + data.sizeZ();
+	}
+
+	private static boolean isBulkCargoBlock(Contraption contraption, BlockPos localPos) {
+		StructureBlockInfo info = contraption.getBlocks()
+			.get(localPos);
+		return info != null && info.state.getBlock() instanceof BulkCargoContainerBlock;
+	}
+
+	static MountedStorageManager getStorageManager(Contraption contraption) {
+		MountedStorageManager base = getBaseStorageManager(contraption);
+		if (contraption.entity != null && contraption.entity.level.isClientSide)
+			return base;
+
+		MountedStorageManager storageProxy = getStorageProxyManager(contraption);
+		if (storageProxy != null)
+			return storageProxy;
+		return base;
+	}
+
+	private static MountedStorageManager getStorageProxyManager(Contraption contraption) {
+		if (!(contraption instanceof CarriageContraption carriageContraption))
+			return null;
+		return ((CarriageContraptionAccessor) carriageContraption).railward$getStorageProxy();
+	}
+
+	private static MountedStorageManager getBaseStorageManager(Contraption contraption) {
 		return ((ContraptionAccessor) contraption).railward$getStorage();
+	}
+
+	private static boolean isBetterCargoView(IItemHandler candidate, IItemHandler current) {
+		if (candidate == null || candidate.getSlots() <= 0)
+			return false;
+		if (current == null || current.getSlots() <= 0)
+			return true;
+		return BulkCargoStorage.getStoredAmount(current) == 0 && BulkCargoStorage.getStoredAmount(candidate) > 0;
 	}
 
 	private static void markStorageChanged(Contraption contraption) {
@@ -297,6 +434,64 @@ public final class BulkCargoContraptionHelper {
 
 	public record ControllerData(BlockPos controllerPos, StructureBlockInfo controllerInfo, int sizeX, int sizeZ,
 		int height) {
+		int volume() {
+			return sizeX * sizeZ * height;
+		}
+	}
+
+	private record Bounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		static Bounds of(Set<BlockPos> positions) {
+			if (positions.isEmpty())
+				return null;
+			int minX = Integer.MAX_VALUE;
+			int minY = Integer.MAX_VALUE;
+			int minZ = Integer.MAX_VALUE;
+			int maxX = Integer.MIN_VALUE;
+			int maxY = Integer.MIN_VALUE;
+			int maxZ = Integer.MIN_VALUE;
+			for (BlockPos pos : positions) {
+				minX = Math.min(minX, pos.getX());
+				minY = Math.min(minY, pos.getY());
+				minZ = Math.min(minZ, pos.getZ());
+				maxX = Math.max(maxX, pos.getX());
+				maxY = Math.max(maxY, pos.getY());
+				maxZ = Math.max(maxZ, pos.getZ());
+			}
+			return new Bounds(minX, minY, minZ, maxX, maxY, maxZ);
+		}
+
+		boolean isValid(Set<BlockPos> positions) {
+			if (sizeX() < 1 || sizeX() > BulkCargoContainerBlockEntity.MAX_SIDE)
+				return false;
+			if (sizeZ() < 1 || sizeZ() > BulkCargoContainerBlockEntity.MAX_SIDE)
+				return false;
+			if (height() < 1 || height() > BulkCargoContainerBlockEntity.MAX_HEIGHT)
+				return false;
+			if (positions.size() != volume())
+				return false;
+			for (int x = minX; x <= maxX; x++)
+				for (int y = minY; y <= maxY; y++)
+					for (int z = minZ; z <= maxZ; z++)
+						if (!positions.contains(new BlockPos(x, y, z)))
+							return false;
+			return true;
+		}
+
+		int sizeX() {
+			return maxX - minX + 1;
+		}
+
+		int sizeZ() {
+			return maxZ - minZ + 1;
+		}
+
+		int height() {
+			return maxY - minY + 1;
+		}
+
+		int volume() {
+			return sizeX() * sizeZ() * height();
+		}
 	}
 
 }

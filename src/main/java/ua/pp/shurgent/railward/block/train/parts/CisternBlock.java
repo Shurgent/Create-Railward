@@ -23,7 +23,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -77,6 +79,20 @@ public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWre
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.INVISIBLE;
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		if (rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90)
+			return state.setValue(AXIS, state.getValue(AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X);
+		return state;
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state;
 	}
 
 	@Override
@@ -208,7 +224,7 @@ public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWre
 	@SuppressWarnings("deprecation")
 	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
 		super.onPlace(state, level, pos, oldState, isMoving);
-		if (!level.isClientSide && !isMoving && state.getBlock() != oldState.getBlock())
+		if (!level.isClientSide && state.getBlock() != oldState.getBlock())
 			queueConnectivity(level, pos);
 	}
 

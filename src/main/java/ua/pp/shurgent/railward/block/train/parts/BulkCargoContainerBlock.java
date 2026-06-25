@@ -17,7 +17,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -62,6 +64,26 @@ public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoConta
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(NORTH, SOUTH, EAST, WEST, BOTTOM, TOP, X_LONG, CARGO_LEVEL);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		if (rotation == Rotation.NONE)
+			return state;
+		boolean xLong = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90
+			? !state.getValue(X_LONG) : state.getValue(X_LONG);
+		return remapHorizontalSides(state, rotation.rotate(Direction.NORTH), rotation.rotate(Direction.SOUTH),
+			rotation.rotate(Direction.EAST), rotation.rotate(Direction.WEST), xLong);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		if (mirror == Mirror.NONE)
+			return state;
+		return remapHorizontalSides(state, mirror.mirror(Direction.NORTH), mirror.mirror(Direction.SOUTH),
+			mirror.mirror(Direction.EAST), mirror.mirror(Direction.WEST), state.getValue(X_LONG));
 	}
 
 	@Override
@@ -201,6 +223,33 @@ public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoConta
 		if (cargoLevel > 0)
 			shape = Shapes.or(shape, Block.box(0, 0, 0, 16, cargoLevel, 16));
 		return shape;
+	}
+
+	private static BlockState remapHorizontalSides(BlockState state, Direction north, Direction south,
+		Direction east, Direction west, boolean xLong) {
+		boolean northValue = state.getValue(NORTH);
+		boolean southValue = state.getValue(SOUTH);
+		boolean eastValue = state.getValue(EAST);
+		boolean westValue = state.getValue(WEST);
+		state = state.setValue(NORTH, false)
+			.setValue(SOUTH, false)
+			.setValue(EAST, false)
+			.setValue(WEST, false)
+			.setValue(X_LONG, xLong);
+		state = setSide(state, north, northValue);
+		state = setSide(state, south, southValue);
+		state = setSide(state, east, eastValue);
+		return setSide(state, west, westValue);
+	}
+
+	private static BlockState setSide(BlockState state, Direction direction, boolean value) {
+		return switch (direction) {
+		case NORTH -> state.setValue(NORTH, value);
+		case SOUTH -> state.setValue(SOUTH, value);
+		case EAST -> state.setValue(EAST, value);
+		case WEST -> state.setValue(WEST, value);
+		default -> state;
+		};
 	}
 
 	private boolean isLayerPlacementAttempt(ItemStack stack, BlockHitResult hit) {

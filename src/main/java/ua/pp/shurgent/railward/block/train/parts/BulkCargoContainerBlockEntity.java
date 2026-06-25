@@ -291,6 +291,10 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity
 		return isVirtualCargoView();
 	}
 
+	public boolean isClientCargoViewFor(BlockPos controllerPos) {
+		return isVirtualCargoView() && controllerPos != null && controllerPos.equals(clientCargoControllerPos);
+	}
+
 	public void applyClientCargo(ItemStack displayStack, int amount, int capacity) {
 		applyClientCargo(displayStack, amount, capacity, null, null);
 	}

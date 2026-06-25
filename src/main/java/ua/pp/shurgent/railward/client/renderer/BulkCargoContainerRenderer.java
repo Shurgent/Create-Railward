@@ -50,7 +50,7 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		new Decoration(.67f, .25f, .39f, -21, -6, 8),
 		new Decoration(.43f, .54f, .35f, 43, 10, 4),
 		new Decoration(.79f, .73f, .35f, 78, -8, -7),
-		new Decoration(.18f, .80f, .38f, -52, 5, 11)
+		new Decoration(.34f, .72f, .38f, -52, 5, 11)
 	};
 	private static final Decoration[] ITEM_DECORATIONS = {
 		new Decoration(.17f, .18f, .41f, 40),

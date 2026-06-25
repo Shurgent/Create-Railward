@@ -8,10 +8,8 @@ import javax.annotation.Nullable;
 
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.trains.entity.ArrivalSoundQueue;
-import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
-import com.simibubi.create.content.trains.entity.Train;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -26,8 +24,8 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ua.pp.shurgent.railward.Railward;
-import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleSoundType;
+import ua.pp.shurgent.railward.block.train.parts.ModernWhistleTrainHelper;
 
 @Mod.EventBusSubscriber(modid = Railward.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModernWhistleTrainAudio {
@@ -46,33 +44,12 @@ public class ModernWhistleTrainAudio {
 
 	@Nullable
 	public static ModernWhistleSoundType resolveTrainLeadSoundType(CarriageContraptionEntity carriageEntity) {
-		Carriage carriage = carriageEntity.getCarriage();
-		if (carriage == null || carriage.train == null)
-			return null;
-
-		Train train = carriage.train;
-		for (Carriage currentCarriage : train.carriages) {
-			CarriageContraptionEntity currentEntity = currentCarriage.anyAvailableEntity();
-			if (currentEntity == null)
-				continue;
-
-			WhistleCandidate candidate = findFirstWhistleCandidate(currentEntity);
-			if (candidate == null)
-				continue;
-
-			return resolveSoundType(candidate.blockInfo);
-		}
-
-		return null;
+		return ModernWhistleTrainHelper.resolveTrainLeadSoundType(carriageEntity);
 	}
 
 	@Nullable
 	public static ModernWhistleSoundType resolveSoundType(StructureBlockInfo blockInfo) {
-		if (blockInfo == null)
-			return null;
-		if (!(blockInfo.state.getBlock() instanceof ModernWhistleBlock))
-			return null;
-		return blockInfo.state.getValue(ModernWhistleBlock.SOUND_TYPE);
+		return ModernWhistleTrainHelper.resolveSoundType(blockInfo);
 	}
 
 	public static void tickManualHonk(CarriageContraptionEntity carriageEntity, ModernWhistleSoundType soundType,

@@ -10,14 +10,17 @@ import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 
 import net.minecraft.core.BlockPos;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionCollector;
+import ua.pp.shurgent.railward.block.train.parts.CisternContraptionFluidSync;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
 
 @Mixin(value = AbstractContraptionEntity.class, remap = false)
 public class AbstractContraptionEntityMixin {
 
 	@Inject(method = { "tick", "m_8119_" }, at = @At("TAIL"), require = 0)
-	private void railward$collectBulkCargoItems(CallbackInfo ci) {
-		BulkCargoContraptionCollector.tick((AbstractContraptionEntity) (Object) this);
+	private void railward$tickTrainPartStorage(CallbackInfo ci) {
+		AbstractContraptionEntity entity = (AbstractContraptionEntity) (Object) this;
+		BulkCargoContraptionCollector.tick(entity);
+		CisternContraptionFluidSync.tick(entity);
 	}
 
 	@Inject(method = "stopControlling", at = @At("HEAD"), remap = false)

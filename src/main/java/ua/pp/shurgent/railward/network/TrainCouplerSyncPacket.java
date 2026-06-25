@@ -21,9 +21,9 @@ import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.entity.TrainIconType;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent.Context;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerVisualRebaser;
 
 public class TrainCouplerSyncPacket extends SimplePacketBase {
@@ -195,8 +196,10 @@ public class TrainCouplerSyncPacket extends SimplePacketBase {
 	private static void handleClient(List<Train> trains, List<UUID> trainGraphIds, List<UUID> removedTrainIds,
 		List<EntityBinding> bindings, List<RebaseInstruction> rebases) {
 		Map<UUID, Train> clientTrains = CreateClient.RAILWAYS.trains;
-		for (UUID trainId : removedTrainIds)
+		for (UUID trainId : removedTrainIds) {
 			clientTrains.remove(trainId);
+			LocomotiveBufferLightsTrainState.removeClientDirection(trainId);
+		}
 
 		for (int i = 0; i < trains.size(); i++) {
 			Train train = trains.get(i);

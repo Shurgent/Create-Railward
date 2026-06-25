@@ -133,7 +133,6 @@ repositories {
 	maven { url = 'https://maven.blamejared.com' }  // JEI
 	maven { url = "https://maven.creeperhost.net" } // Create
 	maven { url = "https://maven.tterrag.com" }     // Registrate
-	maven { url = "https://maven.bai.lol" }         // WTHIT
 	
 }
 
@@ -163,11 +162,6 @@ dependencies {
 	compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
 	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-	// WTHIT
-	compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
-	runtimeOnly fg.deobf("mcp.mobius.waila:wthit:forge-${wthit_version}")
-	runtimeOnly fg.deobf("lol.bai:badpackets:forge-${badpackets_version}")
-	
 	// Create
     implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")

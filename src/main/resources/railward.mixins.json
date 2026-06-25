@@ -7,6 +7,7 @@
   "plugin": "ua.pp.shurgent.railward.mixin.RailwardMixinPlugin",
   "mixins": [
     "create.AbstractContraptionEntityMixin",
+    "create.ArrivalSoundQueueMixin",
     "create.CarriageBogeyAccessor",
     "create.CarriageContraptionEntityMixin",
     "create.CarriageContraptionAccessor",
