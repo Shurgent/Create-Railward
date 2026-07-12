@@ -6,10 +6,14 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.trains.entity.ArrivalSoundQueue;
+import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock;
+import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock.WhistleSize;
+import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
+import com.simibubi.create.content.trains.entity.Train;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -129,11 +133,45 @@ public class ModernWhistleTrainAudio {
 			return true;
 		}
 
-		WhistleCandidate candidate = findFirstWhistleCandidate(carriageEntity);
+		TrainWhistleCandidate candidate = findFirstWhistleCandidateInTrain(carriageEntity);
 		if (candidate == null)
 			return false;
 
-		ArrivalSoundQueue.play(carriageEntity, candidate.blockInfo);
+		return playCreateWhistle(candidate.carriageEntity, candidate.blockInfo, volume);
+	}
+
+	@Nullable
+	private static TrainWhistleCandidate findFirstWhistleCandidateInTrain(
+		CarriageContraptionEntity carriageEntity) {
+		Carriage carriage = carriageEntity.getCarriage();
+		if (carriage == null || carriage.train == null)
+			return null;
+
+		Train train = carriage.train;
+		for (Carriage currentCarriage : train.carriages) {
+			CarriageContraptionEntity currentEntity = currentCarriage.anyAvailableEntity();
+			if (currentEntity == null)
+				continue;
+
+			WhistleCandidate candidate = findFirstWhistleCandidate(currentEntity);
+			if (candidate != null)
+				return new TrainWhistleCandidate(currentEntity, candidate.blockInfo);
+		}
+
+		return null;
+	}
+
+	private static boolean playCreateWhistle(CarriageContraptionEntity carriageEntity,
+		StructureBlockInfo blockInfo, float volume) {
+		if (!(blockInfo.state.getBlock() instanceof WhistleBlock) || blockInfo.nbt == null)
+			return false;
+
+		int whistlePitch = blockInfo.nbt.getInt("Pitch");
+		WhistleSize size = blockInfo.state.getValue(WhistleBlock.SIZE);
+		float pitch = (float) Math.pow(2, ((size == WhistleSize.SMALL ? 12 : 0) - whistlePitch) / 12.0);
+		SoundEvent soundEvent = (size == WhistleSize.LARGE ? AllSoundEvents.WHISTLE_TRAIN_LOW
+			: AllSoundEvents.WHISTLE_TRAIN).getMainEvent();
+		playMovingTrainSound(carriageEntity, soundEvent, volume, pitch);
 		return true;
 	}
 
@@ -169,6 +207,10 @@ public class ModernWhistleTrainAudio {
 	}
 
 	private record WhistleCandidate(StructureBlockInfo blockInfo, int score) {
+	}
+
+	private record TrainWhistleCandidate(CarriageContraptionEntity carriageEntity,
+		StructureBlockInfo blockInfo) {
 	}
 
 	private static void clearManualHonks() {
