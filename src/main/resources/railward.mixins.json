@@ -20,6 +20,7 @@
     "create.MountedStorageManagerAccessor",
     "create.PipeConnectionAccessor",
     "create.SlidingDoorBlockEntityAccessor",
+    "create.compat.computercraft.ScheduleRuntimeAccessor",
     "create.compat.computercraft.StationPeripheralMixin",
     "create.TrainMixin",
     "create.TrainAccessor",

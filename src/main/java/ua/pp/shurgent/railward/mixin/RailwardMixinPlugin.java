@@ -28,6 +28,8 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final String PIPE_CONNECTION_ACCESSOR = ".create.PipeConnectionAccessor";
 	private static final String STATION_PERIPHERAL_MIXIN =
 		".create.compat.computercraft.StationPeripheralMixin";
+	private static final String SCHEDULE_RUNTIME_ACCESSOR =
+		".create.compat.computercraft.ScheduleRuntimeAccessor";
 	private static final String COMPUTERCRAFT_MOD_ID = "computercraft";
 	private static final boolean DEFAULT_FIX_CREATE_FLUID_NETWORK = true;
 
@@ -47,7 +49,8 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		if (mixinClassName.endsWith(FLUID_NETWORK_MIXIN) || mixinClassName.endsWith(PIPE_CONNECTION_ACCESSOR))
 			return fixCreateFluidNetwork;
-		if (mixinClassName.endsWith(STATION_PERIPHERAL_MIXIN)) {
+		if (mixinClassName.endsWith(STATION_PERIPHERAL_MIXIN)
+			|| mixinClassName.endsWith(SCHEDULE_RUNTIME_ACCESSOR)) {
 			boolean computerCraftLoaded = isModLoaded(COMPUTERCRAFT_MOD_ID);
 			LOGGER.debug("{} optional CC:Tweaked station peripheral integration.",
 				computerCraftLoaded ? "Enabling" : "Skipping");
