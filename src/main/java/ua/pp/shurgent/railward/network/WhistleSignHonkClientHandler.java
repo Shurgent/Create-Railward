@@ -24,7 +24,8 @@ public class WhistleSignHonkClientHandler {
 			return;
 
 		CarriageContraptionEntity carriageEntity = findFirstCarriageEntity(trainId);
-		if (carriageEntity != null && ModernWhistleTrainAudio.playWhistleSignSequence(carriageEntity, 5f, 1f))
+		if (carriageEntity != null && ModernWhistleTrainAudio.playWhistleSignSequence(carriageEntity,
+			ModernWhistleTrainAudio.TRAIN_WHISTLE_VOLUME, 1f))
 			return;
 
 		Train train = CreateClient.RAILWAYS.trains.get(trainId);

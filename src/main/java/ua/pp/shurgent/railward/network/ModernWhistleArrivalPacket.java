@@ -47,6 +47,7 @@ public class ModernWhistleArrivalPacket extends SimplePacketBase {
 			return;
 		Entity entity = Minecraft.getInstance().level.getEntity(entityId);
 		if (entity instanceof CarriageContraptionEntity carriageEntity)
-			ModernWhistleTrainAudio.playArrivalSequence(carriageEntity, soundType, 5f, 1f);
+			ModernWhistleTrainAudio.playArrivalSequence(carriageEntity, soundType,
+				ModernWhistleTrainAudio.TRAIN_WHISTLE_VOLUME, 1f);
 	}
 }

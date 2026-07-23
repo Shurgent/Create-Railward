@@ -9,6 +9,7 @@
     "create.AbstractContraptionEntityMixin",
     "create.ArrivalSoundQueueMixin",
     "create.CarriageBogeyAccessor",
+    "create.CarriageMixin",
     "create.CarriageContraptionEntityMixin",
     "create.CarriageContraptionAccessor",
     "create.CarriageContraptionMixin",
@@ -19,6 +20,7 @@
     "create.MountedStorageManagerAccessor",
     "create.PipeConnectionAccessor",
     "create.SlidingDoorBlockEntityAccessor",
+    "create.compat.computercraft.StationPeripheralMixin",
     "create.TrainMixin",
     "create.TrainAccessor",
     "create.TrainCargoManagerAccessor"

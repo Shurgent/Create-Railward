@@ -31,7 +31,14 @@ Railward is built around a simple goal: give Create trains stronger railway iden
 
 As the mod grows, this foundation can support richer rail infrastructure, more rolling stock detail, and better-looking train scenes overall.
 
+## Optional CC:Tweaked Integration
+
+When CC:Tweaked is installed, Railward extends Create's `Create_Station`
+peripheral with structured arrival predictions and live schedule information.
+CC:Tweaked is not required and is not bundled with Railward. See the
+[station peripheral documentation](docs/create_station_peripheral.md) for the
+Lua API and examples.
+
 ## License
 
 This project is distributed under the [MIT License](LICENSE.txt).
-

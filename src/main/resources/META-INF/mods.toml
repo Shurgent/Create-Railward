@@ -23,3 +23,17 @@ mandatory=true
 versionRange="[1.18.2,1.19)"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.railward]]
+modId="create"
+mandatory=true
+versionRange="[0.5.1.i,0.5.1.j)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.railward]]
+modId="computercraft"
+mandatory=false
+versionRange="[1.101.3,1.102)"
+ordering="AFTER"
+side="BOTH"

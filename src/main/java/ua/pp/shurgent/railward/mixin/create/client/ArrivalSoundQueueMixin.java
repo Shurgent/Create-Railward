@@ -23,7 +23,8 @@ public abstract class ArrivalSoundQueueMixin {
 		if (soundType == null)
 			return;
 
-		ModernWhistleTrainAudio.playArrivalSequence(carriageEntity, soundType, 5f, 1f);
+		ModernWhistleTrainAudio.playArrivalSequence(carriageEntity, soundType,
+			ModernWhistleTrainAudio.TRAIN_WHISTLE_VOLUME, 1f);
 		ci.cancel();
 	}
 

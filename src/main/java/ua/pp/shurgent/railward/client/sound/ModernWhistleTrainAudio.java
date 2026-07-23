@@ -17,6 +17,9 @@ import com.simibubi.create.content.trains.entity.Train;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -36,6 +39,8 @@ public class ModernWhistleTrainAudio {
 
 	private static final int MANUAL_RELEASE_TICKS = 5;
 	private static final int MANUAL_LOOP_FADE_OUT_TICKS = 4;
+	private static final int TRAIN_WHISTLE_ATTENUATION_DISTANCE = 128;
+	public static final float TRAIN_WHISTLE_VOLUME = .75f;
 	private static final Map<Integer, ManualHonkState> ACTIVE_MANUAL_HONKS = new HashMap<>();
 
 	private ModernWhistleTrainAudio() {
@@ -240,13 +245,28 @@ public class ModernWhistleTrainAudio {
 			syncLocation(carriageEntity);
 		}
 
+		@Override
+		@Nullable
+		public WeighedSoundEvents resolve(SoundManager soundManager) {
+			WeighedSoundEvents soundEvents = super.resolve(soundManager);
+			Sound resolvedSound = sound;
+			if (resolvedSound == SoundManager.EMPTY_SOUND)
+				return soundEvents;
+
+			// Keep train-whistle range independent from playback gain.
+			sound = new Sound(resolvedSound.getLocation().toString(), resolvedSound.getVolume(),
+				resolvedSound.getPitch(), resolvedSound.getWeight(), resolvedSound.getType(),
+				resolvedSound.shouldStream(), resolvedSound.shouldPreload(), TRAIN_WHISTLE_ATTENUATION_DISTANCE);
+			return soundEvents;
+		}
+
 		@Nullable
 		protected CarriageContraptionEntity getCarriageEntity() {
 			CarriageContraptionEntity carriage = carriageEntity.get();
-			if (carriage == null || carriage.isRemoved()) {
-				stop();
+			// Finite sign sequences keep playing from the last known position after
+			// the carriage leaves client tracking range.
+			if (carriage == null || carriage.isRemoved())
 				return null;
-			}
 
 			syncLocation(carriage);
 			return carriage;
@@ -292,8 +312,7 @@ public class ModernWhistleTrainAudio {
 
 		@Override
 		public void tick() {
-			if (getCarriageEntity() == null)
-				return;
+			getCarriageEntity();
 
 			pitch = basePitch;
 			if (sustainTicks-- <= 0) {
@@ -331,8 +350,10 @@ public class ModernWhistleTrainAudio {
 
 		@Override
 		public void tick() {
-			if (getCarriageEntity() == null)
+			if (getCarriageEntity() == null) {
+				stop();
 				return;
+			}
 
 			if (stopped) {
 				stop();
@@ -365,7 +386,7 @@ public class ModernWhistleTrainAudio {
 			this.carriageEntity = new WeakReference<>(carriageEntity);
 			this.soundType = soundType;
 			this.loopStartDelayTicks = soundType.getLoopStartDelayTicks();
-			playMovingTrainSound(carriageEntity, soundType.getStartEvent(), 1f, 1f);
+			playMovingTrainSound(carriageEntity, soundType.getStartEvent(), TRAIN_WHISTLE_VOLUME, 1f);
 		}
 
 		private boolean matches(CarriageContraptionEntity carriageEntity, ModernWhistleSoundType soundType) {
@@ -389,7 +410,7 @@ public class ModernWhistleTrainAudio {
 				releasing = true;
 				if (loopSound != null)
 					loopSound.fadeOut();
-				playMovingTrainSound(carriageEntity, soundType.getEndEvent(), 1f, 1f);
+				playMovingTrainSound(carriageEntity, soundType.getEndEvent(), TRAIN_WHISTLE_VOLUME, 1f);
 				lastHonkTicks = honkTicks;
 				return;
 			}
@@ -408,7 +429,8 @@ public class ModernWhistleTrainAudio {
 					return;
 				}
 
-				loopSound = new ManualTrainLoopSound(soundType, carriageEntity, 1f, 1f);
+				loopSound =
+					new ManualTrainLoopSound(soundType, carriageEntity, TRAIN_WHISTLE_VOLUME, 1f);
 				Minecraft.getInstance()
 					.getSoundManager()
 					.queueTickingSound(loopSound);

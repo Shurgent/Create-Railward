@@ -16,6 +16,9 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import com.mojang.logging.LogUtils;
 
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.LoadingModList;
+
 public class RailwardMixinPlugin implements IMixinConfigPlugin {
 
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -23,6 +26,9 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final String FIX_CREATE_FLUID_NETWORK = "fixCreateFluidNetwork";
 	private static final String FLUID_NETWORK_MIXIN = ".create.FluidNetworkMixin";
 	private static final String PIPE_CONNECTION_ACCESSOR = ".create.PipeConnectionAccessor";
+	private static final String STATION_PERIPHERAL_MIXIN =
+		".create.compat.computercraft.StationPeripheralMixin";
+	private static final String COMPUTERCRAFT_MOD_ID = "computercraft";
 	private static final boolean DEFAULT_FIX_CREATE_FLUID_NETWORK = true;
 
 	private boolean fixCreateFluidNetwork = DEFAULT_FIX_CREATE_FLUID_NETWORK;
@@ -41,6 +47,12 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		if (mixinClassName.endsWith(FLUID_NETWORK_MIXIN) || mixinClassName.endsWith(PIPE_CONNECTION_ACCESSOR))
 			return fixCreateFluidNetwork;
+		if (mixinClassName.endsWith(STATION_PERIPHERAL_MIXIN)) {
+			boolean computerCraftLoaded = isModLoaded(COMPUTERCRAFT_MOD_ID);
+			LOGGER.debug("{} optional CC:Tweaked station peripheral integration.",
+				computerCraftLoaded ? "Enabling" : "Skipping");
+			return computerCraftLoaded;
+		}
 		return true;
 	}
 
@@ -117,6 +129,11 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 		LOGGER.warn("Invalid boolean value '{}' for {} in {}. Using default {}.", value, key, CONFIG_FILE_NAME,
 			fallback);
 		return fallback;
+	}
+
+	private boolean isModLoaded(String modId) {
+		LoadingModList modList = FMLLoader.getLoadingModList();
+		return modList != null && modList.getModFileById(modId) != null;
 	}
 
 }

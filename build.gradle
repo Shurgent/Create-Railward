@@ -133,6 +133,10 @@ repositories {
 	maven { url = 'https://maven.blamejared.com' }  // JEI
 	maven { url = "https://maven.creeperhost.net" } // Create
 	maven { url = "https://maven.tterrag.com" }     // Registrate
+	maven {
+		url = "https://squiddev.cc/maven/"
+		content { includeGroup "org.squiddev" }
+	} // Optional CC: Tweaked integration
 	
 }
 
@@ -167,6 +171,10 @@ dependencies {
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+	// Optional CC: Tweaked integration. The API is compile-only: CC:Tweaked is
+	// neither bundled nor required at runtime by Create: Railward.
+	compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}:api")
 	
 }
 
