@@ -169,3 +169,239 @@ end
 
 All existing Create station methods (`getSchedule`, `setSchedule`,
 `getTrainName`, `isTrainPresent`, and others) remain unchanged.
+
+## Networked train information board
+
+The following program discovers every color monitor and `Create_Station`
+peripheral visible on the computer's modem network. It combines and sorts the
+arrivals from all stations, then draws the same board on every monitor. Each
+monitor is laid out independently, so the `Destination` column uses all space
+left by the fixed-width columns.
+
+With one connected station, the platform is always `1`. With multiple
+stations, the last number in each station name is used. Consequently, platform
+station names should end in a number, for example `Spawn Central P1`. A station
+whose name does not end in a number is shown as `--`.
+
+While a train is present at its station, its `Arr` value is shown as ` now `.
+
+Save the program as `startup.lua` to start it automatically:
+
+```lua
+local BOARD_TITLE = "TRAIN DEPARTURES"
+local TEXT_SCALE = 0.5
+local REFRESH_SECONDS = 1
+
+local TRAIN_WIDTH = 8
+local ARRIVAL_WIDTH = 5
+local DEPARTURE_WIDTH = 5
+local PLATFORM_WIDTH = 2
+local SEPARATOR_WIDTH = 1
+local FIXED_WIDTH = TRAIN_WIDTH
+    + ARRIVAL_WIDTH
+    + DEPARTURE_WIDTH
+    + PLATFORM_WIDTH
+    + SEPARATOR_WIDTH * 4
+local MINIMUM_WIDTH = FIXED_WIDTH + 1
+
+local function fit(value, width)
+    local text = tostring(value or "")
+    if #text > width then
+        return text:sub(1, width)
+    end
+    return text .. string.rep(" ", width - #text)
+end
+
+local function writeAt(monitor, x, y, text)
+    monitor.setCursorPos(x, y)
+    monitor.write(text)
+end
+
+local function findColorMonitors()
+    local monitors = {}
+
+    for _, monitor in ipairs({ peripheral.find("monitor") }) do
+        local colorOk, isColor = pcall(monitor.isColor)
+        local scaleOk = pcall(monitor.setTextScale, TEXT_SCALE)
+        if colorOk and isColor and scaleOk then
+            table.insert(monitors, monitor)
+        end
+    end
+
+    return monitors
+end
+
+local function getPlatform(station, stationCount)
+    if stationCount == 1 then
+        return "1"
+    end
+
+    local ok, stationName = pcall(station.getStationName)
+    if not ok then
+        return "--"
+    end
+
+    return tostring(stationName):match("(%d+)%s*$") or "--"
+end
+
+local function sortableArrivalTicks(arrival)
+    local ticks = tonumber(arrival.arrival_ticks)
+    if not ticks or ticks < 0 then
+        return math.huge
+    end
+    return ticks
+end
+
+local function collectArrivals(stations, limit)
+    local result = {}
+
+    for _, station in ipairs(stations) do
+        local platform = getPlatform(station, #stations)
+        local scheduleOk, presentSchedule = pcall(station.getTrainSchedule)
+        local presentTrainId = scheduleOk and presentSchedule.train_id or nil
+        local ok, arrivals = pcall(station.getArrivals, limit)
+
+        if ok then
+            for _, arrival in ipairs(arrivals) do
+                arrival.platform = platform
+                arrival.at_station = presentTrainId ~= nil
+                    and arrival.train_id == presentTrainId
+                table.insert(result, arrival)
+            end
+        end
+    end
+
+    table.sort(result, function(a, b)
+        local aTicks = sortableArrivalTicks(a)
+        local bTicks = sortableArrivalTicks(b)
+
+        if aTicks ~= bTicks then
+            return aTicks < bTicks
+        end
+        return tostring(a.train_name) < tostring(b.train_name)
+    end)
+
+    return result
+end
+
+local function displayTime(value, predictable)
+    if predictable and type(value) == "string" and #value == 5 then
+        return value
+    end
+    return "--:--"
+end
+
+local function displayArrivalTime(arrival)
+    if arrival.at_station then
+        return " now "
+    end
+    return displayTime(arrival.arrival_time, arrival.arrival_predictable)
+end
+
+local function drawBoard(monitor, arrivals)
+    local width, height = monitor.getSize()
+
+    monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.white)
+    monitor.clear()
+
+    local clock = textutils.formatTime(os.time(), true)
+    local clockX = math.max(1, width - #clock + 1)
+
+    monitor.setBackgroundColor(colors.blue)
+    monitor.setTextColor(colors.white)
+    writeAt(monitor, 1, 1, fit(BOARD_TITLE, width))
+
+    monitor.setBackgroundColor(colors.yellow)
+    monitor.setTextColor(colors.black)
+    writeAt(monitor, clockX, 1, clock)
+
+    if width < MINIMUM_WIDTH or height < 3 then
+        return
+    end
+
+    local destinationWidth = width - FIXED_WIDTH
+    local trainX = 1
+    local destinationX = trainX + TRAIN_WIDTH + SEPARATOR_WIDTH
+    local arrivalX = destinationX + destinationWidth + SEPARATOR_WIDTH
+    local departureX = arrivalX + ARRIVAL_WIDTH + SEPARATOR_WIDTH
+    local platformX = departureX + DEPARTURE_WIDTH + SEPARATOR_WIDTH
+
+    monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.white)
+    writeAt(monitor, trainX, 2, fit("Train", TRAIN_WIDTH))
+    writeAt(monitor, destinationX, 2, fit("Destination", destinationWidth))
+    writeAt(monitor, arrivalX, 2, fit("Arr", ARRIVAL_WIDTH))
+    writeAt(monitor, departureX, 2, fit("Dep", DEPARTURE_WIDTH))
+    writeAt(monitor, platformX, 2, fit("Plat", PLATFORM_WIDTH))
+
+    monitor.setTextColor(colors.green)
+    for row = 3, height do
+        local arrival = arrivals[row - 2]
+        if arrival then
+            writeAt(monitor, trainX, row, fit(arrival.train_name, TRAIN_WIDTH))
+            writeAt(
+                monitor,
+                destinationX,
+                row,
+                fit(arrival.destination, destinationWidth)
+            )
+            writeAt(
+                monitor,
+                arrivalX,
+                row,
+                fit(
+                    displayArrivalTime(arrival),
+                    ARRIVAL_WIDTH
+                )
+            )
+            writeAt(
+                monitor,
+                departureX,
+                row,
+                fit(
+                    displayTime(
+                        arrival.departure_time,
+                        arrival.departure_predictable
+                    ),
+                    DEPARTURE_WIDTH
+                )
+            )
+            writeAt(
+                monitor,
+                platformX,
+                row,
+                fit(arrival.platform, PLATFORM_WIDTH)
+            )
+        end
+    end
+end
+
+while true do
+    local monitors = findColorMonitors()
+    local stations = { peripheral.find("Create_Station") }
+    local maximumRows = 0
+
+    for _, monitor in ipairs(monitors) do
+        local _, height = monitor.getSize()
+        maximumRows = math.max(maximumRows, height - 2)
+    end
+
+    if maximumRows > 0 then
+        local arrivals = collectArrivals(stations, maximumRows)
+        for _, monitor in ipairs(monitors) do
+            pcall(drawBoard, monitor, arrivals)
+        end
+    end
+
+    sleep(REFRESH_SECONDS)
+end
+```
+
+`peripheral.find()` includes peripherals reached through an attached wired
+modem network, so the program does not depend on computer side names and also
+handles peripherals being added or removed while it runs. In CC:Tweaked,
+wireless modems exchange messages between computers but do not expose remote
+peripherals to `peripheral.find()`. A wireless link therefore requires a
+computer at the remote wired network to forward station data or display
+commands over `rednet`.
