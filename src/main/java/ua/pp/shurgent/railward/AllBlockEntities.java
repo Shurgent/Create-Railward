@@ -46,7 +46,7 @@ public class AllBlockEntities {
 	public static final BlockEntityEntry<CopycatBlockEntity> WALL_PANEL_COPYCAT = REGISTRATE
 			.blockEntity("train/parts/wall_panel_copycat", CopycatBlockEntity::new)
 			.validBlocks(AllBlocks.WALL_PANEL_VERTICAL_SLICE, AllBlocks.WALL_PANEL_HORIZONTAL_SLICE,
-					AllBlocks.WALL_PANEL_CORNER)
+					AllBlocks.WALL_PANEL_CORNER, AllBlocks.HALF_WALL_PANEL)
 			.register();
 
 	public static final BlockEntityEntry<SlidingDoorBlockEntity> HINGED_TRAIN_DOOR = REGISTRATE

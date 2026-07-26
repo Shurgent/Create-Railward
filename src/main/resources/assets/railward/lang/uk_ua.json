@@ -217,5 +217,6 @@
     "block.railward.train.parts.railing_gray":  "Сірі поручні",
     "block.railward.train.parts.wall_panel_vertical_slice": "Вертикальний зріз стінової панелі",
     "block.railward.train.parts.wall_panel_horizontal_slice": "Горизонтальний зріз стінової панелі",
-    "block.railward.train.parts.wall_panel_corner": "Кут стінової панелі"
+    "block.railward.train.parts.wall_panel_corner": "Кут стінової панелі",
+    "block.railward.train.parts.half_wall_panel": "Половинна стінова панель"
 }

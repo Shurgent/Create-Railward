@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "forge:ingots/zinc"
+  },
+  "result": "railward:train/parts/half_wall_panel",
+  "count": 8
+}

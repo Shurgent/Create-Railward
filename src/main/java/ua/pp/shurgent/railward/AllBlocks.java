@@ -45,6 +45,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
@@ -124,6 +125,17 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_corner")))
+			.build()
+			.register();
+
+	public static final BlockEntry<HalfWallPanelBlock> HALF_WALL_PANEL = REGISTRATE
+			.block("train/parts/half_wall_panel", HalfWallPanelBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(CreateRegistrate.blockModel(
+					() -> model -> new WallPanelCopycatModel(model, Shape.HALF_PANEL)))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/half_wall_panel")))
 			.build()
 			.register();
 

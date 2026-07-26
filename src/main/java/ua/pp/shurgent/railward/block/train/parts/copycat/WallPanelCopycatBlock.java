@@ -101,6 +101,18 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 		double sizeZ = transformed.maxZ - transformed.minZ;
 		boolean waterlogged = state.getValue(WATERLOGGED);
 
+		if (Math.abs(sizeY - .5) < .01 && (sizeX > .5 || sizeZ > .5)) {
+			Direction facing;
+			if (sizeX > .5)
+				facing = transformed.minZ > .5 ? Direction.SOUTH : Direction.NORTH;
+			else
+				facing = transformed.minX > .5 ? Direction.EAST : Direction.WEST;
+			return AllBlocks.HALF_WALL_PANEL.getDefaultState()
+					.setValue(HalfWallPanelBlock.FACING, facing)
+					.setValue(HalfWallPanelBlock.HALF, transformed.minY > .25 ? Half.TOP : Half.BOTTOM)
+					.setValue(WATERLOGGED, waterlogged);
+		}
+
 		if (sizeY > .5) {
 			Direction corner = cornerFacing(transformed.minX, transformed.minZ);
 			return AllBlocks.WALL_PANEL_VERTICAL_SLICE.getDefaultState()

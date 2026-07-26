@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
+import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
@@ -31,7 +32,8 @@ public class WallPanelCopycatModel extends CopycatModel {
 	public enum Shape {
 		VERTICAL_SLICE,
 		HORIZONTAL_SLICE,
-		CORNER
+		CORNER,
+		HALF_PANEL
 	}
 
 	private final Shape shape;
@@ -50,6 +52,9 @@ public class WallPanelCopycatModel extends CopycatModel {
 			return templateQuads;
 
 		AABB target = getTargetBounds(state);
+		if (shape == Shape.HALF_PANEL)
+			return getHalfPanelQuads(templateQuads, target);
+
 		List<BakedQuad> result = new ArrayList<>(templateQuads.size());
 		for (BakedQuad quad : templateQuads) {
 			Crop crop = cropForFace(target, quad.getDirection());
@@ -59,11 +64,99 @@ public class WallPanelCopycatModel extends CopycatModel {
 		return result;
 	}
 
+	/**
+	 * A half panel cannot use one continuous crop of the source model: that would
+	 * put the source texture's middle across its cut edge. Copycats+ solves this
+	 * by assembling the shape from four edge crops. We use the same layout,
+	 * adapted to a 3 px panel: two 4 px-high strips and 1 px + 2 px depth strips.
+	 */
+	private static List<BakedQuad> getHalfPanelQuads(List<BakedQuad> templateQuads, AABB target) {
+		List<Piece> pieces = getHalfPanelPieces(target);
+		List<BakedQuad> result = new ArrayList<>(templateQuads.size() * 2);
+
+		for (BakedQuad quad : templateQuads) {
+			Direction face = quad.getDirection();
+			for (Piece piece : pieces) {
+				if (!isOuterFace(piece.destination, target, face))
+					continue;
+
+				Vec3 offset = new Vec3(
+						piece.destination.minX - piece.source.minX,
+						piece.destination.minY - piece.source.minY,
+						piece.destination.minZ - piece.source.minZ);
+				result.add(BakedQuadHelper.cloneWithCustomGeometry(quad,
+						BakedModelHelper.cropAndMove(quad.getVertices(), quad.getSprite(), piece.source, offset)));
+			}
+		}
+
+		return result;
+	}
+
+	private static List<Piece> getHalfPanelPieces(AABB target) {
+		double middleY = target.minY + .25;
+		Segment[] vertical = {
+				new Segment(target.minY, middleY, 0, .25),
+				new Segment(middleY, target.maxY, .75, 1)
+		};
+
+		boolean normalIsX = target.maxX - target.minX < .5;
+		double normalMin = normalIsX ? target.minX : target.minZ;
+		double normalMax = normalIsX ? target.maxX : target.maxZ;
+		boolean positiveSide = normalMin > .5;
+		Segment outer = positiveSide
+				? new Segment(normalMax - 1 / 16d, normalMax, 15 / 16d, 1)
+				: new Segment(normalMin, normalMin + 1 / 16d, 0, 1 / 16d);
+		Segment inner = positiveSide
+				? new Segment(normalMin, normalMax - 1 / 16d, 0, 2 / 16d)
+				: new Segment(normalMin + 1 / 16d, normalMax, 14 / 16d, 1);
+
+		List<Piece> pieces = new ArrayList<>(4);
+		for (Segment y : vertical)
+			for (Segment normal : new Segment[] { outer, inner }) {
+				AABB source;
+				AABB destination;
+				if (normalIsX) {
+					source = new AABB(normal.sourceMin, y.sourceMin, 0,
+							normal.sourceMax, y.sourceMax, 1);
+					destination = new AABB(normal.destinationMin, y.destinationMin, 0,
+							normal.destinationMax, y.destinationMax, 1);
+				} else {
+					source = new AABB(0, y.sourceMin, normal.sourceMin,
+							1, y.sourceMax, normal.sourceMax);
+					destination = new AABB(0, y.destinationMin, normal.destinationMin,
+							1, y.destinationMax, normal.destinationMax);
+				}
+				pieces.add(new Piece(source, destination));
+			}
+		return pieces;
+	}
+
+	private static boolean isOuterFace(AABB piece, AABB target, Direction face) {
+		double pieceFace = switch (face) {
+			case WEST -> piece.minX;
+			case EAST -> piece.maxX;
+			case DOWN -> piece.minY;
+			case UP -> piece.maxY;
+			case NORTH -> piece.minZ;
+			case SOUTH -> piece.maxZ;
+		};
+		double targetFace = switch (face) {
+			case WEST -> target.minX;
+			case EAST -> target.maxX;
+			case DOWN -> target.minY;
+			case UP -> target.maxY;
+			case NORTH -> target.minZ;
+			case SOUTH -> target.maxZ;
+		};
+		return Math.abs(pieceFace - targetFace) < .001;
+	}
+
 	private AABB getTargetBounds(BlockState state) {
 		return switch (shape) {
 			case VERTICAL_SLICE -> WallPanelVerticalSliceBlock.getBounds(state);
 			case HORIZONTAL_SLICE -> WallPanelHorizontalSliceBlock.getBounds(state);
 			case CORNER -> WallPanelCornerBlock.getBounds(state);
+			case HALF_PANEL -> HalfWallPanelBlock.getBounds(state);
 		};
 	}
 
@@ -95,5 +188,11 @@ public class WallPanelCopycatModel extends CopycatModel {
 	}
 
 	private record Crop(AABB source, Vec3 offset) {
+	}
+
+	private record Segment(double destinationMin, double destinationMax, double sourceMin, double sourceMax) {
+	}
+
+	private record Piece(AABB source, AABB destination) {
 	}
 }

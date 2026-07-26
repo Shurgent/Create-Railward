@@ -217,5 +217,6 @@
     "block.railward.train.parts.railing_gray":  "Gray Railings",
     "block.railward.train.parts.wall_panel_vertical_slice": "Wall Panel Vertical Slice",
     "block.railward.train.parts.wall_panel_horizontal_slice": "Wall Panel Horizontal Slice",
-    "block.railward.train.parts.wall_panel_corner": "Wall Panel Corner"
+    "block.railward.train.parts.wall_panel_corner": "Wall Panel Corner",
+    "block.railward.train.parts.half_wall_panel": "Half Wall Panel"
 }
