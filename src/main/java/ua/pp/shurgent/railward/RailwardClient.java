@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import ua.pp.shurgent.railward.client.RailwardContraptionGoggleOverlay;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPreview;
+import ua.pp.shurgent.railward.client.renderer.RailingInteractionHighlight;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -19,6 +20,7 @@ public class RailwardClient {
 		
 		modEventBus.addListener(RailwardClient::clientInit);
 		forgeEventBus.addListener(LocomotiveBufferLightsPlacementPreview::render);
+		forgeEventBus.addListener(RailingInteractionHighlight::render);
 		forgeEventBus.addListener(WagonFrameInteractionHighlight::render);
 		
 	}

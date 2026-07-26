@@ -34,6 +34,11 @@
                    "railward:train/parts/train_sliding_door_green_window_small",
                    "railward:train/parts/train_sliding_door_green_window_big",
                    "railward:train/parts/train_sliding_door_light_blue_window_small",
-                   "railward:train/parts/train_sliding_door_light_blue_window_big"
+                   "railward:train/parts/train_sliding_door_light_blue_window_big",
+                   "railward:train/parts/railing_red",
+                   "railward:train/parts/railing_yellow",
+                   "railward:train/parts/railing_orange",
+                   "railward:train/parts/railing_white",
+                   "railward:train/parts/railing_gray"
                ]
 }

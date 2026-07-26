@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "railward:block/train/parts/train_wall_green_hood",
+    "down": "railward:block/train/parts/train_wall_green_smooth",
+    "up": "railward:block/train/parts/train_wall_green_smooth",
+    "north": "railward:block/train/parts/train_wall_green_hood",
+    "south": "railward:block/train/parts/train_wall_green_hood",
+    "west": "railward:block/train/parts/train_wall_green_hood",
+    "east": "railward:block/train/parts/train_wall_green_hood"
+  }
+}

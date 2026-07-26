@@ -99,6 +99,8 @@
     "railward.train_coupler.auto.coupled":  "%2$s attached to %1$s",
     "block.railward.train.parts.train_wall_blue_smooth":  "Train Wall (Blue, smooth)",
     "block.railward.train.parts.train_wall_panel_blue_smooth":  "Train Wall Panel (Blue, smooth)",
+    "block.railward.train.parts.train_wall_blue_hood":  "Train Wall (Blue) (hood)",
+    "block.railward.train.parts.train_wall_panel_blue_hood":  "Train Wall Panel (Blue) (hood)",
     "block.railward.train.parts.train_wall_blue_grille":  "Train Wall (Blue grille)",
     "block.railward.train.parts.train_wall_panel_blue_grille":  "Train Wall Panel (Blue grille)",
     "block.railward.train.parts.train_wall_blue_stripe_yellow_smooth":  "Train Wall (Blue, smooth with yellow stripe)",
@@ -123,6 +125,8 @@
     "block.railward.train.parts.train_wall_panel_blue_window_big_smooth_frame_white":  "Train Wall Panel (Blue, smooth with big window and white frame)",
     "block.railward.train.parts.train_wall_green_smooth":  "Train Wall (Green, smooth)",
     "block.railward.train.parts.train_wall_panel_green_smooth":  "Train Wall Panel (Green, smooth)",
+    "block.railward.train.parts.train_wall_green_hood":  "Train Wall (Green) (hood)",
+    "block.railward.train.parts.train_wall_panel_green_hood":  "Train Wall Panel (Green) (hood)",
     "block.railward.train.parts.train_wall_green_grille":  "Train Wall (Green grille)",
     "block.railward.train.parts.train_wall_panel_green_grille":  "Train Wall Panel (Green grille)",
     "block.railward.train.parts.train_wall_green_stripe_yellow_smooth":  "Train Wall (Green, smooth with yellow stripe)",
@@ -147,6 +151,8 @@
     "block.railward.train.parts.train_wall_panel_green_window_big_smooth_frame_white":  "Train Wall Panel (Green, smooth with big window and white frame)",
     "block.railward.train.parts.train_wall_light_blue_smooth":  "Train Wall (Light Blue, smooth)",
     "block.railward.train.parts.train_wall_panel_light_blue_smooth":  "Train Wall Panel (Light Blue, smooth)",
+    "block.railward.train.parts.train_wall_light_blue_hood":  "Train Wall (Light Blue) (hood)",
+    "block.railward.train.parts.train_wall_panel_light_blue_hood":  "Train Wall Panel (Light Blue) (hood)",
     "block.railward.train.parts.train_wall_light_blue_grille":  "Train Wall (Light Blue grille)",
     "block.railward.train.parts.train_wall_panel_light_blue_grille":  "Train Wall Panel (Light Blue grille)",
     "block.railward.train.parts.train_wall_light_blue_stripe_yellow_smooth":  "Train Wall (Light Blue, smooth with yellow stripe)",
@@ -203,5 +209,10 @@
     "block.railward.train.parts.train_sliding_door_stripped_jungle":  "Sliding Train Door (Stripped Jungle)",
     "block.railward.train.parts.train_sliding_door_stripped_oak":  "Sliding Train Door (Stripped Oak)",
     "block.railward.train.parts.train_sliding_door_stripped_spruce":  "Sliding Train Door (Stripped Spruce)",
-    "block.railward.train.parts.train_sliding_door_stripped_warped":  "Sliding Train Door (Stripped Warped)"
+    "block.railward.train.parts.train_sliding_door_stripped_warped":  "Sliding Train Door (Stripped Warped)",
+    "block.railward.train.parts.railing_red":  "Red Railings",
+    "block.railward.train.parts.railing_yellow":  "Yellow Railings",
+    "block.railward.train.parts.railing_orange":  "Orange Railings",
+    "block.railward.train.parts.railing_white":  "White Railings",
+    "block.railward.train.parts.railing_gray":  "Gray Railings"
 }

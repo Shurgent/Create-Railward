@@ -1,0 +1,22 @@
+{
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "railward:block/train/parts/railing_base",
+    "railing": "railward:block/train/parts/railing_base"
+  },
+  "elements": [
+    {
+      "from": [0, 2, 0],
+      "to": [2, 7, 2],
+      "faces": {
+        "north": { "texture": "#railing" },
+        "east": { "texture": "#railing" },
+        "south": { "texture": "#railing" },
+        "west": { "texture": "#railing" },
+        "up": { "texture": "#railing" },
+        "down": { "texture": "#railing" }
+      }
+    }
+  ]
+}

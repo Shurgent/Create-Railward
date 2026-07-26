@@ -3,6 +3,7 @@
   "values": [
     "railward:train/parts/train_wall_green",
     "railward:train/parts/train_wall_green_smooth",
+    "railward:train/parts/train_wall_green_hood",
     "railward:train/parts/train_wall_green_grille"
   ]
 }

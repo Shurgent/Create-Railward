@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/railing/empty",
+  "textures": {
+    "particle": "railward:block/train/parts/railing_yellow"
+  }
+}

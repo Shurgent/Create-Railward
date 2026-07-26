@@ -99,6 +99,8 @@
     "railward.train_coupler.auto.coupled":  "К %1$s прицеплен %2$s",
     "block.railward.train.parts.train_wall_blue_smooth":  "Стена поезда (синяя, гладкая)",
     "block.railward.train.parts.train_wall_panel_blue_smooth":  "Панель стены поезда (синяя, гладкая)",
+    "block.railward.train.parts.train_wall_blue_hood":  "Стена поезда (синяя) (капот)",
+    "block.railward.train.parts.train_wall_panel_blue_hood":  "Панель стены поезда (синяя) (капот)",
     "block.railward.train.parts.train_wall_blue_grille":  "Стена поезда (синяя с решеткой)",
     "block.railward.train.parts.train_wall_panel_blue_grille":  "Панель стены поезда (синяя с решеткой)",
     "block.railward.train.parts.train_wall_blue_stripe_yellow_smooth":  "Стена поезда (синяя, гладкая с желтой полосой)",
@@ -123,6 +125,8 @@
     "block.railward.train.parts.train_wall_panel_blue_window_big_smooth_frame_white":  "Панель стены поезда (синяя, гладкая с большим окном и белой рамкой)",
     "block.railward.train.parts.train_wall_green_smooth":  "Стена поезда (зеленая, гладкая)",
     "block.railward.train.parts.train_wall_panel_green_smooth":  "Панель стены поезда (зеленая, гладкая)",
+    "block.railward.train.parts.train_wall_green_hood":  "Стена поезда (зеленая) (капот)",
+    "block.railward.train.parts.train_wall_panel_green_hood":  "Панель стены поезда (зеленая) (капот)",
     "block.railward.train.parts.train_wall_green_grille":  "Стена поезда (зеленая с решеткой)",
     "block.railward.train.parts.train_wall_panel_green_grille":  "Панель стены поезда (зеленая с решеткой)",
     "block.railward.train.parts.train_wall_green_stripe_yellow_smooth":  "Стена поезда (зеленая, гладкая с желтой полосой)",
@@ -147,6 +151,8 @@
     "block.railward.train.parts.train_wall_panel_green_window_big_smooth_frame_white":  "Панель стены поезда (зеленая, гладкая с большим окном и белой рамкой)",
     "block.railward.train.parts.train_wall_light_blue_smooth":  "Стена поезда (голубая, гладкая)",
     "block.railward.train.parts.train_wall_panel_light_blue_smooth":  "Панель стены поезда (голубая, гладкая)",
+    "block.railward.train.parts.train_wall_light_blue_hood":  "Стена поезда (голубая) (капот)",
+    "block.railward.train.parts.train_wall_panel_light_blue_hood":  "Панель стены поезда (голубая) (капот)",
     "block.railward.train.parts.train_wall_light_blue_grille":  "Стена поезда (голубая с решеткой)",
     "block.railward.train.parts.train_wall_panel_light_blue_grille":  "Панель стены поезда (голубая с решеткой)",
     "block.railward.train.parts.train_wall_light_blue_stripe_yellow_smooth":  "Стена поезда (голубая, гладкая с желтой полосой)",
@@ -203,5 +209,10 @@
     "block.railward.train.parts.train_sliding_door_stripped_jungle":  "Sliding Train Door (Stripped Jungle)",
     "block.railward.train.parts.train_sliding_door_stripped_oak":  "Sliding Train Door (Stripped Oak)",
     "block.railward.train.parts.train_sliding_door_stripped_spruce":  "Sliding Train Door (Stripped Spruce)",
-    "block.railward.train.parts.train_sliding_door_stripped_warped":  "Sliding Train Door (Stripped Warped)"
+    "block.railward.train.parts.train_sliding_door_stripped_warped":  "Sliding Train Door (Stripped Warped)",
+    "block.railward.train.parts.railing_red":  "Красные поручни",
+    "block.railward.train.parts.railing_yellow":  "Жёлтые поручни",
+    "block.railward.train.parts.railing_orange":  "Оранжевые поручни",
+    "block.railward.train.parts.railing_white":  "Белые поручни",
+    "block.railward.train.parts.railing_gray":  "Серые поручни"
 }

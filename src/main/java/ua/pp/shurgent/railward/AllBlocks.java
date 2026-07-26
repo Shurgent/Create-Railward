@@ -37,6 +37,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
+import ua.pp.shurgent.railward.block.train.parts.RailingBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
@@ -379,6 +380,7 @@ public class AllBlocks {
 			.build().register();
 
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_SMOOTH = trainWallVariant("train_wall_blue_smooth", MaterialColor.COLOR_BLUE, false);
+	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_HOOD = trainWallVariant("train_wall_blue_hood", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_GRILLE = trainWallVariant("train_wall_blue_grille", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_STRIPE_YELLOW_SMOOTH = trainWallVariant("train_wall_blue_stripe_yellow_smooth", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_STRIPE_YELLOW_GRILLE = trainWallVariant("train_wall_blue_stripe_yellow_grille", MaterialColor.COLOR_BLUE, false);
@@ -392,6 +394,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallVariant("train_wall_blue_window_big_smooth_frame_white", MaterialColor.COLOR_BLUE, true);
 
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_SMOOTH = trainWallPanelVariant("train_wall_panel_blue_smooth", MaterialColor.COLOR_BLUE, false);
+	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_HOOD = trainWallPanelVariant("train_wall_panel_blue_hood", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_GRILLE = trainWallPanelVariant("train_wall_panel_blue_grille", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW_SMOOTH = trainWallPanelVariant("train_wall_panel_blue_stripe_yellow_smooth", MaterialColor.COLOR_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW_GRILLE = trainWallPanelVariant("train_wall_panel_blue_stripe_yellow_grille", MaterialColor.COLOR_BLUE, false);
@@ -405,6 +408,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_blue_window_big_smooth_frame_white", MaterialColor.COLOR_BLUE, true);
 
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_SMOOTH = trainWallVariant("train_wall_green_smooth", MaterialColor.COLOR_GREEN, false);
+	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_HOOD = trainWallVariant("train_wall_green_hood", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_GRILLE = trainWallVariant("train_wall_green_grille", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_STRIPE_YELLOW_SMOOTH = trainWallVariant("train_wall_green_stripe_yellow_smooth", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_STRIPE_YELLOW_GRILLE = trainWallVariant("train_wall_green_stripe_yellow_grille", MaterialColor.COLOR_GREEN, false);
@@ -418,6 +422,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_GREEN_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallVariant("train_wall_green_window_big_smooth_frame_white", MaterialColor.COLOR_GREEN, true);
 
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_SMOOTH = trainWallPanelVariant("train_wall_panel_green_smooth", MaterialColor.COLOR_GREEN, false);
+	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_HOOD = trainWallPanelVariant("train_wall_panel_green_hood", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_GRILLE = trainWallPanelVariant("train_wall_panel_green_grille", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW_SMOOTH = trainWallPanelVariant("train_wall_panel_green_stripe_yellow_smooth", MaterialColor.COLOR_GREEN, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_STRIPE_YELLOW_GRILLE = trainWallPanelVariant("train_wall_panel_green_stripe_yellow_grille", MaterialColor.COLOR_GREEN, false);
@@ -431,6 +436,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_GREEN_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_green_window_big_smooth_frame_white", MaterialColor.COLOR_GREEN, true);
 
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_SMOOTH = trainWallVariant("train_wall_light_blue_smooth", MaterialColor.COLOR_LIGHT_BLUE, false);
+	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_HOOD = trainWallVariant("train_wall_light_blue_hood", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_GRILLE = trainWallVariant("train_wall_light_blue_grille", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_STRIPE_YELLOW_SMOOTH = trainWallVariant("train_wall_light_blue_stripe_yellow_smooth", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_STRIPE_YELLOW_GRILLE = trainWallVariant("train_wall_light_blue_stripe_yellow_grille", MaterialColor.COLOR_LIGHT_BLUE, false);
@@ -444,6 +450,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_LIGHT_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallVariant("train_wall_light_blue_window_big_smooth_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_SMOOTH = trainWallPanelVariant("train_wall_panel_light_blue_smooth", MaterialColor.COLOR_LIGHT_BLUE, false);
+	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_HOOD = trainWallPanelVariant("train_wall_panel_light_blue_hood", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_GRILLE = trainWallPanelVariant("train_wall_panel_light_blue_grille", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW_SMOOTH = trainWallPanelVariant("train_wall_panel_light_blue_stripe_yellow_smooth", MaterialColor.COLOR_LIGHT_BLUE, false);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_STRIPE_YELLOW_GRILLE = trainWallPanelVariant("train_wall_panel_light_blue_stripe_yellow_grille", MaterialColor.COLOR_LIGHT_BLUE, false);
@@ -512,6 +519,17 @@ public class AllBlocks {
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
+
+	public static final BlockEntry<RailingBlock> RAILING_RED =
+			railing("railing_red", "red", MaterialColor.COLOR_RED, 0xb43a32);
+	public static final BlockEntry<RailingBlock> RAILING_YELLOW =
+			railing("railing_yellow", "yellow", MaterialColor.COLOR_YELLOW, 0xe6b944);
+	public static final BlockEntry<RailingBlock> RAILING_ORANGE =
+			railing("railing_orange", "orange", MaterialColor.COLOR_ORANGE, 0xdb762b);
+	public static final BlockEntry<RailingBlock> RAILING_WHITE =
+			railing("railing_white", "white", MaterialColor.SNOW, 0xe4e4de);
+	public static final BlockEntry<RailingBlock> RAILING_GRAY =
+			railing("railing_gray", "gray", MaterialColor.COLOR_GRAY, 0x777d82);
 
 	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER =
 			bulkCargoContainer("bulk_cargo_container");
@@ -771,6 +789,24 @@ public class AllBlocks {
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 				.item((block, properties) -> new CisternBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.transform(customItemModel()).register();
+	}
+
+	private static BlockEntry<RailingBlock> railing(String name, String colorName, MaterialColor color,
+			int renderColor) {
+		return REGISTRATE
+				.block("train/parts/" + name,
+					properties -> new RailingBlock(properties, colorName, renderColor))
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.properties(p -> p.color(color)
+					.noOcclusion()
+					.requiresCorrectToolForDrops()
+					.isRedstoneConductor((state, level, pos) -> false)
+					.isSuffocating((state, level, pos) -> false)
+					.isViewBlocking((state, level, pos) -> false))
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.transform(customItemModel())
+				.register();
 	}
 
 }

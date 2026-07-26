@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ADA",
+    "AFA"
+  ],
+  "key": {
+    "A": { "item": "create:andesite_alloy" },
+    "D": { "tag": "forge:dyes/orange" },
+    "F": { "item": "minecraft:iron_bars" }
+  },
+  "result": {
+    "item": "railward:train/parts/railing_orange",
+    "count": 6
+  }
+}

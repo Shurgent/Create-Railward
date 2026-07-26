@@ -17,6 +17,7 @@ import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.RailingBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
@@ -30,6 +31,7 @@ import ua.pp.shurgent.railward.client.renderer.CisternRenderer;
 import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
+import ua.pp.shurgent.railward.client.renderer.RailingRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardSlidingDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainWallPanelAttachmentRenderer;
@@ -98,6 +100,13 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/wagon_frame", WagonFrameBlockEntity::new)
 			.validBlocks(AllBlocks.WAGON_FRAME)
 			.renderer(() -> WagonFrameRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<RailingBlockEntity> RAILING = REGISTRATE
+			.blockEntity("train/parts/railing", RailingBlockEntity::new)
+			.validBlocks(AllBlocks.RAILING_RED, AllBlocks.RAILING_YELLOW, AllBlocks.RAILING_ORANGE,
+				AllBlocks.RAILING_WHITE, AllBlocks.RAILING_GRAY)
+			.renderer(() -> RailingRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<TrainCouplerBlockEntity> TRAIN_COUPLER = REGISTRATE

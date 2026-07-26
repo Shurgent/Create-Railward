@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:train_wall_variants/green"
+  },
+  "result": "railward:train/parts/train_wall_panel_green_hood",
+  "count": 4
+}

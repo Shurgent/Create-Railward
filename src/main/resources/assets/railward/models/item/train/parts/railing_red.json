@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/railing/inventory",
+  "textures": {
+    "railing": "railward:block/train/parts/railing_red"
+  }
+}

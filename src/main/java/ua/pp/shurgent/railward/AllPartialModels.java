@@ -56,6 +56,13 @@ public class AllPartialModels {
 	WAGON_FRAME_FUEL_TANK = block("train/parts/wagon_frame_fuel_tank"),
 	WAGON_FRAME_HAND_BRAKE_VALVE = block("train/parts/wagon_frame_hand_brake_valve"),
 
+	// Railings
+	RAILING_VERTICAL_CORE = block("train/parts/railing/vertical_core"),
+	RAILING_HORIZONTAL_X_CORE = block("train/parts/railing/horizontal_x_core"),
+	RAILING_HORIZONTAL_Z_CORE = block("train/parts/railing/horizontal_z_core"),
+	RAILING_CONNECTOR = block("train/parts/railing/connector"),
+	RAILING_CONNECTOR_HALF = block("train/parts/railing/connector_half"),
+
 	// Train Coupler
 	TRAIN_COUPLER = block("train/parts/train_coupler"),
 	TRAIN_COUPLER_STATIC = block("train/parts/train_coupler_static"),

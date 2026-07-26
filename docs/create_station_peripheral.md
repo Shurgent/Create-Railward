@@ -305,7 +305,7 @@ local function drawBoard(monitor, arrivals)
     monitor.setTextColor(colors.white)
     monitor.clear()
 
-    local clock = textutils.formatTime(os.time(), true)
+    local clock = " " .. textutils.formatTime(os.time(), true) .. " "
     local clockX = math.max(1, width - #clock + 1)
 
     monitor.setBackgroundColor(colors.blue)
