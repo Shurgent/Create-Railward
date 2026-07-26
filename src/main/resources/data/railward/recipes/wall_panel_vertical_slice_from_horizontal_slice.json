@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "railward:train/parts/wall_panel_horizontal_slice"
+    }
+  ],
+  "result": {
+    "item": "railward:train/parts/wall_panel_vertical_slice"
+  }
+}

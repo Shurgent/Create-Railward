@@ -39,6 +39,9 @@
                    "railward:train/parts/railing_yellow",
                    "railward:train/parts/railing_orange",
                    "railward:train/parts/railing_white",
-                   "railward:train/parts/railing_gray"
+                   "railward:train/parts/railing_gray",
+                   "railward:train/parts/wall_panel_vertical_slice",
+                   "railward:train/parts/wall_panel_horizontal_slice",
+                   "railward:train/parts/wall_panel_corner"
                ]
 }

@@ -214,5 +214,8 @@
     "block.railward.train.parts.railing_yellow":  "Жёлтые поручни",
     "block.railward.train.parts.railing_orange":  "Оранжевые поручни",
     "block.railward.train.parts.railing_white":  "Белые поручни",
-    "block.railward.train.parts.railing_gray":  "Серые поручни"
+    "block.railward.train.parts.railing_gray":  "Серые поручни",
+    "block.railward.train.parts.wall_panel_vertical_slice": "Вертикальный срез стеновой панели",
+    "block.railward.train.parts.wall_panel_horizontal_slice": "Горизонтальный срез стеновой панели",
+    "block.railward.train.parts.wall_panel_corner": "Угол стеновой панели"
 }

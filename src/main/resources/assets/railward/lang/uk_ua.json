@@ -214,5 +214,8 @@
     "block.railward.train.parts.railing_yellow":  "Жовті поручні",
     "block.railward.train.parts.railing_orange":  "Помаранчеві поручні",
     "block.railward.train.parts.railing_white":  "Білі поручні",
-    "block.railward.train.parts.railing_gray":  "Сірі поручні"
+    "block.railward.train.parts.railing_gray":  "Сірі поручні",
+    "block.railward.train.parts.wall_panel_vertical_slice": "Вертикальний зріз стінової панелі",
+    "block.railward.train.parts.wall_panel_horizontal_slice": "Горизонтальний зріз стінової панелі",
+    "block.railward.train.parts.wall_panel_corner": "Кут стінової панелі"
 }

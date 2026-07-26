@@ -13,6 +13,8 @@ import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorMovementBehaviour;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
+import com.simibubi.create.foundation.data.BuilderTransformers;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
@@ -43,6 +45,9 @@ import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlock;
@@ -56,6 +61,8 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlock;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
+import ua.pp.shurgent.railward.client.model.WallPanelCopycatModel;
+import ua.pp.shurgent.railward.client.model.WallPanelCopycatModel.Shape;
 
 public class AllBlocks {
 
@@ -86,6 +93,39 @@ public class AllBlocks {
 		registerTrainDoorSet("train_hinged_door", TrainDoorAnimation.HINGED, HINGED_TRAIN_DOOR_ENTRIES);
 		registerTrainDoorSet("train_sliding_door", TrainDoorAnimation.SLIDING, SLIDING_TRAIN_DOOR_ENTRIES);
 	}
+
+	public static final BlockEntry<WallPanelVerticalSliceBlock> WALL_PANEL_VERTICAL_SLICE = REGISTRATE
+			.block("train/parts/wall_panel_vertical_slice", WallPanelVerticalSliceBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(CreateRegistrate.blockModel(
+					() -> model -> new WallPanelCopycatModel(model, Shape.VERTICAL_SLICE)))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_vertical_slice")))
+			.build()
+			.register();
+
+	public static final BlockEntry<WallPanelHorizontalSliceBlock> WALL_PANEL_HORIZONTAL_SLICE = REGISTRATE
+			.block("train/parts/wall_panel_horizontal_slice", WallPanelHorizontalSliceBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(CreateRegistrate.blockModel(
+					() -> model -> new WallPanelCopycatModel(model, Shape.HORIZONTAL_SLICE)))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_horizontal_slice")))
+			.build()
+			.register();
+
+	public static final BlockEntry<WallPanelCornerBlock> WALL_PANEL_CORNER = REGISTRATE
+			.block("train/parts/wall_panel_corner", WallPanelCornerBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(CreateRegistrate.blockModel(
+					() -> model -> new WallPanelCopycatModel(model, Shape.CORNER)))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_corner")))
+			.build()
+			.register();
 
 	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_BLUE = REGISTRATE
 			.block("train/parts/train_floor_blue", TrainFloorBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)

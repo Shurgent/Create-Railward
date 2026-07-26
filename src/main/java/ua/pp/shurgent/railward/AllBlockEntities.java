@@ -2,6 +2,7 @@ package ua.pp.shurgent.railward;
 
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 
+import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
@@ -41,6 +42,12 @@ import ua.pp.shurgent.railward.client.renderer.UnloadingHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
+
+	public static final BlockEntityEntry<CopycatBlockEntity> WALL_PANEL_COPYCAT = REGISTRATE
+			.blockEntity("train/parts/wall_panel_copycat", CopycatBlockEntity::new)
+			.validBlocks(AllBlocks.WALL_PANEL_VERTICAL_SLICE, AllBlocks.WALL_PANEL_HORIZONTAL_SLICE,
+					AllBlocks.WALL_PANEL_CORNER)
+			.register();
 
 	public static final BlockEntityEntry<SlidingDoorBlockEntity> HINGED_TRAIN_DOOR = REGISTRATE
 			.blockEntity("train/parts/hinged_train_door", SlidingDoorBlockEntity::new)
