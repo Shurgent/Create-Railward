@@ -82,7 +82,6 @@ public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWre
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public BlockState rotate(BlockState state, Rotation rotation) {
 		if (rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90)
 			return state.setValue(AXIS, state.getValue(AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X);
@@ -90,7 +89,6 @@ public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWre
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		return state;
 	}

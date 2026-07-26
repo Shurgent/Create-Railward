@@ -67,7 +67,6 @@ public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoConta
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public BlockState rotate(BlockState state, Rotation rotation) {
 		if (rotation == Rotation.NONE)
 			return state;
@@ -78,7 +77,6 @@ public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoConta
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		if (mirror == Mirror.NONE)
 			return state;
