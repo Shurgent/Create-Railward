@@ -192,6 +192,9 @@ public class RailingBlock extends HorizontalDirectionalBlock implements IBE<Rail
 	}
 
 	private static VoxelShape makeAllPartsShape() {
-		return shapeForMask(VALID_PARTS_MASK);
+		VoxelShape result = Shapes.empty();
+		for (RailingPart part : RailingPart.values())
+			result = Shapes.or(result, part.interactionShape());
+		return result.optimize();
 	}
 }

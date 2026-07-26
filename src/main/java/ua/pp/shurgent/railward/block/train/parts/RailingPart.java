@@ -6,27 +6,27 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public enum RailingPart {
-	NORTH_WEST_LOWER(0, 0, 0, 2, 8, 2, Direction.Axis.Y),
-	NORTH_EAST_LOWER(14, 0, 0, 16, 8, 2, Direction.Axis.Y),
-	NORTH_WEST_UPPER(0, 8, 0, 2, 16, 2, Direction.Axis.Y),
-	NORTH_EAST_UPPER(14, 8, 0, 16, 16, 2, Direction.Axis.Y),
-	SOUTH_WEST_LOWER(0, 0, 14, 2, 8, 16, Direction.Axis.Y),
-	SOUTH_EAST_LOWER(14, 0, 14, 16, 8, 16, Direction.Axis.Y),
-	SOUTH_WEST_UPPER(0, 8, 14, 2, 16, 16, Direction.Axis.Y),
-	SOUTH_EAST_UPPER(14, 8, 14, 16, 16, 16, Direction.Axis.Y),
+	NORTH_WEST_LOWER(0, 0, 0, 1, 8, 1, Direction.Axis.Y),
+	NORTH_EAST_LOWER(15, 0, 0, 16, 8, 1, Direction.Axis.Y),
+	NORTH_WEST_UPPER(0, 8, 0, 1, 16, 1, Direction.Axis.Y),
+	NORTH_EAST_UPPER(15, 8, 0, 16, 16, 1, Direction.Axis.Y),
+	SOUTH_WEST_LOWER(0, 0, 15, 1, 8, 16, Direction.Axis.Y),
+	SOUTH_EAST_LOWER(15, 0, 15, 16, 8, 16, Direction.Axis.Y),
+	SOUTH_WEST_UPPER(0, 8, 15, 1, 16, 16, Direction.Axis.Y),
+	SOUTH_EAST_UPPER(15, 8, 15, 16, 16, 16, Direction.Axis.Y),
 
-	NORTH_BOTTOM(0, 0, 0, 16, 2, 2, Direction.Axis.X),
-	NORTH_MIDDLE(0, 7, 0, 16, 9, 2, Direction.Axis.X),
-	NORTH_TOP(0, 14, 0, 16, 16, 2, Direction.Axis.X),
-	SOUTH_BOTTOM(0, 0, 14, 16, 2, 16, Direction.Axis.X),
-	SOUTH_MIDDLE(0, 7, 14, 16, 9, 16, Direction.Axis.X),
-	SOUTH_TOP(0, 14, 14, 16, 16, 16, Direction.Axis.X),
-	EAST_BOTTOM(14, 0, 0, 16, 2, 16, Direction.Axis.Z),
-	EAST_MIDDLE(14, 7, 0, 16, 9, 16, Direction.Axis.Z),
-	EAST_TOP(14, 14, 0, 16, 16, 16, Direction.Axis.Z),
-	WEST_BOTTOM(0, 0, 0, 2, 2, 16, Direction.Axis.Z),
-	WEST_MIDDLE(0, 7, 0, 2, 9, 16, Direction.Axis.Z),
-	WEST_TOP(0, 14, 0, 2, 16, 16, Direction.Axis.Z);
+	NORTH_BOTTOM(0, 0, 0, 16, 1, 1, Direction.Axis.X),
+	NORTH_MIDDLE(0, 7.5, 0, 16, 8.5, 1, Direction.Axis.X),
+	NORTH_TOP(0, 15, 0, 16, 16, 1, Direction.Axis.X),
+	SOUTH_BOTTOM(0, 0, 15, 16, 1, 16, Direction.Axis.X),
+	SOUTH_MIDDLE(0, 7.5, 15, 16, 8.5, 16, Direction.Axis.X),
+	SOUTH_TOP(0, 15, 15, 16, 16, 16, Direction.Axis.X),
+	EAST_BOTTOM(15, 0, 0, 16, 1, 16, Direction.Axis.Z),
+	EAST_MIDDLE(15, 7.5, 0, 16, 8.5, 16, Direction.Axis.Z),
+	EAST_TOP(15, 15, 0, 16, 16, 16, Direction.Axis.Z),
+	WEST_BOTTOM(0, 0, 0, 1, 1, 16, Direction.Axis.Z),
+	WEST_MIDDLE(0, 7.5, 0, 1, 8.5, 16, Direction.Axis.Z),
+	WEST_TOP(0, 15, 0, 1, 16, 16, Direction.Axis.Z);
 
 	private static final double HIT_EPSILON = 1.0e-4;
 
@@ -38,6 +38,7 @@ public enum RailingPart {
 	private final double maxZ;
 	private final Direction.Axis axis;
 	private final VoxelShape shape;
+	private final VoxelShape interactionShape;
 	private final Vec3 center;
 
 	RailingPart(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
@@ -50,6 +51,13 @@ public enum RailingPart {
 		this.maxZ = maxZ / 16d;
 		this.axis = axis;
 		shape = Block.box(minX, minY, minZ, maxX, maxY, maxZ);
+		double hitMinX = axis == Direction.Axis.X ? minX : interactionMin(minX, maxX);
+		double hitMinY = axis == Direction.Axis.Y ? minY : interactionMin(minY, maxY);
+		double hitMinZ = axis == Direction.Axis.Z ? minZ : interactionMin(minZ, maxZ);
+		double hitMaxX = axis == Direction.Axis.X ? maxX : interactionMax(minX, maxX);
+		double hitMaxY = axis == Direction.Axis.Y ? maxY : interactionMax(minY, maxY);
+		double hitMaxZ = axis == Direction.Axis.Z ? maxZ : interactionMax(minZ, maxZ);
+		interactionShape = Block.box(hitMinX, hitMinY, hitMinZ, hitMaxX, hitMaxY, hitMaxZ);
 		center = new Vec3((this.minX + this.maxX) * .5, (this.minY + this.maxY) * .5,
 			(this.minZ + this.maxZ) * .5);
 	}
@@ -60,6 +68,10 @@ public enum RailingPart {
 
 	public VoxelShape shape() {
 		return shape;
+	}
+
+	public VoxelShape interactionShape() {
+		return interactionShape;
 	}
 
 	public Vec3 center() {
@@ -103,9 +115,9 @@ public enum RailingPart {
 	}
 
 	private boolean contains(Vec3 point) {
-		return point.x >= minX - HIT_EPSILON && point.x <= maxX + HIT_EPSILON
-			&& point.y >= minY - HIT_EPSILON && point.y <= maxY + HIT_EPSILON
-			&& point.z >= minZ - HIT_EPSILON && point.z <= maxZ + HIT_EPSILON;
+		return interactionShape.bounds()
+			.inflate(HIT_EPSILON)
+			.contains(point);
 	}
 
 	private double axisDistance(Vec3 point) {
@@ -124,5 +136,21 @@ public enum RailingPart {
 		for (RailingPart part : parts)
 			mask |= part.bit();
 		return mask;
+	}
+
+	private static double interactionMin(double min, double max) {
+		if (min <= 0)
+			return 0;
+		if (max >= 16)
+			return 14;
+		return min - .5;
+	}
+
+	private static double interactionMax(double min, double max) {
+		if (max >= 16)
+			return 16;
+		if (min <= 0)
+			return 2;
+		return max + .5;
 	}
 }

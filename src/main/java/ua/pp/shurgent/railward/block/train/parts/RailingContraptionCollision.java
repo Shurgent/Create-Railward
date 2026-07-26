@@ -21,10 +21,10 @@ public final class RailingContraptionCollision {
 	private static final int WEST_RAILS = mask(RailingPart.WEST_BOTTOM, RailingPart.WEST_MIDDLE,
 		RailingPart.WEST_TOP);
 
-	private static final VoxelShape NORTH_BARRIER = Block.box(0, 0, 0, 16, 24, 2);
-	private static final VoxelShape SOUTH_BARRIER = Block.box(0, 0, 14, 16, 24, 16);
-	private static final VoxelShape EAST_BARRIER = Block.box(14, 0, 0, 16, 24, 16);
-	private static final VoxelShape WEST_BARRIER = Block.box(0, 0, 0, 2, 24, 16);
+	private static final VoxelShape NORTH_BARRIER = Block.box(0, 0, 0, 16, 24, 1);
+	private static final VoxelShape SOUTH_BARRIER = Block.box(0, 0, 15, 16, 24, 16);
+	private static final VoxelShape EAST_BARRIER = Block.box(15, 0, 0, 16, 24, 16);
+	private static final VoxelShape WEST_BARRIER = Block.box(0, 0, 0, 1, 24, 16);
 	private static final Map<Integer, VoxelShape> CONTRAPTION_SHAPES = new ConcurrentHashMap<>();
 
 	private RailingContraptionCollision() {

@@ -16,8 +16,9 @@ import ua.pp.shurgent.railward.block.train.parts.RailingPart;
 
 public class RailingRenderer extends SmartBlockEntityRenderer<RailingBlockEntity> {
 
-	private static final double EDGE_OFFSET = 14d / 16d;
-	private static final double UPPER_OFFSET = 7d / 16d;
+	private static final double EDGE_OFFSET = 15d / 16d;
+	private static final double MIDDLE_OFFSET = 7.5d / 16d;
+	private static final double UPPER_OFFSET = 7.5d / 16d;
 
 	public RailingRenderer(BlockEntityRendererProvider.Context context) {
 		super(context);
@@ -46,18 +47,18 @@ public class RailingRenderer extends SmartBlockEntityRenderer<RailingBlockEntity
 			buffers, light);
 
 		renderHorizontalX(be, RailingPart.NORTH_BOTTOM, 0, 0, state, color, ms, buffers, light);
-		renderHorizontalX(be, RailingPart.NORTH_MIDDLE, 7d / 16d, 0, state, color, ms, buffers, light);
-		renderHorizontalX(be, RailingPart.NORTH_TOP, 14d / 16d, 0, state, color, ms, buffers, light);
+		renderHorizontalX(be, RailingPart.NORTH_MIDDLE, MIDDLE_OFFSET, 0, state, color, ms, buffers, light);
+		renderHorizontalX(be, RailingPart.NORTH_TOP, 15d / 16d, 0, state, color, ms, buffers, light);
 		renderHorizontalX(be, RailingPart.SOUTH_BOTTOM, 0, EDGE_OFFSET, state, color, ms, buffers, light);
-		renderHorizontalX(be, RailingPart.SOUTH_MIDDLE, 7d / 16d, EDGE_OFFSET, state, color, ms, buffers, light);
-		renderHorizontalX(be, RailingPart.SOUTH_TOP, 14d / 16d, EDGE_OFFSET, state, color, ms, buffers, light);
+		renderHorizontalX(be, RailingPart.SOUTH_MIDDLE, MIDDLE_OFFSET, EDGE_OFFSET, state, color, ms, buffers, light);
+		renderHorizontalX(be, RailingPart.SOUTH_TOP, 15d / 16d, EDGE_OFFSET, state, color, ms, buffers, light);
 
 		renderHorizontalZ(be, RailingPart.WEST_BOTTOM, 0, 0, state, color, ms, buffers, light);
-		renderHorizontalZ(be, RailingPart.WEST_MIDDLE, 0, 7d / 16d, state, color, ms, buffers, light);
-		renderHorizontalZ(be, RailingPart.WEST_TOP, 0, 14d / 16d, state, color, ms, buffers, light);
+		renderHorizontalZ(be, RailingPart.WEST_MIDDLE, 0, MIDDLE_OFFSET, state, color, ms, buffers, light);
+		renderHorizontalZ(be, RailingPart.WEST_TOP, 0, 15d / 16d, state, color, ms, buffers, light);
 		renderHorizontalZ(be, RailingPart.EAST_BOTTOM, EDGE_OFFSET, 0, state, color, ms, buffers, light);
-		renderHorizontalZ(be, RailingPart.EAST_MIDDLE, EDGE_OFFSET, 7d / 16d, state, color, ms, buffers, light);
-		renderHorizontalZ(be, RailingPart.EAST_TOP, EDGE_OFFSET, 14d / 16d, state, color, ms, buffers, light);
+		renderHorizontalZ(be, RailingPart.EAST_MIDDLE, EDGE_OFFSET, MIDDLE_OFFSET, state, color, ms, buffers, light);
+		renderHorizontalZ(be, RailingPart.EAST_TOP, EDGE_OFFSET, 15d / 16d, state, color, ms, buffers, light);
 
 		renderConnectorColumn(be, 0, 0,
 			RailingPart.NORTH_WEST_LOWER, RailingPart.NORTH_WEST_UPPER,
@@ -111,15 +112,15 @@ public class RailingRenderer extends SmartBlockEntityRenderer<RailingBlockEntity
 
 		boolean middle = be.isEnabled(sideMiddle) || be.isEnabled(crossMiddle);
 		if (middle || lower && upper) {
-			render(AllPartialModels.RAILING_CONNECTOR, x, 7d / 16d, z, state, color, ms, buffers, light);
+			render(AllPartialModels.RAILING_CONNECTOR, x, MIDDLE_OFFSET, z, state, color, ms, buffers, light);
 		} else if (lower) {
-			render(AllPartialModels.RAILING_CONNECTOR_HALF, x, 7d / 16d, z, state, color, ms, buffers, light);
+			render(AllPartialModels.RAILING_CONNECTOR_HALF, x, MIDDLE_OFFSET, z, state, color, ms, buffers, light);
 		} else if (upper) {
 			render(AllPartialModels.RAILING_CONNECTOR_HALF, x, 8d / 16d, z, state, color, ms, buffers, light);
 		}
 
 		if (upper || be.isEnabled(sideTop) || be.isEnabled(crossTop))
-			render(AllPartialModels.RAILING_CONNECTOR, x, 14d / 16d, z, state, color, ms, buffers, light);
+			render(AllPartialModels.RAILING_CONNECTOR, x, 15d / 16d, z, state, color, ms, buffers, light);
 	}
 
 	private void render(PartialModel model, double x, double y, double z, BlockState state, int color,
