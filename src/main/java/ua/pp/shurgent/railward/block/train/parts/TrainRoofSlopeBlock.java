@@ -43,8 +43,7 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 	public TrainRoofSlopeBlock(BlockBehaviour.Properties properties) {
 		super(properties.strength(1.0f, 6f)
 			.sound(SoundType.METAL)
-			.color(MaterialColor.COLOR_LIGHT_BLUE)
-			.noOcclusion());
+			.color(MaterialColor.COLOR_LIGHT_BLUE));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH)
 			.setValue(SHAPE, StairsShape.STRAIGHT)
 			.setValue(AXIS, Direction.Axis.X));
@@ -99,7 +98,12 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 
 	@Override
 	public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-		return Shapes.empty();
+		return shapeFor(state);
+	}
+
+	@Override
+	public boolean useShapeForLightOcclusion(BlockState state) {
+		return true;
 	}
 
 	private static VoxelShape shapeFor(BlockState state) {
@@ -147,8 +151,8 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 		for (int z = 0; z < 4; z++) {
 			double z1 = z * 4;
 			double z2 = z1 + 4;
-			double height = 16 - z * (8d / 3d);
-			shape = Shapes.or(shape, Block.box(0, 0, z1, 16, height, z2));
+			double top = 16 - z * (8d / 3d);
+			shape = Shapes.or(shape, Block.box(0, top - 8, z1, 16, top, z2));
 		}
 		return shape;
 	}
@@ -157,8 +161,8 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 		VoxelShape shape = Shapes.empty();
 		for (int x = 0; x < 4; x++) {
 			for (int z = 0; z < 4; z++) {
-				double height = 16 - Math.max(x, z) * (8d / 3d);
-				shape = Shapes.or(shape, Block.box(x * 4, 0, z * 4, x * 4 + 4, height, z * 4 + 4));
+				double top = 16 - Math.max(x, z) * (8d / 3d);
+				shape = Shapes.or(shape, Block.box(x * 4, top - 8, z * 4, x * 4 + 4, top, z * 4 + 4));
 			}
 		}
 		return shape;
@@ -168,8 +172,8 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 		VoxelShape shape = Shapes.empty();
 		for (int x = 0; x < 4; x++) {
 			for (int z = 0; z < 4; z++) {
-				double height = 16 - (x * z) * (8d / 9d);
-				shape = Shapes.or(shape, Block.box(x * 4, 0, z * 4, x * 4 + 4, height, z * 4 + 4));
+				double top = 16 - (x * z) * (8d / 9d);
+				shape = Shapes.or(shape, Block.box(x * 4, top - 8, z * 4, x * 4 + 4, top, z * 4 + 4));
 			}
 		}
 		return shape;

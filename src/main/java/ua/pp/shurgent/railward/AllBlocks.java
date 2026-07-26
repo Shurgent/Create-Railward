@@ -527,7 +527,7 @@ public class AllBlocks {
 	public static final BlockEntry<TrainRoofSlopeBlock> TRAIN_ROOF_SLOPE_LIGHT_BLUE = REGISTRATE
 			.block("train/parts/train_roof_slope_light_blue", TrainRoofSlopeBlock::new)
 			.initialProperties(() -> Blocks.IRON_BLOCK)
-			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
