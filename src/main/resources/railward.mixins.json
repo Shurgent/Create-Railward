@@ -29,9 +29,19 @@
     "create.TrainCargoManagerAccessor"
   ],
   "client": [
+    "client.ProgramMixin",
+    "client.ShaderInstanceMixin",
+    "compat.embeddium.GlProgramMixin",
+    "compat.embeddium.ShaderLoaderMixin",
     "create.client.ArrivalSoundQueueMixin",
     "create.client.CarriageSoundsMixin",
-    "create.client.ContraptionRenderDispatcherMixin"
+    "create.client.ContraptionRenderDispatcherMixin",
+	"create.client.SBBContraptionManagerMixin",
+	"create.client.TrackTargetingBehaviourMixin",
+    "flywheel.InstancingTemplateDataMixin",
+    "flywheel.OneShotTemplateDataMixin",
+    "flywheel.SourceFileMixin",
+    "flywheel.WorldProgramMixin"
   ],
   "injectors": {
     "defaultRequire": 1

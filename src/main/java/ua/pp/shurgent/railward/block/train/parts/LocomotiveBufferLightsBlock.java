@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
@@ -107,7 +108,7 @@ public class LocomotiveBufferLightsBlock extends HorizontalDirectionalBlock
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
 		CollisionContext context) {
-		return getMountedShape(state.getValue(FACING));
+		return Shapes.empty();
 	}
 
 	@Override

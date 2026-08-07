@@ -1,7 +1,8 @@
 {
     "replace":  false,
     "values":  [
-                   "railward:train/station/unloading_hatch",
+				   "railward:train/station/unloading_hatch",
+				   "railward:train/parts/locomotive_spotlight",
                    "railward:train/parts/train_hinged_door_blue",
                    "railward:train/parts/train_hinged_door_green",
                    "railward:train/parts/train_hinged_door_light_blue",

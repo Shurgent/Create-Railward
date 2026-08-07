@@ -4,7 +4,7 @@
   "textures": {
     "top": "railward:block/train/parts/train_roof_light_blue",
     "bottom": "railward:block/train/parts/train_roof_interior",
-    "side": "railward:block/train/parts/train_roof_light_blue_grille",
+    "side": "railward:block/train/parts/train_roof_light_blue",
     "particle": "railward:block/train/parts/train_roof_light_blue"
   },
   "elements": [

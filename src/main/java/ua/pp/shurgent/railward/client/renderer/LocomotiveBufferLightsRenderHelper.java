@@ -65,19 +65,37 @@ public class LocomotiveBufferLightsRenderHelper {
 			renderGhostPart(models.base(), state, ms, buffers);
 			renderGhostPart(models.whiteLampOff(), state, ms, buffers);
 			renderGhostPart(models.whiteLensOff(), state, ms, buffers);
-			renderGhostPart(models.redLampOff(), state, ms, buffers);
-			renderGhostPart(models.redLensOff(), state, ms, buffers);
+			if (!variant.hasSharedLampPositions()) {
+				renderGhostPart(models.redLampOff(), state, ms, buffers);
+				renderGhostPart(models.redLensOff(), state, ms, buffers);
+			}
 			ms.popPose();
 			return;
 		}
 
 		renderSolid(models.base(), state, ms, buffers, light);
-		renderLamp(lampState == LampState.WHITE, models.whiteLampOn(), models.whiteLampOff(), models.whiteLensOff(),
-			models.whiteGlow(), state, ms, buffers, light);
-		renderLamp(lampState == LampState.RED, models.redLampOn(), models.redLampOff(), models.redLensOff(),
-			models.redGlow(), state, ms, buffers, light);
+		if (variant.hasSharedLampPositions())
+			renderSharedLamps(lampState, models, state, ms, buffers, light);
+		else {
+			renderLamp(lampState == LampState.WHITE, models.whiteLampOn(), models.whiteLampOff(), models.whiteLensOff(),
+				models.whiteGlow(), state, ms, buffers, light);
+			renderLamp(lampState == LampState.RED, models.redLampOn(), models.redLampOff(), models.redLensOff(),
+				models.redGlow(), state, ms, buffers, light);
+		}
 
 		ms.popPose();
+	}
+
+	private static void renderSharedLamps(LampState lampState, LocomotiveBufferLightsPartialModels models,
+		BlockState state, PoseStack ms, MultiBufferSource buffers, int light) {
+		switch (lampState) {
+		case WHITE -> renderLamp(true, models.whiteLampOn(), models.whiteLampOff(), models.whiteLensOff(),
+			models.whiteGlow(), state, ms, buffers, light);
+		case RED -> renderLamp(true, models.redLampOn(), models.redLampOff(), models.redLensOff(), models.redGlow(),
+			state, ms, buffers, light);
+		case OFF -> renderLamp(false, models.whiteLampOn(), models.whiteLampOff(), models.whiteLensOff(),
+			models.whiteGlow(), state, ms, buffers, light);
+		}
 	}
 
 	private static LampState resolveLampState(Direction blockFacing) {
@@ -153,6 +171,7 @@ public class LocomotiveBufferLightsRenderHelper {
 		case TYPE_8 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_8;
 		case TYPE_9 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_9;
 		case TYPE_10 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_10;
+		case TYPE_11 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_11;
 		};
 	}
 

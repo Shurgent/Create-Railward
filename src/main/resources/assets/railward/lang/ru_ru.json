@@ -176,6 +176,7 @@
     "block.railward.train.parts.train_wall_light_blue_window_big_smooth_frame_white":  "Стена поезда (голубая, гладкая с большим окном и белой рамкой)",
     "block.railward.train.parts.train_wall_panel_light_blue_window_big_smooth_frame_white":  "Панель стены поезда (голубая, гладкая с большим окном и белой рамкой)",
     "block.railward.train.parts.locomotive_buffer_lights":  "Locomotive Buffer Lights",
+    "block.railward.train.parts.locomotive_spotlight":  "Локомотивный прожектор",
     "block.railward.train.parts.train_hinged_door_blue":  "Hinged Train Door (Blue)",
     "block.railward.train.parts.train_hinged_door_blue_window_big":  "Hinged Train Door (Blue, Big Window)",
     "block.railward.train.parts.train_hinged_door_blue_window_small":  "Hinged Train Door (Blue, Small Window)",
@@ -218,5 +219,12 @@
     "block.railward.train.parts.wall_panel_vertical_slice": "Вертикальный срез стеновой панели",
     "block.railward.train.parts.wall_panel_horizontal_slice": "Горизонтальный срез стеновой панели",
     "block.railward.train.parts.wall_panel_corner": "Угол стеновой панели",
-    "block.railward.train.parts.half_wall_panel": "Половинная стеновая панель"
+    "block.railward.train.parts.half_wall_panel": "Половинная стеновая панель",
+    "block.railward.train.parts.copycat_slab": "Копирующий полублок",
+    "block.railward.train.parts.pilot_type_1": "Путеочиститель (тип 1)",
+    "block.railward.train.parts.pilot_type_2": "Путеочиститель (тип 2)",
+    "block.railward.train.bogey.freight_18_100": "Грузовая тележка 18-100",
+    "railward.bogey.style.freight_18_100": "Грузовая 18-100",
+    "block.railward.train.bogey.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная тележка",
+    "railward.bogey.style.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная"
 }

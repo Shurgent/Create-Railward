@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "railward:block/train/parts/pilot_type_2_inventory"
+    }
+  }
+}

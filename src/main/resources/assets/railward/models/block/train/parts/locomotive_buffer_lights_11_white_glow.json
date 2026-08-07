@@ -1,0 +1,31 @@
+{
+  "parent": "railward:block/train/parts/locomotive_buffer_lights_11_base",
+  "elements": [
+    {
+      "name": "white_left_glow",
+      "from": [12.3, 3.3, 14.3],
+      "to": [15.7, 6.7, 15.5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [14, 5, 15.5]},
+      "faces": {
+        "north": {"uv": [0.75, 10.75, 2.45, 12.45], "texture": "#0"},
+        "east": {"uv": [0, 10.75, 0.6, 12.45], "texture": "#0"},
+        "west": {"uv": [0, 10.75, 0.6, 12.45], "texture": "#0"},
+        "up": {"uv": [2.4, 10.7, 0.7, 10.1], "texture": "#0"},
+        "down": {"uv": [2.45, 10.15, 0.75, 10.75], "texture": "#0"}
+      }
+    },
+    {
+      "name": "white_right_glow",
+      "from": [0.3, 3.3, 14.3],
+      "to": [3.7, 6.7, 15.5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [2, 5, 15.5]},
+      "faces": {
+        "north": {"uv": [0.75, 10.75, 2.45, 12.45], "texture": "#0"},
+        "east": {"uv": [0.1, 10.75, 0.7, 12.45], "texture": "#0"},
+        "west": {"uv": [0.1, 10.75, 0.7, 12.45], "texture": "#0"},
+        "up": {"uv": [2.4, 10.7, 0.7, 10.1], "texture": "#0"},
+        "down": {"uv": [2.45, 10.15, 0.75, 10.75], "texture": "#0"}
+      }
+    }
+  ]
+}

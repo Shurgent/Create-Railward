@@ -10,6 +10,9 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlockEntity;
+import ua.pp.shurgent.railward.block.train.bogey.FreightBogey18_100BlockEntity;
+import ua.pp.shurgent.railward.block.train.bogey.TripleAxleEqualizedLocomotiveBogeyBlockEntity;
+import com.simibubi.create.content.trains.bogey.BogeyBlockEntityRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.client.renderer.SpeedSignRenderer;
@@ -18,9 +21,12 @@ import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.PilotBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.RailingBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
@@ -31,6 +37,8 @@ import ua.pp.shurgent.railward.client.renderer.CisternHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.CisternRenderer;
 import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsRenderer;
+import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightRenderer;
+import ua.pp.shurgent.railward.client.renderer.PilotRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailingRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
@@ -43,10 +51,29 @@ import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
 
+	public static final BlockEntityEntry<FreightBogey18_100BlockEntity> FREIGHT_BOGEY_18_100 = REGISTRATE
+			.blockEntity("train/bogey/freight_18_100", FreightBogey18_100BlockEntity::new)
+			.validBlocks(AllBlocks.FREIGHT_BOGEY_18_100)
+			.renderer(() -> BogeyBlockEntityRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<TripleAxleEqualizedLocomotiveBogeyBlockEntity>
+			TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_BOGEY = REGISTRATE
+			.blockEntity("train/bogey/triple_axle_equalized_locomotive",
+					TripleAxleEqualizedLocomotiveBogeyBlockEntity::new)
+			.validBlocks(AllBlocks.TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_BOGEY)
+			.renderer(() -> BogeyBlockEntityRenderer::new)
+			.register();
+
 	public static final BlockEntityEntry<CopycatBlockEntity> WALL_PANEL_COPYCAT = REGISTRATE
 			.blockEntity("train/parts/wall_panel_copycat", CopycatBlockEntity::new)
 			.validBlocks(AllBlocks.WALL_PANEL_VERTICAL_SLICE, AllBlocks.WALL_PANEL_HORIZONTAL_SLICE,
 					AllBlocks.WALL_PANEL_CORNER, AllBlocks.HALF_WALL_PANEL)
+			.register();
+
+	public static final BlockEntityEntry<CopycatSlabBlockEntity> COPYCAT_SLAB = REGISTRATE
+			.blockEntity("train/parts/copycat_slab", CopycatSlabBlockEntity::new)
+			.validBlocks(AllBlocks.COPYCAT_SLAB)
 			.register();
 
 	public static final BlockEntityEntry<SlidingDoorBlockEntity> HINGED_TRAIN_DOOR = REGISTRATE
@@ -101,6 +128,18 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/locomotive_buffer_lights", LocomotiveBufferLightsBlockEntity::new)
 			.validBlocks(AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS)
 			.renderer(() -> LocomotiveBufferLightsRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<LocomotiveSpotlightBlockEntity> LOCOMOTIVE_SPOTLIGHT = REGISTRATE
+			.blockEntity("train/parts/locomotive_spotlight", LocomotiveSpotlightBlockEntity::new)
+			.validBlocks(AllBlocks.LOCOMOTIVE_SPOTLIGHT)
+			.renderer(() -> LocomotiveSpotlightRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<PilotBlockEntity> PILOT_TYPE_1 = REGISTRATE
+			.blockEntity("train/parts/pilot_type_1", PilotBlockEntity::new)
+			.validBlocks(AllBlocks.PILOT_TYPE_1, AllBlocks.PILOT_TYPE_2)
+			.renderer(() -> PilotRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<WagonFrameBlockEntity> WAGON_FRAME = REGISTRATE

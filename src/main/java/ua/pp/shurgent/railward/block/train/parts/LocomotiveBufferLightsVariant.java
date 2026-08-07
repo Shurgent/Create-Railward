@@ -14,7 +14,8 @@ public enum LocomotiveBufferLightsVariant implements StringRepresentable {
 	TYPE_7("type_7", "7"),
 	TYPE_8("type_8", "8"),
 	TYPE_9("type_9", "9"),
-	TYPE_10("type_10", "10");
+	TYPE_10("type_10", "10"),
+	TYPE_11("type_11", "11");
 
 	private final String serializedName;
 	private final String modelSuffix;
@@ -31,6 +32,10 @@ public enum LocomotiveBufferLightsVariant implements StringRepresentable {
 
 	public String getModelSuffix() {
 		return modelSuffix;
+	}
+
+	public boolean hasSharedLampPositions() {
+		return this == TYPE_11;
 	}
 
 	@Override

@@ -12,6 +12,14 @@ public class AllPartialModels {
 
 	public static final PartialModel
 
+	// Bogeys
+	BOGEY_18_100_FRAME = block("train/bogey/18_100/bogey_18_100_frame"),
+	BOGEY_18_100_WHEELSET = block("train/bogey/18_100/bogey_18_100_wheelset"),
+	BOGEY_TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_FRAME =
+		block("train/bogey/triple_axle_equalized_locomotive/bogey_triple_axle_equalized_locomotive_frame"),
+	BOGEY_TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_WHEELSET =
+		block("train/bogey/triple_axle_equalized_locomotive/bogey_triple_axle_equalized_locomotive_wheelset"),
+
 	// Modern Ground Signal
 	SIGNAL_GROUND_BASE = block("train/signal/modern_signal_ground"),
 	SIGNAL_GROUND_BLUE = block("train/signal/lamp_blue_off"),
@@ -42,6 +50,12 @@ public class AllPartialModels {
 	MODERN_WHISTLE_HORN_1 = block("train/parts/modern_whistle_horn_1"),
 	MODERN_WHISTLE_HORN_2 = block("train/parts/modern_whistle_horn_2"),
 	MODERN_WHISTLE_WHISTLE = block("train/parts/modern_whistle_whistle"),
+
+	// Pilots
+	PILOT_TYPE_1_LEFT = block("train/parts/pilot_type_1_left"),
+	PILOT_TYPE_1_RIGHT = block("train/parts/pilot_type_1_right"),
+	PILOT_TYPE_2_LEFT = block("train/parts/pilot_type_2_left"),
+	PILOT_TYPE_2_RIGHT = block("train/parts/pilot_type_2_right"),
 
 	// Wagon Frame
 	WAGON_FRAME_BASE = block("train/parts/wagon_frame_base"),
@@ -97,6 +111,10 @@ public class AllPartialModels {
 		locomotiveBufferLights("9");
 	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_10 =
 		locomotiveBufferLights("10");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_11 =
+		locomotiveBufferLights("11");
+	public static final LocomotiveSpotlightPartialModels LOCOMOTIVE_SPOTLIGHT_SMALL = locomotiveSpotlight("1");
+	public static final LocomotiveSpotlightPartialModels LOCOMOTIVE_SPOTLIGHT_LARGE = locomotiveSpotlight("2");
 
 	private static final String[] TRAIN_DOOR_SOLID_VARIANTS = {
 			"blue",
@@ -137,6 +155,16 @@ public class AllPartialModels {
 			block(base + "_red_lamp_off"),
 			block(base + "_red_lens_off"),
 			block(base + "_red_glow"));
+	}
+
+	private static LocomotiveSpotlightPartialModels locomotiveSpotlight(String suffix) {
+		String base = "train/parts/locomotive_spotlight_" + suffix;
+		return new LocomotiveSpotlightPartialModels(
+			block(base + "_base"),
+			block(base + "_lamp_on"),
+			block(base + "_lamp_off"),
+			block(base + "_lens_off"),
+			block(base + "_glow"));
 	}
 
 	public static SlidingDoorPartialModels getSlidingDoorModels(String blockPath) {
@@ -189,6 +217,10 @@ public class AllPartialModels {
 	public record LocomotiveBufferLightsPartialModels(PartialModel base, PartialModel whiteLampOn,
 		PartialModel whiteLampOff, PartialModel whiteLensOff, PartialModel whiteGlow, PartialModel redLampOn,
 		PartialModel redLampOff, PartialModel redLensOff, PartialModel redGlow) {
+	}
+
+	public record LocomotiveSpotlightPartialModels(PartialModel base, PartialModel lampOn, PartialModel lampOff,
+		PartialModel lensOff, PartialModel glow) {
 	}
 	
 	public static void init() {

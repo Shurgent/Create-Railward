@@ -45,6 +45,7 @@ public class Railward {
 		IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RailwardConfig.COMMON_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, RailwardConfig.CLIENT_SPEC);
 		MinecraftForge.EVENT_BUS.register(this);
 		REGISTRATE.registerEventListeners(modEventBus);
 		RailwardSoundEvents.register(modEventBus);
@@ -52,6 +53,7 @@ public class Railward {
 		
 		AllEdgePointTypes.register();
 		AllBlocks.register();
+		RailwardBogeyStyles.register();
 		AllBlockEntities.register();
 		
 		// Register the setup method for modloading

@@ -11,6 +11,8 @@
     "railward:train/parts/cistern_light_gray",
     "railward:train/parts/cistern_yellow",
     "railward:train/parts/cistern_orange",
+    "railward:train/parts/locomotive_buffer_lights",
+    "railward:train/parts/locomotive_spotlight",
     "railward:train/station/cistern_hatch"
   ]
 }

@@ -31,6 +31,8 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final String SCHEDULE_RUNTIME_ACCESSOR =
 		".create.compat.computercraft.ScheduleRuntimeAccessor";
 	private static final String COMPUTERCRAFT_MOD_ID = "computercraft";
+	private static final String EMBEDDIUM_MIXIN_PACKAGE = ".compat.embeddium.";
+	private static final String EMBEDDIUM_MOD_ID = "embeddium";
 	private static final boolean DEFAULT_FIX_CREATE_FLUID_NETWORK = true;
 
 	private boolean fixCreateFluidNetwork = DEFAULT_FIX_CREATE_FLUID_NETWORK;
@@ -56,6 +58,8 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 				computerCraftLoaded ? "Enabling" : "Skipping");
 			return computerCraftLoaded;
 		}
+		if (mixinClassName.contains(EMBEDDIUM_MIXIN_PACKAGE))
+			return isModLoaded(EMBEDDIUM_MOD_ID);
 		return true;
 	}
 

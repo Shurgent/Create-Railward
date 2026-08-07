@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PDP",
+    "SSS"
+  ],
+  "key": {
+    "P": {
+      "item": "create:iron_sheet"
+    },
+    "D": {
+      "item": "minecraft:red_dye"
+    },
+    "S": {
+      "item": "create:sturdy_sheet"
+    }
+  },
+  "result": {
+    "item": "railward:train/parts/pilot_type_1"
+  }
+}

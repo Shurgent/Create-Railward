@@ -8,11 +8,37 @@ public class RailwardConfig {
 
 	public static final ForgeConfigSpec COMMON_SPEC;
 	public static final Common COMMON;
+	public static final ForgeConfigSpec CLIENT_SPEC;
+	public static final Client CLIENT;
 
 	static {
-		Pair<Common, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(Common::new);
-		COMMON = pair.getLeft();
-		COMMON_SPEC = pair.getRight();
+		Pair<Common, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		COMMON = commonPair.getLeft();
+		COMMON_SPEC = commonPair.getRight();
+
+		Pair<Client, ForgeConfigSpec> clientPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		CLIENT = clientPair.getLeft();
+		CLIENT_SPEC = clientPair.getRight();
+	}
+
+	public static class Client {
+		public final ForgeConfigSpec.BooleanValue locomotiveSpotlightProjectedLight;
+		public final ForgeConfigSpec.IntValue locomotiveSpotlightBeamLength;
+		public final ForgeConfigSpec.IntValue locomotiveSpotlightBeamWidth;
+
+		private Client(ForgeConfigSpec.Builder builder) {
+			builder.push("locomotiveSpotlight");
+			locomotiveSpotlightProjectedLight = builder
+				.comment("Enable the client-side projected light cast by locomotive spotlights.")
+				.define("projectedLight", true);
+			locomotiveSpotlightBeamLength = builder
+				.comment("Projected spotlight beam length in blocks.")
+				.defineInRange("beamLength", 128, 8, 128);
+			locomotiveSpotlightBeamWidth = builder
+				.comment("Full projected spotlight beam width at its far end, in blocks.")
+				.defineInRange("beamWidth", 32, 1, 64);
+			builder.pop();
+		}
 	}
 
 	public static class Common {

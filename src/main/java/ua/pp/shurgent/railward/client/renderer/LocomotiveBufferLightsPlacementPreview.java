@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsVariant;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightVariant;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
@@ -45,7 +46,12 @@ public class LocomotiveBufferLightsPlacementPreview {
 			return;
 
 		if (isHoldingBufferLights(player)) {
-			renderGhost(event, level, state, panel, pos);
+			renderBufferLightsGhost(event, state, panel, pos);
+			return;
+		}
+
+		if (isHoldingSpotlight(player)) {
+			renderSpotlightGhost(event, state, panel, pos);
 			return;
 		}
 
@@ -53,7 +59,7 @@ public class LocomotiveBufferLightsPlacementPreview {
 			renderAttachmentOutline(event, state, panel, pos);
 	}
 
-	private static void renderGhost(DrawSelectionEvent.HighlightBlock event, Level level, BlockState state,
+	private static void renderBufferLightsGhost(DrawSelectionEvent.HighlightBlock event, BlockState state,
 		TrainWallPanelBlockEntity panel, BlockPos pos) {
 		if (!AllBlocks.isAttachableTrainWallPanelState(state) || panel.hasAttachment())
 			return;
@@ -67,6 +73,22 @@ public class LocomotiveBufferLightsPlacementPreview {
 		poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
 		LocomotiveBufferLightsRenderHelper.renderPanelAttachmentGhost(state, LocomotiveBufferLightsVariant.TYPE_1,
 			facing, poseStack, event.getMultiBufferSource());
+		poseStack.popPose();
+	}
+
+	private static void renderSpotlightGhost(DrawSelectionEvent.HighlightBlock event, BlockState state,
+		TrainWallPanelBlockEntity panel, BlockPos pos) {
+		if (!AllBlocks.isAttachableTrainWallPanelState(state) || panel.hasAttachment())
+			return;
+
+		PoseStack poseStack = event.getPoseStack();
+		Vec3 cameraPos = event.getCamera().getPosition();
+		Direction facing = state.getValue(TrainWallPanelBlock.FACING);
+
+		poseStack.pushPose();
+		poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+		LocomotiveSpotlightRenderHelper.renderPanelAttachmentGhost(state, LocomotiveSpotlightVariant.SMALL, facing,
+			poseStack, event.getMultiBufferSource());
 		poseStack.popPose();
 	}
 
@@ -98,6 +120,11 @@ public class LocomotiveBufferLightsPlacementPreview {
 	private static boolean isHoldingBufferLights(Player player) {
 		return AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(player.getMainHandItem())
 			|| AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(player.getOffhandItem());
+	}
+
+	private static boolean isHoldingSpotlight(Player player) {
+		return AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(player.getMainHandItem())
+			|| AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(player.getOffhandItem());
 	}
 
 	private static boolean isHoldingWrench(Player player) {

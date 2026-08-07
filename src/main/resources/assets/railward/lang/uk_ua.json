@@ -176,6 +176,7 @@
     "block.railward.train.parts.train_wall_light_blue_window_big_smooth_frame_white":  "Стіна поїзда (блакитна, гладка з великим вікном і білою рамкою)",
     "block.railward.train.parts.train_wall_panel_light_blue_window_big_smooth_frame_white":  "Стінова панель поїзда (блакитна, гладка з великим вікном і білою рамкою)",
     "block.railward.train.parts.locomotive_buffer_lights":  "Locomotive Buffer Lights",
+    "block.railward.train.parts.locomotive_spotlight":  "Локомотивний прожектор",
     "block.railward.train.parts.train_hinged_door_blue":  "Hinged Train Door (Blue)",
     "block.railward.train.parts.train_hinged_door_blue_window_big":  "Hinged Train Door (Blue, Big Window)",
     "block.railward.train.parts.train_hinged_door_blue_window_small":  "Hinged Train Door (Blue, Small Window)",
@@ -218,5 +219,12 @@
     "block.railward.train.parts.wall_panel_vertical_slice": "Вертикальний зріз стінової панелі",
     "block.railward.train.parts.wall_panel_horizontal_slice": "Горизонтальний зріз стінової панелі",
     "block.railward.train.parts.wall_panel_corner": "Кут стінової панелі",
-    "block.railward.train.parts.half_wall_panel": "Половинна стінова панель"
+    "block.railward.train.parts.half_wall_panel": "Половинна стінова панель",
+    "block.railward.train.parts.copycat_slab": "Копіювальний півблок",
+    "block.railward.train.parts.pilot_type_1": "Колієочисник (тип 1)",
+    "block.railward.train.parts.pilot_type_2": "Колієочисник (тип 2)",
+    "block.railward.train.bogey.freight_18_100": "Вантажний візок 18-100",
+    "railward.bogey.style.freight_18_100": "Вантажний 18-100",
+    "block.railward.train.bogey.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний візок",
+    "railward.bogey.style.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний"
 }

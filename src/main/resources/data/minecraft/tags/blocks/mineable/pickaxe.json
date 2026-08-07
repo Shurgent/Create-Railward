@@ -43,6 +43,12 @@
                    "railward:train/parts/wall_panel_vertical_slice",
                    "railward:train/parts/wall_panel_horizontal_slice",
                    "railward:train/parts/wall_panel_corner",
-                   "railward:train/parts/half_wall_panel"
+                   "railward:train/parts/half_wall_panel",
+                   "railward:train/parts/copycat_slab",
+                   "railward:train/parts/pilot_type_1",
+                   "railward:train/parts/pilot_type_2",
+                   "railward:train/parts/locomotive_spotlight",
+                   "railward:train/bogey/freight_18_100",
+                   "railward:train/bogey/triple_axle_equalized_locomotive"
                ]
 }

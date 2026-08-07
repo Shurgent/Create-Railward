@@ -17,6 +17,8 @@ public class TrainPanelAttachmentRegistry {
 
 	public static final TrainPanelAttachmentType<LocomotiveBufferLightsAttachment> LOCOMOTIVE_BUFFER_LIGHTS =
 		register("locomotive_buffer_lights", LocomotiveBufferLightsAttachment::new);
+	public static final TrainPanelAttachmentType<LocomotiveSpotlightAttachment> LOCOMOTIVE_SPOTLIGHT =
+		register("locomotive_spotlight", LocomotiveSpotlightAttachment::new);
 
 	private TrainPanelAttachmentRegistry() {
 	}

@@ -88,7 +88,7 @@ public class CisternRenderer extends SmartBlockEntityRenderer<CisternBlockEntity
 		TextureAtlasSprite sprite = Minecraft.getInstance()
 			.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
 			.apply(texture);
-		VertexConsumer vb = buffers.getBuffer(RenderType.solid());
+		VertexConsumer vb = buffers.getBuffer(RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS));
 		PoseStack.Pose pose = ms.last();
 
 		int sides = sideCount(width);

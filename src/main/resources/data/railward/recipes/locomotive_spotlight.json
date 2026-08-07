@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "R",
+    "S"
+  ],
+  "key": {
+    "L": { "item": "minecraft:redstone_lamp" },
+    "R": { "item": "create:electron_tube" },
+    "S": { "item": "create:sturdy_sheet" }
+  },
+  "result": {
+    "item": "railward:train/parts/locomotive_spotlight"
+  }
+}

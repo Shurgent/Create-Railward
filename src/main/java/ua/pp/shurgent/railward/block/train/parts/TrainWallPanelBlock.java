@@ -42,6 +42,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveBufferLightsAttachment;
+import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveSpotlightAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
 
 public class TrainWallPanelBlock extends HorizontalDirectionalBlock
@@ -65,6 +66,12 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 				shape = Shapes.or(shape, attachment.getInteractionShape(state));
 		}
 		return shape;
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
+		CollisionContext context) {
+		return SHAPE.get(state.getValue(FACING));
 	}
 
 	public TrainWallPanelBlock(BlockBehaviour.Properties properties) {
@@ -100,6 +107,8 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 			ItemStack heldItem = player.getItemInHand(hand);
 			if (AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(heldItem))
 				return tryAttachLocomotiveBufferLights(state, world, pos, player, hand);
+			if (AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(heldItem))
+				return tryAttachLocomotiveSpotlight(state, world, pos, player, hand);
 
 			IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
 			if (placementHelper.matchesItem(heldItem)) {
@@ -131,12 +140,38 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 		return InteractionResult.SUCCESS;
 	}
 
+	private InteractionResult tryAttachLocomotiveSpotlight(BlockState state, Level level, BlockPos pos,
+		Player player, InteractionHand hand) {
+		if (!AllBlocks.isAttachableTrainWallPanelState(state))
+			return InteractionResult.PASS;
+		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel))
+			return InteractionResult.PASS;
+		if (panel.hasAttachment())
+			return InteractionResult.PASS;
+
+		if (level.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		ItemStack heldItem = player.getItemInHand(hand);
+		panel.setAttachment(new LocomotiveSpotlightAttachment(getLocomotiveSpotlightVariant(heldItem)));
+		if (!player.isCreative())
+			heldItem.shrink(1);
+		return InteractionResult.SUCCESS;
+	}
+
 	private static LocomotiveBufferLightsVariant getLocomotiveBufferLightsVariant(ItemStack stack) {
 		CompoundTag blockStateTag = stack.getTagElement("BlockStateTag");
 		if (blockStateTag == null)
 			return LocomotiveBufferLightsVariant.TYPE_1;
 		return LocomotiveBufferLightsVariant.byName(blockStateTag.getString(LocomotiveBufferLightsBlock.VARIANT
 			.getName()));
+	}
+
+	private static LocomotiveSpotlightVariant getLocomotiveSpotlightVariant(ItemStack stack) {
+		CompoundTag blockStateTag = stack.getTagElement("BlockStateTag");
+		if (blockStateTag == null)
+			return LocomotiveSpotlightVariant.SMALL;
+		return LocomotiveSpotlightVariant.byName(blockStateTag.getString(LocomotiveSpotlightBlock.VARIANT.getName()));
 	}
 
 	@Override
@@ -155,6 +190,12 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 
 		if (attachment instanceof LocomotiveBufferLightsAttachment bufferLights) {
 			bufferLights.cycleVariant();
+			panel.attachmentChanged();
+			playRotateSound(level, pos);
+			return InteractionResult.SUCCESS;
+		}
+		if (attachment instanceof LocomotiveSpotlightAttachment spotlight) {
+			spotlight.cycleVariant();
 			panel.attachmentChanged();
 			playRotateSound(level, pos);
 			return InteractionResult.SUCCESS;

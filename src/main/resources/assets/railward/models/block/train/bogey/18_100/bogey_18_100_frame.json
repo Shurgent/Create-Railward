@@ -1,0 +1,10 @@
+{
+    "parent":  "block/block",
+    "loader":  "forge:obj",
+    "flip-v":  true,
+    "model":  "railward:models/block/train/bogey/18_100/bogey_18_100_frame.obj",
+    "textures":  {
+                     "particle":  "railward:block/train/bogey/bogey_18_100",
+                     "texture":  "railward:block/train/bogey/bogey_18_100"
+                 }
+}

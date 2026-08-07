@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -88,10 +89,16 @@ public class TrainWallPanelBlockEntity extends SmartBlockEntity {
 			tag.put(ATTACHMENT_KEY, TrainPanelAttachmentRegistry.write(attachment));
 	}
 
+	@Nullable
+	public static TrainPanelAttachment readAttachment(@Nullable CompoundTag tag) {
+		if (tag == null || !tag.contains(ATTACHMENT_KEY, Tag.TAG_COMPOUND))
+			return null;
+		return TrainPanelAttachmentRegistry.read(tag.getCompound(ATTACHMENT_KEY));
+	}
+
 	@Override
 	protected void read(CompoundTag tag, boolean clientPacket) {
 		super.read(tag, clientPacket);
-		attachment = tag.contains(ATTACHMENT_KEY) ? TrainPanelAttachmentRegistry.read(tag.getCompound(ATTACHMENT_KEY))
-			: null;
+		attachment = readAttachment(tag);
 	}
 }

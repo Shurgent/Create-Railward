@@ -8,13 +8,13 @@ import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorMovementBehaviour;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.simibubi.create.foundation.data.BuilderTransformers;
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
@@ -30,11 +30,17 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ModelFile;
+import ua.pp.shurgent.railward.block.train.bogey.FreightBogey18_100Block;
+import ua.pp.shurgent.railward.block.train.bogey.TripleAxleEqualizedLocomotiveBogeyBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockItem;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlock;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlock;
+import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightMovementBehaviour;
+import ua.pp.shurgent.railward.block.train.parts.PilotBlock;
+import ua.pp.shurgent.railward.block.train.parts.PilotType;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
@@ -46,6 +52,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
@@ -62,8 +69,8 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlock;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
-import ua.pp.shurgent.railward.client.model.WallPanelCopycatModel;
-import ua.pp.shurgent.railward.client.model.WallPanelCopycatModel.Shape;
+import ua.pp.shurgent.railward.client.model.TrainRoofModelRegistration;
+import ua.pp.shurgent.railward.client.model.WallPanelCopycatModelRegistration;
 
 public class AllBlocks {
 
@@ -71,6 +78,8 @@ public class AllBlocks {
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
+	private static final LocomotiveSpotlightMovementBehaviour LOCOMOTIVE_SPOTLIGHT_MOVEMENT =
+		new LocomotiveSpotlightMovementBehaviour();
 	private static final List<BlockEntry<TrainDoorBlock>> HINGED_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainDoorBlock>> SLIDING_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final DyeColor[] TRAIN_DOOR_SOLID_COLORS = {
@@ -90,6 +99,22 @@ public class AllBlocks {
 			"stripped_warped"
 	};
 
+	public static final BlockEntry<FreightBogey18_100Block> FREIGHT_BOGEY_18_100 = REGISTRATE
+			.block("train/bogey/freight_18_100", FreightBogey18_100Block::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.color(MaterialColor.PODZOL).sound(SoundType.NETHERITE_BLOCK).noOcclusion())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.register();
+
+	public static final BlockEntry<TripleAxleEqualizedLocomotiveBogeyBlock>
+			TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_BOGEY = REGISTRATE
+			.block("train/bogey/triple_axle_equalized_locomotive",
+					TripleAxleEqualizedLocomotiveBogeyBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.color(MaterialColor.PODZOL).sound(SoundType.NETHERITE_BLOCK).noOcclusion())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.register();
+
 	static {
 		registerTrainDoorSet("train_hinged_door", TrainDoorAnimation.HINGED, HINGED_TRAIN_DOOR_ENTRIES);
 		registerTrainDoorSet("train_sliding_door", TrainDoorAnimation.SLIDING, SLIDING_TRAIN_DOOR_ENTRIES);
@@ -98,8 +123,7 @@ public class AllBlocks {
 	public static final BlockEntry<WallPanelVerticalSliceBlock> WALL_PANEL_VERTICAL_SLICE = REGISTRATE
 			.block("train/parts/wall_panel_vertical_slice", WallPanelVerticalSliceBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(
-					() -> model -> new WallPanelCopycatModel(model, Shape.VERTICAL_SLICE)))
+			.onRegister(WallPanelCopycatModelRegistration.verticalSlice())
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_vertical_slice")))
@@ -109,8 +133,7 @@ public class AllBlocks {
 	public static final BlockEntry<WallPanelHorizontalSliceBlock> WALL_PANEL_HORIZONTAL_SLICE = REGISTRATE
 			.block("train/parts/wall_panel_horizontal_slice", WallPanelHorizontalSliceBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(
-					() -> model -> new WallPanelCopycatModel(model, Shape.HORIZONTAL_SLICE)))
+			.onRegister(WallPanelCopycatModelRegistration.horizontalSlice())
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_horizontal_slice")))
@@ -120,8 +143,7 @@ public class AllBlocks {
 	public static final BlockEntry<WallPanelCornerBlock> WALL_PANEL_CORNER = REGISTRATE
 			.block("train/parts/wall_panel_corner", WallPanelCornerBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(
-					() -> model -> new WallPanelCopycatModel(model, Shape.CORNER)))
+			.onRegister(WallPanelCopycatModelRegistration.corner())
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/wall_panel_corner")))
@@ -131,11 +153,20 @@ public class AllBlocks {
 	public static final BlockEntry<HalfWallPanelBlock> HALF_WALL_PANEL = REGISTRATE
 			.block("train/parts/half_wall_panel", HalfWallPanelBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(
-					() -> model -> new WallPanelCopycatModel(model, Shape.HALF_PANEL)))
+			.onRegister(WallPanelCopycatModelRegistration.halfPanel())
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/half_wall_panel")))
+			.build()
+			.register();
+
+	public static final BlockEntry<CopycatSlabBlock> COPYCAT_SLAB = REGISTRATE
+			.block("train/parts/copycat_slab", CopycatSlabBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(WallPanelCopycatModelRegistration.slab())
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/copycat_slab")))
 			.build()
 			.register();
 
@@ -520,6 +551,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(TrainRoofModelRegistration.create())
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
@@ -538,6 +570,33 @@ public class AllBlocks {
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.addLayer(() -> RenderType::translucent)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<LocomotiveSpotlightBlock> LOCOMOTIVE_SPOTLIGHT = REGISTRATE
+			.block("train/parts/locomotive_spotlight", LocomotiveSpotlightBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::translucent)
+			.onRegister(movementBehaviour(LOCOMOTIVE_SPOTLIGHT_MOVEMENT))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.tag(AllItemTags.CONTRAPTION_CONTROLLED.tag)
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<PilotBlock> PILOT_TYPE_1 = REGISTRATE
+			.block("train/parts/pilot_type_1", properties -> new PilotBlock(properties, PilotType.TYPE_1))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<PilotBlock> PILOT_TYPE_2 = REGISTRATE
+			.block("train/parts/pilot_type_2", properties -> new PilotBlock(properties, PilotType.TYPE_2))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
@@ -676,6 +735,8 @@ public class AllBlocks {
 			.transform(customItemModel()).register();
 
 	public static void register() {
+		AllMovementBehaviours.registerBehaviourProvider(state ->
+			isAttachableTrainWallPanelState(state) ? LOCOMOTIVE_SPOTLIGHT_MOVEMENT : null);
 	}
 
 	public static boolean isTrainWallPanelVariantItem(ItemStack stack) {
