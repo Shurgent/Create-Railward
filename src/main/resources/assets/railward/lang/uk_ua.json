@@ -226,5 +226,7 @@
     "block.railward.train.bogey.freight_18_100": "Вантажний візок 18-100",
     "railward.bogey.style.freight_18_100": "Вантажний 18-100",
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний візок",
-    "railward.bogey.style.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний"
+    "railward.bogey.style.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний",
+    "block.railward.train.parts.cab_signal": "Локомотивний світлофор",
+    "subtitle.railward.cab_signal.red": "Попередження локомотивного світлофора"
 }

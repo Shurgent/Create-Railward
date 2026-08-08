@@ -18,6 +18,7 @@
     "create.ContraptionMixin",
     "create.ContraptionWorldAccessor",
     "create.FluidNetworkMixin",
+    "create.GlobalRailwayManagerMixin",
     "create.MountedStorageAccessor",
     "create.MountedStorageManagerAccessor",
     "create.PipeConnectionAccessor",

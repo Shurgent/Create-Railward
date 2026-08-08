@@ -20,6 +20,7 @@ import ua.pp.shurgent.railward.client.renderer.WhistleSignRenderer;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.PilotBlockEntity;
@@ -35,6 +36,7 @@ import ua.pp.shurgent.railward.block.train.parts.WagonFrameBlockEntity;
 import ua.pp.shurgent.railward.client.renderer.BulkCargoContainerRenderer;
 import ua.pp.shurgent.railward.client.renderer.CisternHatchRenderer;
 import ua.pp.shurgent.railward.client.renderer.CisternRenderer;
+import ua.pp.shurgent.railward.client.renderer.CabSignalRenderer;
 import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightRenderer;
@@ -134,6 +136,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/locomotive_spotlight", LocomotiveSpotlightBlockEntity::new)
 			.validBlocks(AllBlocks.LOCOMOTIVE_SPOTLIGHT)
 			.renderer(() -> LocomotiveSpotlightRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<CabSignalBlockEntity> CAB_SIGNAL = REGISTRATE
+			.blockEntity("train/parts/cab_signal", CabSignalBlockEntity::new)
+			.validBlocks(AllBlocks.CAB_SIGNAL)
+			.renderer(() -> CabSignalRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<PilotBlockEntity> PILOT_TYPE_1 = REGISTRATE

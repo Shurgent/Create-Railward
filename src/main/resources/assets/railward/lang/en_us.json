@@ -226,5 +226,7 @@
     "block.railward.train.bogey.freight_18_100": "18-100 Freight Bogey",
     "railward.bogey.style.freight_18_100": "18-100 Freight",
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Triple-Axle Equalized Locomotive Bogey",
-    "railward.bogey.style.triple_axle_equalized_locomotive": "Triple-Axle Equalized Locomotive"
+    "railward.bogey.style.triple_axle_equalized_locomotive": "Triple-Axle Equalized Locomotive",
+    "block.railward.train.parts.cab_signal": "Cab Signal",
+    "subtitle.railward.cab_signal.red": "Cab signal warning"
 }

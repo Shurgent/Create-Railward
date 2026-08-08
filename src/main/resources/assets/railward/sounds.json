@@ -94,5 +94,13 @@
         "name": "railward:train/station/unloading_bulk_cargo"
       }
     ]
+  },
+  "cab_signal_red": {
+    "subtitle": "subtitle.railward.cab_signal.red",
+    "sounds": [
+      {
+        "name": "railward:train/parts/cab_signal"
+      }
+    ]
   }
 }

@@ -11,7 +11,7 @@ import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import net.minecraft.core.BlockPos;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionCollector;
 import ua.pp.shurgent.railward.block.train.parts.CisternContraptionFluidSync;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
 
 @Mixin(value = AbstractContraptionEntity.class, remap = false)
 public class AbstractContraptionEntityMixin {
@@ -26,7 +26,7 @@ public class AbstractContraptionEntityMixin {
 	@Inject(method = "stopControlling", at = @At("HEAD"), remap = false)
 	private void railward$clearBufferLightsManualDirection(BlockPos controlsLocalPos, CallbackInfo ci) {
 		if ((Object) this instanceof CarriageContraptionEntity carriageEntity)
-			LocomotiveBufferLightsTrainState.clearManualControls(carriageEntity);
+			TrainDirectionState.clearManualControls(carriageEntity);
 	}
 
 }

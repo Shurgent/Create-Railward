@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": {"model": "railward:block/train/parts/cab_signal_inventory"},
+    "facing=up": {"model": "railward:block/train/parts/cab_signal_inventory"},
+    "facing=north": {"model": "railward:block/train/parts/cab_signal_inventory"},
+    "facing=south": {"model": "railward:block/train/parts/cab_signal_inventory"},
+    "facing=west": {"model": "railward:block/train/parts/cab_signal_inventory"},
+    "facing=east": {"model": "railward:block/train/parts/cab_signal_inventory"}
+  }
+}

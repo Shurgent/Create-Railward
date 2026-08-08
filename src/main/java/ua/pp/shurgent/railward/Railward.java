@@ -22,6 +22,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.ModLoadingContext;
+import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlock;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("railward")
@@ -63,6 +64,7 @@ public class Railward {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		event.enqueueWork((Runnable) SurfaceMountedBlock::registerMovementChecks);
 		// some preinit code
 		LOGGER.info("HELLO FROM PREINIT");
 		LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());

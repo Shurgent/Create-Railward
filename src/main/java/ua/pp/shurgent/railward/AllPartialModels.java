@@ -87,7 +87,16 @@ public class AllPartialModels {
 	// Fluid Loading
 	CISTERN_HATCH_LID = block("train/station/cistern_hatch_lid"),
 	FLUID_TERMINAL_HOSE_UPPER = block("train/station/fluid_terminal_hose_upper"),
-	FLUID_TERMINAL_HOSE_LOWER = block("train/station/fluid_terminal_hose_lower")
+	FLUID_TERMINAL_HOSE_LOWER = block("train/station/fluid_terminal_hose_lower"),
+
+	// Cab Signal
+	CAB_SIGNAL_BASE = block("train/parts/cab_signal_base"),
+	CAB_SIGNAL_OFF = block("train/parts/cab_signal_off"),
+	CAB_SIGNAL_GREEN = block("train/parts/cab_signal_green"),
+	CAB_SIGNAL_YELLOW = block("train/parts/cab_signal_yellow"),
+	CAB_SIGNAL_YELLOW_RED = block("train/parts/cab_signal_yellow_red"),
+	CAB_SIGNAL_RED = block("train/parts/cab_signal_red"),
+	CAB_SIGNAL_WHITE = block("train/parts/cab_signal_white")
 
 	;
 

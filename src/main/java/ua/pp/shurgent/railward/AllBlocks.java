@@ -34,6 +34,7 @@ import ua.pp.shurgent.railward.block.train.bogey.FreightBogey18_100Block;
 import ua.pp.shurgent.railward.block.train.bogey.TripleAxleEqualizedLocomotiveBogeyBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBehaviour;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockItem;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlock;
@@ -69,6 +70,7 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlock;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
+import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlockItem;
 import ua.pp.shurgent.railward.client.model.TrainRoofModelRegistration;
 import ua.pp.shurgent.railward.client.model.WallPanelCopycatModelRegistration;
 
@@ -582,6 +584,16 @@ public class AllBlocks {
 			.onRegister(movementBehaviour(LOCOMOTIVE_SPOTLIGHT_MOVEMENT))
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.tag(AllItemTags.CONTRAPTION_CONTROLLED.tag)
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<CabSignalBlock> CAB_SIGNAL = REGISTRATE
+			.block("train/parts/cab_signal", CabSignalBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::translucent)
+			.item((block, properties) -> new SurfaceMountedBlockItem(block,
+				properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
 	public static final BlockEntry<PilotBlock> PILOT_TYPE_1 = REGISTRATE

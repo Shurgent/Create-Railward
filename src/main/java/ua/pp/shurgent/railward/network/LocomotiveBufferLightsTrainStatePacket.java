@@ -8,8 +8,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent.Context;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState.DirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState.DirectionState;
 
 public class LocomotiveBufferLightsTrainStatePacket extends SimplePacketBase {
 
@@ -35,7 +35,7 @@ public class LocomotiveBufferLightsTrainStatePacket extends SimplePacketBase {
 	@Override
 	public boolean handle(Context context) {
 		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-			() -> () -> LocomotiveBufferLightsTrainState.setClientDirection(trainId, direction)));
+			() -> () -> TrainDirectionState.setClientDirection(trainId, direction)));
 		return true;
 	}
 }

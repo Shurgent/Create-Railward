@@ -1,0 +1,17 @@
+{
+  "parent": "railward:block/train/parts/cab_signal_base",
+  "elements": [
+    {
+      "name": "white",
+      "from": [0, 2, 1],
+      "to": [2, 3, 2],
+      "faces": {
+        "east": {"uv": [2, 9, 3, 10], "texture": "#0"},
+        "south": {"uv": [2, 9, 4, 10], "texture": "#0"},
+        "west": {"uv": [3, 9, 4, 10], "texture": "#0"},
+        "up": {"uv": [2, 9, 4, 10], "texture": "#0"},
+        "down": {"uv": [2, 8, 4, 9], "texture": "#0"}
+      }
+    }
+  ]
+}

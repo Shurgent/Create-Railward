@@ -13,6 +13,7 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
+import ua.pp.shurgent.railward.network.CabSignalTrainStatePacket;
 import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
 import ua.pp.shurgent.railward.network.LocomotiveBufferLightsTrainStatePacket;
 import ua.pp.shurgent.railward.network.ModernWhistleArrivalPacket;
@@ -24,7 +25,7 @@ import com.simibubi.create.foundation.networking.SimplePacketBase;
 public class RailwardPackets {
 
 	private static final ResourceLocation CHANNEL_NAME = Railward.asResource("main");
-	private static final String NETWORK_VERSION = "1";
+	private static final String NETWORK_VERSION = "2";
 	private static SimpleChannel channel;
 	private static int index = 0;
 
@@ -41,6 +42,7 @@ public class RailwardPackets {
 		register(WhistleSignHonkPacket.class, WhistleSignHonkPacket::new, PLAY_TO_CLIENT);
 		register(LocomotiveBufferLightsTrainStatePacket.class, LocomotiveBufferLightsTrainStatePacket::new,
 			PLAY_TO_CLIENT);
+		register(CabSignalTrainStatePacket.class, CabSignalTrainStatePacket::new, PLAY_TO_CLIENT);
 		register(ModernWhistleArrivalPacket.class, ModernWhistleArrivalPacket::new, PLAY_TO_CLIENT);
 	}
 

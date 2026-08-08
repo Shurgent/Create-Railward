@@ -40,8 +40,8 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.RailwardConfig;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState.DirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState.DirectionState;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlock;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightMovementBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightVariant;
@@ -160,7 +160,7 @@ public final class LocomotiveSpotlightForwardRenderer {
 			if (LocomotiveSpotlightMovementBehaviour.isDisabled(carriageContraption))
 				continue;
 
-			DirectionState state = LocomotiveBufferLightsTrainState.resolve(carriageEntity);
+			DirectionState state = TrainDirectionState.resolve(carriageEntity);
 			if (state == DirectionState.NONE)
 				continue;
 

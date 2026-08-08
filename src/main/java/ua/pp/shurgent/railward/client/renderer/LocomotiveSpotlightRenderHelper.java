@@ -16,8 +16,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.LocomotiveSpotlightPartialModels;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState.DirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState.DirectionState;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightVariant;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightMovementBehaviour;
 
@@ -90,7 +90,7 @@ public class LocomotiveSpotlightRenderHelper {
 		if (LocomotiveSpotlightMovementBehaviour.isDisabled(carriageContraption))
 			return false;
 
-		DirectionState direction = LocomotiveBufferLightsTrainState.resolve(carriageEntity);
+		DirectionState direction = TrainDirectionState.resolve(carriageEntity);
 		if (direction == DirectionState.NONE)
 			return false;
 

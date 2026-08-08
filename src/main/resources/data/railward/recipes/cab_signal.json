@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "T",
+    "T",
+    "T"
+  ],
+  "key": {
+    "T": { "item": "create:electron_tube" }
+  },
+  "result": {
+    "item": "railward:train/parts/cab_signal",
+    "count": 2
+  }
+}

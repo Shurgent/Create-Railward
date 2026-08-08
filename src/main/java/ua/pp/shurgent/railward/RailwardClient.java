@@ -10,6 +10,7 @@ import ua.pp.shurgent.railward.client.RailwardContraptionGoggleOverlay;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightForwardRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailingInteractionHighlight;
+import ua.pp.shurgent.railward.client.renderer.SurfaceMountedPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -21,6 +22,7 @@ public class RailwardClient {
 		
 		modEventBus.addListener(RailwardClient::clientInit);
 		forgeEventBus.addListener(LocomotiveBufferLightsPlacementPreview::render);
+		forgeEventBus.addListener(SurfaceMountedPlacementPreview::render);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::prepare);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::onClientLogout);
 		forgeEventBus.addListener(RailingInteractionHighlight::render);

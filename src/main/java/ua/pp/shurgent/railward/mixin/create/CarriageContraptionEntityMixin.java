@@ -11,7 +11,7 @@ import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
 
 @Mixin(value = CarriageContraptionEntity.class, remap = false)
 public class CarriageContraptionEntityMixin {
@@ -20,7 +20,7 @@ public class CarriageContraptionEntityMixin {
 	private void railward$syncBufferLightsManualDirection(BlockPos controlsLocalPos, Player player,
 		CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValueZ())
-			LocomotiveBufferLightsTrainState.syncManualControls((CarriageContraptionEntity) (Object) this,
+			TrainDirectionState.syncManualControls((CarriageContraptionEntity) (Object) this,
 				controlsLocalPos, player);
 	}
 
@@ -30,12 +30,12 @@ public class CarriageContraptionEntityMixin {
 		CarriageContraptionEntity entity = (CarriageContraptionEntity) (Object) this;
 		if (heldControls.contains(5)) {
 			if (!entity.level.isClientSide)
-				LocomotiveBufferLightsTrainState.clearManualControls(entity);
+				TrainDirectionState.clearManualControls(entity);
 			return;
 		}
 		if (cir.getReturnValueZ() && entity.getControllingPlayer()
 			.filter(player.getUUID()::equals)
 			.isPresent())
-			LocomotiveBufferLightsTrainState.syncManualControls(entity, controlsLocalPos, player);
+			TrainDirectionState.syncManualControls(entity, controlsLocalPos, player);
 	}
 }

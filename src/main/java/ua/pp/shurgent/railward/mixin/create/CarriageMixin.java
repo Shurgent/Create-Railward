@@ -10,6 +10,8 @@ import com.simibubi.create.content.trains.entity.TravellingPoint.IEdgePointListe
 
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignTrainHandler;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignTrainHandler;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState.PassSnapshot;
 
 @Mixin(value = Carriage.class, remap = false)
 public abstract class CarriageMixin {
@@ -20,9 +22,12 @@ public abstract class CarriageMixin {
 	private IEdgePointListener railward$wrapFrontSignalListener(Train train) {
 		IEdgePointListener original = train.frontSignalListener();
 		return (distance, couple) -> {
+			PassSnapshot cabSignalSnapshot = CabSignalTrainState.snapshotFrontEdgePoint(train, couple);
 			WhistleSignTrainHandler.onFrontEdgePoint(train, couple);
 			SpeedSignTrainHandler.onFrontEdgePoint(train, couple);
-			return original.test(distance, couple);
+			boolean stopped = original.test(distance, couple);
+			CabSignalTrainState.finishFrontEdgePoint(train, cabSignalSnapshot, stopped);
+			return stopped;
 		};
 	}
 }

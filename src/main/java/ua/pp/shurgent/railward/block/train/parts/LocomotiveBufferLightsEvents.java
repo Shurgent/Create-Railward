@@ -18,13 +18,15 @@ public class LocomotiveBufferLightsEvents {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getPlayer() instanceof ServerPlayer player)
-			LocomotiveBufferLightsTrainState.syncAllControls(player);
+		if (event.getPlayer() instanceof ServerPlayer player) {
+			TrainDirectionState.syncAllControls(player);
+			CabSignalTrainState.syncAll(player);
+		}
 	}
 
 	@SubscribeEvent
 	public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		LocomotiveBufferLightsTrainState.clearManualControls(event.getPlayer()
+		TrainDirectionState.clearManualControls(event.getPlayer()
 			.getUUID());
 	}
 
@@ -32,12 +34,14 @@ public class LocomotiveBufferLightsEvents {
 	public static void onStartTracking(PlayerEvent.StartTracking event) {
 		if (event.getPlayer() instanceof ServerPlayer player
 			&& event.getTarget() instanceof CarriageContraptionEntity entity) {
-			LocomotiveBufferLightsTrainState.syncCurrentControls(entity, player);
+			TrainDirectionState.syncCurrentControls(entity, player);
+			CabSignalTrainState.syncCurrent(entity, player);
 		}
 	}
 
 	@SubscribeEvent
 	public static void onServerStopping(ServerStoppingEvent event) {
-		LocomotiveBufferLightsTrainState.clearServerDirections();
+		TrainDirectionState.clearServerDirections();
+		CabSignalTrainState.clearServerStates();
 	}
 }

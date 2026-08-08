@@ -32,7 +32,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent.Context;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerVisualRebaser;
 
 public class TrainCouplerSyncPacket extends SimplePacketBase {
@@ -198,7 +199,8 @@ public class TrainCouplerSyncPacket extends SimplePacketBase {
 		Map<UUID, Train> clientTrains = CreateClient.RAILWAYS.trains;
 		for (UUID trainId : removedTrainIds) {
 			clientTrains.remove(trainId);
-			LocomotiveBufferLightsTrainState.removeClientDirection(trainId);
+			TrainDirectionState.removeClientDirection(trainId);
+			CabSignalTrainState.removeClientAspect(trainId);
 		}
 
 		for (int i = 0; i < trains.size(); i++) {

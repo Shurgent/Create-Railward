@@ -5,7 +5,8 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ua.pp.shurgent.railward.Railward;
-import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsTrainState;
+import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
+import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
 
 @Mod.EventBusSubscriber(modid = Railward.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class LocomotiveBufferLightsClientEvents {
@@ -15,6 +16,7 @@ public class LocomotiveBufferLightsClientEvents {
 
 	@SubscribeEvent
 	public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-		LocomotiveBufferLightsTrainState.clearClientDirections();
+		TrainDirectionState.clearClientDirections();
+		CabSignalTrainState.clearClientAspects();
 	}
 }

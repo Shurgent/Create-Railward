@@ -226,5 +226,7 @@
     "block.railward.train.bogey.freight_18_100": "Грузовая тележка 18-100",
     "railward.bogey.style.freight_18_100": "Грузовая 18-100",
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная тележка",
-    "railward.bogey.style.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная"
+    "railward.bogey.style.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная",
+    "block.railward.train.parts.cab_signal": "Локомотивный светофор",
+    "subtitle.railward.cab_signal.red": "Предупреждение локомотивного светофора"
 }
