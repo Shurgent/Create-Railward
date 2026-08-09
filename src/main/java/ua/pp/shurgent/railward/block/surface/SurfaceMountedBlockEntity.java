@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
+import com.simibubi.create.content.contraptions.StructureTransform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity {
+public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
 
 	private static final String ANCHOR_X = "SurfaceAnchorX";
 	private static final String ANCHOR_Y = "SurfaceAnchorY";
@@ -57,12 +59,27 @@ public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(CompoundTag tag) {
+		super.writeSafe(tag);
+		tag.putDouble(ANCHOR_X, anchor.x);
+		tag.putDouble(ANCHOR_Y, anchor.y);
+		tag.putDouble(ANCHOR_Z, anchor.z);
+	}
+
+	@Override
+	public void transform(StructureTransform transform) {
+		Direction facing = getBlockState().getValue(SurfaceMountedBlock.FACING);
+		anchor = constrainToFace(transform.applyWithoutOffset(anchor), facing);
+		setChanged();
+	}
+
+	@Override
 	protected void read(CompoundTag tag, boolean clientPacket) {
 		super.read(tag, clientPacket);
 		Direction facing = getBlockState().getValue(SurfaceMountedBlock.FACING);
 		if (tag.contains(ANCHOR_X) && tag.contains(ANCHOR_Y) && tag.contains(ANCHOR_Z))
-			anchor = constrainToFace(new Vec3(tag.getDouble(ANCHOR_X), tag.getDouble(ANCHOR_Y),
-				tag.getDouble(ANCHOR_Z)), facing);
+			anchor = clampToBlock(new Vec3(tag.getDouble(ANCHOR_X), tag.getDouble(ANCHOR_Y),
+				tag.getDouble(ANCHOR_Z)));
 		else
 			anchor = defaultAnchor(facing);
 	}
@@ -76,9 +93,10 @@ public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity {
 	}
 
 	private static Vec3 constrainToFace(Vec3 anchor, Direction facing) {
-		double x = Mth.clamp(anchor.x, 0, 1);
-		double y = Mth.clamp(anchor.y, 0, 1);
-		double z = Mth.clamp(anchor.z, 0, 1);
+		Vec3 clamped = clampToBlock(anchor);
+		double x = clamped.x;
+		double y = clamped.y;
+		double z = clamped.z;
 		return switch (facing) {
 		case SOUTH -> new Vec3(x, y, 0);
 		case NORTH -> new Vec3(x, y, 1);
@@ -87,5 +105,10 @@ public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity {
 		case UP -> new Vec3(x, 0, z);
 		case DOWN -> new Vec3(x, 1, z);
 		};
+	}
+
+	private static Vec3 clampToBlock(Vec3 anchor) {
+		return new Vec3(Mth.clamp(anchor.x, 0, 1), Mth.clamp(anchor.y, 0, 1),
+			Mth.clamp(anchor.z, 0, 1));
 	}
 }

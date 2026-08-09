@@ -3,15 +3,20 @@ package ua.pp.shurgent.railward.block.surface;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.content.contraptions.BlockMovementChecks;
 import com.simibubi.create.content.contraptions.BlockMovementChecks.CheckResult;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -20,7 +25,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class SurfaceMountedBlock<T extends SurfaceMountedBlockEntity> extends Block implements IBE<T> {
+public abstract class SurfaceMountedBlock<T extends SurfaceMountedBlockEntity> extends Block
+	implements IBE<T>, IWrenchable {
 
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
 	private static boolean movementChecksRegistered;
@@ -49,9 +55,24 @@ public abstract class SurfaceMountedBlock<T extends SurfaceMountedBlockEntity> e
 	}
 
 	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
+	}
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		BlockState state = defaultBlockState().setValue(FACING, context.getClickedFace());
 		return state.canSurvive(context.getLevel(), context.getClickedPos()) ? state : null;
+	}
+
+	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		return InteractionResult.FAIL;
 	}
 
 	@Override

@@ -48,6 +48,7 @@
                    "railward:train/parts/pilot_type_1",
                    "railward:train/parts/pilot_type_2",
                    "railward:train/parts/locomotive_spotlight",
+                   "railward:train/parts/cab_signal",
                    "railward:train/bogey/freight_18_100",
                    "railward:train/bogey/triple_axle_equalized_locomotive"
                ]
