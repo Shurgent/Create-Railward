@@ -16,7 +16,6 @@ import com.simibubi.create.content.trains.entity.Navigation;
 import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.entity.TravellingPoint;
 import com.simibubi.create.content.trains.entity.TravellingPoint.ITrackSelector;
-import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.simibubi.create.content.trains.graph.TrackNode;
 import com.simibubi.create.content.trains.signal.SignalBlock.SignalType;
 import com.simibubi.create.content.trains.signal.SignalBlockEntity.SignalState;

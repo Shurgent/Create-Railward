@@ -7,6 +7,7 @@ plugins {
 
 //version = mod_version
 def versionFile = file('mod_version.txt')
+def mixinRefmapFile = layout.buildDirectory.file("generated/mixin/${mod_id}.refmap.json")
 mod_version = versionFile.text.trim()
 version = mod_version
 
@@ -205,6 +206,11 @@ tasks.named('processResources', ProcessResources).configure {
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
     inputs.property('release_mod_version', mod_version)
+    dependsOn tasks.named('compileJava')
+
+    from(mixinRefmapFile) {
+        into ''
+    }
 
     filesMatching('META-INF/mods.toml') {
         filter { String line ->
@@ -252,6 +258,16 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.named('compileJava', JavaCompile).configure {
+    inputs.property('mixin_refmap_name', "${mod_id}.refmap.json")
+    outputs.file(mixinRefmapFile)
+    options.compilerArgs.add("-AoutRefMapFile=${mixinRefmapFile.get().asFile.absolutePath}")
+
+    doFirst {
+        mixinRefmapFile.get().asFile.parentFile.mkdirs()
+    }
 }
 
 def nextPatchVersion = { String currentVersion ->
