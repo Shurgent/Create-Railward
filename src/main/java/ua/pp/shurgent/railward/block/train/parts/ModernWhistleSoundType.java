@@ -1,5 +1,7 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
+import java.util.Locale;
+
 import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock.WhistleSize;
 
 import net.minecraft.sounds.SoundEvent;
@@ -60,6 +62,25 @@ public enum ModernWhistleSoundType implements StringRepresentable {
 
 	public int getArrivalLoopTicks() {
 		return arrivalLoopTicks;
+	}
+
+	public String getTranslationKey() {
+		return "railward.modern_whistle.sound_type." + serializedName;
+	}
+
+	public static ModernWhistleSoundType byOrdinal(int ordinal) {
+		ModernWhistleSoundType[] values = values();
+		return values[Math.floorMod(ordinal, values.length)];
+	}
+
+	public static ModernWhistleSoundType byName(String name, ModernWhistleSoundType fallback) {
+		if (name == null || name.isBlank())
+			return fallback;
+		try {
+			return valueOf(name.toUpperCase(Locale.ROOT));
+		} catch (IllegalArgumentException ignored) {
+			return fallback;
+		}
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public final class LocomotiveSpotlightForwardShaderPatcher {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Set<String> VANILLA_TERRAIN_PROGRAMS = Set.of("rendertype_solid", "rendertype_cutout",
 		"rendertype_cutout_mipped", "rendertype_translucent", "rendertype_tripwire");
-	private static final Set<String> VANILLA_TWO_SIDED_TERRAIN_PROGRAMS = Set.of("rendertype_cutout",
+	private static final Set<String> VANILLA_DERIVATIVE_NORMAL_TERRAIN_PROGRAMS = Set.of("rendertype_cutout",
 		"rendertype_cutout_mipped", "rendertype_tripwire");
 	private static final Set<String> VANILLA_ENTITY_PROGRAMS = Set.of("rendertype_entity_solid",
 		"rendertype_entity_cutout", "rendertype_entity_cutout_no_cull",
@@ -409,23 +409,20 @@ public final class LocomotiveSpotlightForwardShaderPatcher {
 			return source;
 		}
 
-		boolean twoSided = VANILLA_TWO_SIDED_TERRAIN_PROGRAMS.contains(name);
+		boolean derivativeNormal = VANILLA_DERIVATIVE_NORMAL_TERRAIN_PROGRAMS.contains(name);
 		String normalCalculation;
-		String applyFunction;
-		if (twoSided) {
+		if (derivativeNormal) {
 			normalCalculation = "vec3 normalGradient = cross(dFdx(railwardPosition), dFdy(railwardPosition));\n"
 				+ "    vec3 surfaceNormal = normalGradient"
 				+ " * inversesqrt(max(dot(normalGradient, normalGradient), 1.0e-8));\n"
 				+ "    if (dot(surfaceNormal, -railwardPosition) < 0.0) {\n"
 				+ "        surfaceNormal = -surfaceNormal;\n"
 				+ "    }";
-			applyFunction = "railwardApplySpotlightTwoSided";
 		} else {
 			normalCalculation = "vec3 surfaceNormal = railwardNormal"
 				+ " * inversesqrt(max(dot(railwardNormal, railwardNormal), 1.0e-8));";
-			applyFunction = "railwardApplySpotlight";
 		}
-		String lightingCalculation = "vec3 railwardLighting = " + applyFunction
+		String lightingCalculation = "vec3 railwardLighting = railwardApplySpotlight"
 			+ "(railwardLightColor.rgb, railwardPosition, surfaceNormal);";
 		String colorReplacement = colorAnchor + "\n    " + normalCalculation + "\n    "
 			+ lightingCalculation + "\n    color.rgb *= railwardLighting;";
@@ -462,11 +459,8 @@ public final class LocomotiveSpotlightForwardShaderPatcher {
 			+ "    if (dot(surfaceNormal, -v_RailwardPosition) < 0.0) {\n"
 			+ "        surfaceNormal = -surfaceNormal;\n"
 			+ "    }";
-		String replacement = "#ifdef ALPHA_CUTOFF\n"
-			+ "    vec3 railwardLighting = railwardApplySpotlightTwoSided(sampleLightTex.rgb, v_RailwardPosition, surfaceNormal);\n"
-			+ "#else\n"
-			+ "    vec3 railwardLighting = railwardApplySpotlight(sampleLightTex.rgb, v_RailwardPosition, surfaceNormal);\n"
-			+ "#endif\n"
+		String replacement = "vec3 railwardLighting = railwardApplySpotlight(sampleLightTex.rgb,"
+			+ " v_RailwardPosition, surfaceNormal);\n"
 			+ "    vec4 diffuseColor = sampleBlockTex * v_Color;\n"
 			+ "    diffuseColor.rgb *= railwardLighting;\n"
 			+ "    diffuseColor.a *= sampleLightTex.a;";

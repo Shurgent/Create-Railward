@@ -19,6 +19,18 @@ public class ModernWhistleTrainHelper {
 
 	@Nullable
 	public static ModernWhistleSoundType resolveTrainLeadSoundType(CarriageContraptionEntity carriageEntity) {
+		return resolveTrainLeadSoundType(carriageEntity, false);
+	}
+
+	@Nullable
+	public static ModernWhistleSoundType resolveTrainLeadSecondarySoundType(
+		CarriageContraptionEntity carriageEntity) {
+		return resolveTrainLeadSoundType(carriageEntity, true);
+	}
+
+	@Nullable
+	private static ModernWhistleSoundType resolveTrainLeadSoundType(CarriageContraptionEntity carriageEntity,
+		boolean secondary) {
 		Carriage carriage = carriageEntity.getCarriage();
 		if (carriage == null || carriage.train == null)
 			return null;
@@ -33,7 +45,7 @@ public class ModernWhistleTrainHelper {
 			if (candidate == null)
 				continue;
 
-			return resolveSoundType(candidate.blockInfo);
+			return secondary ? resolveSecondarySoundType(candidate.blockInfo) : resolveSoundType(candidate.blockInfo);
 		}
 
 		return null;
@@ -46,6 +58,16 @@ public class ModernWhistleTrainHelper {
 		if (!(blockInfo.state.getBlock() instanceof ModernWhistleBlock))
 			return null;
 		return blockInfo.state.getValue(ModernWhistleBlock.SOUND_TYPE);
+	}
+
+	@Nullable
+	public static ModernWhistleSoundType resolveSecondarySoundType(StructureBlockInfo blockInfo) {
+		if (blockInfo == null || !(blockInfo.state.getBlock() instanceof ModernWhistleBlock))
+			return null;
+		if (blockInfo.nbt == null || !blockInfo.nbt.contains(ModernWhistleBlockEntity.SECONDARY_SOUND_TYPE_KEY))
+			return ModernWhistleSoundType.WHISTLE;
+		return ModernWhistleSoundType.byOrdinal(
+			blockInfo.nbt.getInt(ModernWhistleBlockEntity.SECONDARY_SOUND_TYPE_KEY));
 	}
 
 	@Nullable

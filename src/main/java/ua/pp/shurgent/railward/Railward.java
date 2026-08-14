@@ -23,6 +23,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.ModLoadingContext;
 import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlock;
+import ua.pp.shurgent.railward.schedule.RailwardScheduleInstructions;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("railward")
@@ -51,6 +52,7 @@ public class Railward {
 		REGISTRATE.registerEventListeners(modEventBus);
 		RailwardSoundEvents.register(modEventBus);
 		RailwardPackets.registerPackets();
+		RailwardScheduleInstructions.register();
 		
 		AllEdgePointTypes.register();
 		AllBlocks.register();

@@ -3,6 +3,7 @@ package ua.pp.shurgent.railward.block.train.parts;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
@@ -39,12 +41,12 @@ public class ModernWhistleBlock extends WhistleBlock {
 	public static final EnumProperty<ModernWhistleSoundType> SOUND_TYPE = EnumProperty.create("sound_type",
 		ModernWhistleSoundType.class);
 
-	private static final VoxelShape SHAPE_DOWN = Block.box(0, 0, 0, 16, 8, 16);
-	private static final VoxelShape SHAPE_UP = Block.box(0, 8, 0, 16, 16, 16);
-	private static final VoxelShape SHAPE_NORTH = Block.box(0, 0, 0, 16, 16, 8);
-	private static final VoxelShape SHAPE_SOUTH = Block.box(0, 0, 8, 16, 16, 16);
-	private static final VoxelShape SHAPE_WEST = Block.box(0, 0, 0, 8, 16, 16);
-	private static final VoxelShape SHAPE_EAST = Block.box(8, 0, 0, 16, 16, 16);
+	private static final VoxelShape SHAPE_DOWN = Block.box(0, 0, 0, 16, 6, 16);
+	private static final VoxelShape SHAPE_UP = Block.box(0, 10, 0, 16, 16, 16);
+	private static final VoxelShape SHAPE_NORTH = Block.box(0, 0, 0, 16, 16, 6);
+	private static final VoxelShape SHAPE_SOUTH = Block.box(0, 0, 10, 16, 16, 16);
+	private static final VoxelShape SHAPE_WEST = Block.box(0, 0, 0, 6, 16, 16);
+	private static final VoxelShape SHAPE_EAST = Block.box(10, 0, 0, 16, 16, 16);
 
 	public ModernWhistleBlock(Properties properties) {
 		super(BlockBehaviour.Properties.of(Material.METAL)
@@ -97,8 +99,44 @@ public class ModernWhistleBlock extends WhistleBlock {
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		Direction attachedFace = context.getClickedFace().getOpposite();
 		BlockState state = syncCompatibilityState(defaultBlockState().setValue(ATTACHED_FACE, attachedFace)
+			.setValue(ROTATION, getPlacementRotation(context, attachedFace))
 			.setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos())));
 		return state.canSurvive(context.getLevel(), context.getClickedPos()) ? state : null;
+	}
+
+	private int getPlacementRotation(BlockPlaceContext context, Direction attachedFace) {
+		Direction target = context.getHorizontalDirection();
+		for (Direction direction : context.getNearestLookingDirections()) {
+			if (direction.getAxis() != attachedFace.getAxis()) {
+				target = direction;
+				break;
+			}
+		}
+
+		Vec3 targetVector = Vec3.atLowerCornerOf(target.getNormal());
+		int bestRotation = 0;
+		double bestDot = -Double.MAX_VALUE;
+		for (int rotation = 0; rotation < 4; rotation++) {
+			Vec3 front = VecHelper.rotate(new Vec3(0, 0, -1), -rotation * 90d, Direction.Axis.Y);
+			front = applyAttachmentRotation(front, attachedFace);
+			double dot = front.dot(targetVector);
+			if (dot > bestDot) {
+				bestDot = dot;
+				bestRotation = rotation;
+			}
+		}
+		return bestRotation;
+	}
+
+	private Vec3 applyAttachmentRotation(Vec3 vector, Direction attachedFace) {
+		return switch (attachedFace) {
+		case DOWN -> vector;
+		case UP -> VecHelper.rotate(vector, 180, Direction.Axis.X);
+		case NORTH -> VecHelper.rotate(vector, 90, Direction.Axis.X);
+		case SOUTH -> VecHelper.rotate(vector, -90, Direction.Axis.X);
+		case EAST -> VecHelper.rotate(vector, 90, Direction.Axis.Z);
+		case WEST -> VecHelper.rotate(vector, -90, Direction.Axis.Z);
+		};
 	}
 
 	private BlockState syncCompatibilityState(BlockState state) {
@@ -165,29 +203,14 @@ public class ModernWhistleBlock extends WhistleBlock {
 		if (level.isClientSide)
 			return InteractionResult.SUCCESS;
 
-		level.setBlock(pos, syncCompatibilityState(state.cycle(SOUND_TYPE)), 3);
-		syncTrainProfile(level, pos);
-		playRotateSound(level, pos);
-		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
-		Level level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-
-		if (level.isClientSide)
-			return InteractionResult.SUCCESS;
-
 		int nextRotation = (state.getValue(ROTATION) + 1) & 3;
 		level.setBlock(pos, syncCompatibilityState(state.setValue(ROTATION, nextRotation)), 3);
 		playRotateSound(level, pos);
 		return InteractionResult.SUCCESS;
 	}
 
-	private void syncTrainProfile(Level level, BlockPos pos) {
-		if (level.getBlockEntity(pos) instanceof ModernWhistleBlockEntity modernWhistle)
-			modernWhistle.syncTrainWhistleProfile();
+	public BlockState withPrimarySoundType(BlockState state, ModernWhistleSoundType soundType) {
+		return syncCompatibilityState(state.setValue(SOUND_TYPE, soundType));
 	}
 
 	@Override

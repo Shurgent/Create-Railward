@@ -2,7 +2,9 @@ package ua.pp.shurgent.railward.client.sound;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -28,6 +30,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ua.pp.shurgent.railward.Railward;
@@ -42,6 +46,7 @@ public class ModernWhistleTrainAudio {
 	private static final int TRAIN_WHISTLE_ATTENUATION_DISTANCE = 128;
 	public static final float TRAIN_WHISTLE_VOLUME = .75f;
 	private static final Map<Integer, ManualHonkState> ACTIVE_MANUAL_HONKS = new HashMap<>();
+	private static final Map<UUID, HeldHonkState> ACTIVE_SECONDARY_HONKS = new HashMap<>();
 
 	private ModernWhistleTrainAudio() {
 	}
@@ -51,9 +56,27 @@ public class ModernWhistleTrainAudio {
 		clearManualHonks();
 	}
 
+	@SubscribeEvent
+	public static void onClientTick(ClientTickEvent event) {
+		if (event.phase != Phase.END)
+			return;
+
+		Iterator<HeldHonkState> iterator = ACTIVE_SECONDARY_HONKS.values().iterator();
+		while (iterator.hasNext()) {
+			if (!iterator.next().tick())
+				iterator.remove();
+		}
+	}
+
 	@Nullable
 	public static ModernWhistleSoundType resolveTrainLeadSoundType(CarriageContraptionEntity carriageEntity) {
 		return ModernWhistleTrainHelper.resolveTrainLeadSoundType(carriageEntity);
+	}
+
+	@Nullable
+	public static ModernWhistleSoundType resolveTrainLeadSecondarySoundType(
+		CarriageContraptionEntity carriageEntity) {
+		return ModernWhistleTrainHelper.resolveTrainLeadSecondarySoundType(carriageEntity);
 	}
 
 	@Nullable
@@ -87,6 +110,26 @@ public class ModernWhistleTrainAudio {
 		ManualHonkState state = ACTIVE_MANUAL_HONKS.remove(carriageEntity.getId());
 		if (state != null)
 			state.stopLoop();
+	}
+
+	public static void setSecondaryHonk(UUID trainId, @Nullable CarriageContraptionEntity carriageEntity,
+		@Nullable ModernWhistleSoundType soundType, boolean active) {
+		HeldHonkState state = ACTIVE_SECONDARY_HONKS.get(trainId);
+		if (!active) {
+			if (state != null) {
+				ACTIVE_SECONDARY_HONKS.remove(trainId);
+				state.release();
+			}
+			return;
+		}
+
+		if (carriageEntity == null || soundType == null)
+			return;
+		if (state != null && state.matches(carriageEntity, soundType))
+			return;
+		if (state != null)
+			state.stopLoop();
+		ACTIVE_SECONDARY_HONKS.put(trainId, new HeldHonkState(carriageEntity, soundType));
 	}
 
 	public static void playMovingTrainSound(CarriageContraptionEntity carriageEntity, SoundEvent soundEvent, float volume,
@@ -222,6 +265,9 @@ public class ModernWhistleTrainAudio {
 		for (ManualHonkState state : ACTIVE_MANUAL_HONKS.values())
 			state.stopLoop();
 		ACTIVE_MANUAL_HONKS.clear();
+		for (HeldHonkState state : ACTIVE_SECONDARY_HONKS.values())
+			state.stopLoop();
+		ACTIVE_SECONDARY_HONKS.clear();
 	}
 
 	private abstract static class MovingTrainSound extends AbstractTickableSoundInstance {
@@ -454,6 +500,51 @@ public class ModernWhistleTrainAudio {
 				return null;
 			}
 			return entity;
+		}
+	}
+
+	private static class HeldHonkState {
+
+		private final WeakReference<CarriageContraptionEntity> carriageEntity;
+		private final ModernWhistleSoundType soundType;
+		private ManualTrainLoopSound loopSound;
+		private int loopStartDelayTicks;
+
+		private HeldHonkState(CarriageContraptionEntity carriageEntity, ModernWhistleSoundType soundType) {
+			this.carriageEntity = new WeakReference<>(carriageEntity);
+			this.soundType = soundType;
+			loopStartDelayTicks = soundType.getLoopStartDelayTicks();
+			playMovingTrainSound(carriageEntity, soundType.getStartEvent(), TRAIN_WHISTLE_VOLUME, 1f);
+		}
+
+		private boolean matches(CarriageContraptionEntity carriageEntity, ModernWhistleSoundType soundType) {
+			return this.carriageEntity.get() == carriageEntity && this.soundType == soundType;
+		}
+
+		private boolean tick() {
+			CarriageContraptionEntity carriageEntity = this.carriageEntity.get();
+			if (carriageEntity == null || carriageEntity.isRemoved()) {
+				stopLoop();
+				return false;
+			}
+
+			if (loopSound == null && loopStartDelayTicks-- <= 0) {
+				loopSound = new ManualTrainLoopSound(soundType, carriageEntity, TRAIN_WHISTLE_VOLUME, 1f);
+				Minecraft.getInstance().getSoundManager().queueTickingSound(loopSound);
+			}
+			return true;
+		}
+
+		private void release() {
+			CarriageContraptionEntity carriageEntity = this.carriageEntity.get();
+			stopLoop();
+			if (carriageEntity != null && !carriageEntity.isRemoved())
+				playMovingTrainSound(carriageEntity, soundType.getEndEvent(), TRAIN_WHISTLE_VOLUME, 1f);
+		}
+
+		private void stopLoop() {
+			if (loopSound != null)
+				loopSound.stopLoop();
 		}
 	}
 

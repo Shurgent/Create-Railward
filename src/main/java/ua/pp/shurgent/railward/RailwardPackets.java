@@ -1,6 +1,7 @@
 package ua.pp.shurgent.railward;
 
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -17,6 +18,9 @@ import ua.pp.shurgent.railward.network.CabSignalTrainStatePacket;
 import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
 import ua.pp.shurgent.railward.network.LocomotiveBufferLightsTrainStatePacket;
 import ua.pp.shurgent.railward.network.ModernWhistleArrivalPacket;
+import ua.pp.shurgent.railward.network.ModernWhistleConfigurationPacket;
+import ua.pp.shurgent.railward.network.ModernWhistleSecondaryHonkPacket;
+import ua.pp.shurgent.railward.network.ModernWhistleSecondaryHonkRequestPacket;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
 import ua.pp.shurgent.railward.network.WhistleSignHonkPacket;
 
@@ -25,7 +29,7 @@ import com.simibubi.create.foundation.networking.SimplePacketBase;
 public class RailwardPackets {
 
 	private static final ResourceLocation CHANNEL_NAME = Railward.asResource("main");
-	private static final String NETWORK_VERSION = "2";
+	private static final String NETWORK_VERSION = "3";
 	private static SimpleChannel channel;
 	private static int index = 0;
 
@@ -44,6 +48,10 @@ public class RailwardPackets {
 			PLAY_TO_CLIENT);
 		register(CabSignalTrainStatePacket.class, CabSignalTrainStatePacket::new, PLAY_TO_CLIENT);
 		register(ModernWhistleArrivalPacket.class, ModernWhistleArrivalPacket::new, PLAY_TO_CLIENT);
+		register(ModernWhistleSecondaryHonkRequestPacket.class, ModernWhistleSecondaryHonkRequestPacket::new,
+			PLAY_TO_SERVER);
+		register(ModernWhistleConfigurationPacket.class, ModernWhistleConfigurationPacket::new, PLAY_TO_SERVER);
+		register(ModernWhistleSecondaryHonkPacket.class, ModernWhistleSecondaryHonkPacket::new, PLAY_TO_CLIENT);
 	}
 
 	public static SimpleChannel getChannel() {
