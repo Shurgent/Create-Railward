@@ -245,5 +245,10 @@
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная тележка",
     "railward.bogey.style.triple_axle_equalized_locomotive": "Трёхосная балансирная локомотивная",
     "block.railward.train.parts.cab_signal": "Локомотивный светофор",
-    "subtitle.railward.cab_signal.red": "Предупреждение локомотивного светофора"
+    "subtitle.railward.cab_signal.red": "Предупреждение локомотивного светофора",
+    "block.railward.train.parts.modern_train_controller": "Современный поездной контроллер",
+    "key.railward.train_reverser": "Реверс управления поездом",
+    "railward.modern_train_controller.reverser.forward": "Реверсор: ВПЕРЁД",
+    "railward.modern_train_controller.reverser.backward": "Реверсор: НАЗАД",
+    "railward.modern_train_controller.reverser.must_stop": "Перед переключением реверсора остановите поезд"
 }

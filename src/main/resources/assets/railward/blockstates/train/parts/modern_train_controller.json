@@ -1,0 +1,21 @@
+{
+  "multipart": [
+    { "when": { "open": "false", "facing": "north", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed" } },
+    { "when": { "open": "false", "facing": "north", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 180 } },
+    { "when": { "open": "false", "facing": "east", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 90 } },
+    { "when": { "open": "false", "facing": "east", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 270 } },
+    { "when": { "open": "false", "facing": "south", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 180 } },
+    { "when": { "open": "false", "facing": "south", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed" } },
+    { "when": { "open": "false", "facing": "west", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 270 } },
+    { "when": { "open": "false", "facing": "west", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_closed", "y": 90 } },
+
+    { "when": { "open": "true", "facing": "north", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open" } },
+    { "when": { "open": "true", "facing": "north", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 180 } },
+    { "when": { "open": "true", "facing": "east", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 90 } },
+    { "when": { "open": "true", "facing": "east", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 270 } },
+    { "when": { "open": "true", "facing": "south", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 180 } },
+    { "when": { "open": "true", "facing": "south", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open" } },
+    { "when": { "open": "true", "facing": "west", "reversed": "false" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 270 } },
+    { "when": { "open": "true", "facing": "west", "reversed": "true" }, "apply": { "model": "railward:block/train/parts/modern_train_controller/block_open", "y": 90 } }
+  ]
+}

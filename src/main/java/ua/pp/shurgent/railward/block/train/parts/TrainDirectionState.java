@@ -119,6 +119,7 @@ public class TrainDirectionState {
 					continue;
 				if (entity.getControllingPlayer().filter(playerId::equals).isEmpty())
 					continue;
+				ModernTrainControllerState.endManualControl(entity, null);
 				clearManualControls(entity);
 			}
 		}
@@ -177,6 +178,18 @@ public class TrainDirectionState {
 			return clientDirection;
 		DirectionState scheduledDirection = resolveScheduledDirection(train);
 		return scheduledDirection != DirectionState.NONE ? scheduledDirection : DirectionState.NONE;
+	}
+
+	/**
+	 * Client renderers that must remain Dedicated-Server safe use only the value
+	 * explicitly sent by the server, without falling back to partially synced Create
+	 * train runtime fields.
+	 */
+	public static DirectionState resolveSynced(CarriageContraptionEntity entity) {
+		Carriage carriage = entity.getCarriage();
+		if (carriage == null || carriage.train == null)
+			return DirectionState.NONE;
+		return CLIENT_DIRECTIONS.getOrDefault(carriage.train.id, DirectionState.NONE);
 	}
 
 	public static DirectionState resolveServer(Train train) {

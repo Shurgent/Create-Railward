@@ -184,6 +184,10 @@ station names should end in a number, for example `Spawn Central P1`. A station
 whose name does not end in a number is shown as `--`.
 
 While a train is present at its station, its `Arr` value is shown as ` now `.
+Every refresh discovers the peripherals again. If no stations are currently
+loaded, connected monitors show an empty board; if no monitors are loaded, the
+refresh does nothing. A peripheral which unloads in the middle of a refresh is
+skipped and can be discovered again by the next pass.
 
 Save the program as `startup.lua` to start it automatically:
 
@@ -221,27 +225,49 @@ local function findColorMonitors()
     local monitors = {}
 
     for _, monitor in ipairs({ peripheral.find("monitor") }) do
-        local colorOk, isColor = pcall(monitor.isColor)
-        local scaleOk = pcall(monitor.setTextScale, TEXT_SCALE)
-        if colorOk and isColor and scaleOk then
-            table.insert(monitors, monitor)
+        local ok, width, height = pcall(function()
+            if not monitor.isColor() then
+                return nil, nil
+            end
+
+            monitor.setTextScale(TEXT_SCALE)
+            return monitor.getSize()
+        end)
+
+        if ok and type(width) == "number" and type(height) == "number" then
+            table.insert(monitors, {
+                device = monitor,
+                width = width,
+                height = height
+            })
         end
     end
 
     return monitors
 end
 
-local function getPlatform(station, stationCount)
+local function findStations()
+    local stations = {}
+
+    for _, station in ipairs({ peripheral.find("Create_Station") }) do
+        local ok, stationName = pcall(station.getStationName)
+        if ok and type(stationName) == "string" then
+            table.insert(stations, {
+                device = station,
+                name = stationName
+            })
+        end
+    end
+
+    return stations
+end
+
+local function getPlatform(stationInfo, stationCount)
     if stationCount == 1 then
         return "1"
     end
 
-    local ok, stationName = pcall(station.getStationName)
-    if not ok then
-        return "--"
-    end
-
-    return tostring(stationName):match("(%d+)%s*$") or "--"
+    return stationInfo.name:match("(%d+)%s*$") or "--"
 end
 
 local function sortableArrivalTicks(arrival)
@@ -255,18 +281,33 @@ end
 local function collectArrivals(stations, limit)
     local result = {}
 
-    for _, station in ipairs(stations) do
-        local platform = getPlatform(station, #stations)
+    for _, stationInfo in ipairs(stations) do
+        local station = stationInfo.device
+        local platform = getPlatform(stationInfo, #stations)
         local scheduleOk, presentSchedule = pcall(station.getTrainSchedule)
-        local presentTrainId = scheduleOk and presentSchedule.train_id or nil
+        local presentTrainId = scheduleOk
+            and type(presentSchedule) == "table"
+            and presentSchedule.train_id
+            or nil
         local ok, arrivals = pcall(station.getArrivals, limit)
 
-        if ok then
+        if ok and type(arrivals) == "table" then
             for _, arrival in ipairs(arrivals) do
-                arrival.platform = platform
-                arrival.at_station = presentTrainId ~= nil
-                    and arrival.train_id == presentTrainId
-                table.insert(result, arrival)
+                if type(arrival) == "table" then
+                    table.insert(result, {
+                        train_id = arrival.train_id,
+                        train_name = arrival.train_name,
+                        destination = arrival.destination,
+                        arrival_ticks = arrival.arrival_ticks,
+                        arrival_time = arrival.arrival_time,
+                        arrival_predictable = arrival.arrival_predictable,
+                        departure_time = arrival.departure_time,
+                        departure_predictable = arrival.departure_predictable,
+                        platform = platform,
+                        at_station = presentTrainId ~= nil
+                            and arrival.train_id == presentTrainId
+                    })
+                end
             end
         end
     end
@@ -278,7 +319,7 @@ local function collectArrivals(stations, limit)
         if aTicks ~= bTicks then
             return aTicks < bTicks
         end
-        return tostring(a.train_name) < tostring(b.train_name)
+        return tostring(a.train_name or "") < tostring(b.train_name or "")
     end)
 
     return result
@@ -298,8 +339,10 @@ local function displayArrivalTime(arrival)
     return displayTime(arrival.arrival_time, arrival.arrival_predictable)
 end
 
-local function drawBoard(monitor, arrivals)
-    local width, height = monitor.getSize()
+local function drawBoard(monitorInfo, arrivals)
+    local monitor = monitorInfo.device
+    local width = monitorInfo.width
+    local height = monitorInfo.height
 
     monitor.setBackgroundColor(colors.black)
     monitor.setTextColor(colors.white)
@@ -377,23 +420,29 @@ local function drawBoard(monitor, arrivals)
     end
 end
 
-while true do
+local function refreshBoard()
     local monitors = findColorMonitors()
-    local stations = { peripheral.find("Create_Station") }
+    local stations = findStations()
     local maximumRows = 0
 
-    for _, monitor in ipairs(monitors) do
-        local _, height = monitor.getSize()
-        maximumRows = math.max(maximumRows, height - 2)
+    for _, monitorInfo in ipairs(monitors) do
+        maximumRows = math.max(maximumRows, monitorInfo.height - 2)
     end
 
+    local arrivals = {}
     if maximumRows > 0 then
-        local arrivals = collectArrivals(stations, maximumRows)
-        for _, monitor in ipairs(monitors) do
-            pcall(drawBoard, monitor, arrivals)
-        end
+        arrivals = collectArrivals(stations, maximumRows)
     end
 
+    for _, monitorInfo in ipairs(monitors) do
+        pcall(drawBoard, monitorInfo, arrivals)
+    end
+end
+
+while true do
+    -- A peripheral can unload between discovery and use. Never let one failed
+    -- refresh terminate startup.lua; the next pass discovers everything again.
+    pcall(refreshBoard)
     sleep(REFRESH_SECONDS)
 end
 ```

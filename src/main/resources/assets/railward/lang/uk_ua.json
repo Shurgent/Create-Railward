@@ -245,5 +245,10 @@
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний візок",
     "railward.bogey.style.triple_axle_equalized_locomotive": "Тривісний балансирний локомотивний",
     "block.railward.train.parts.cab_signal": "Локомотивний світлофор",
-    "subtitle.railward.cab_signal.red": "Попередження локомотивного світлофора"
+    "subtitle.railward.cab_signal.red": "Попередження локомотивного світлофора",
+    "block.railward.train.parts.modern_train_controller": "Сучасний поїзний контролер",
+    "key.railward.train_reverser": "Реверс керування поїздом",
+    "railward.modern_train_controller.reverser.forward": "Реверсор: ВПЕРЕД",
+    "railward.modern_train_controller.reverser.backward": "Реверсор: НАЗАД",
+    "railward.modern_train_controller.reverser.must_stop": "Перед перемиканням реверсора зупиніть поїзд"
 }

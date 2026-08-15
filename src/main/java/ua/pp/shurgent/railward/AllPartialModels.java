@@ -84,6 +84,11 @@ public class AllPartialModels {
 	TRAIN_COUPLER_HEAD = block("train/parts/train_coupler_head"),
 	TRAIN_COUPLER_LEVER_DYNAMIC = block("train/parts/train_coupler_lever_dynamic"),
 
+	// Modern Train Controller
+	MODERN_TRAIN_CONTROLLER_BRAKE = block("train/parts/modern_train_controller/brake_handle"),
+	MODERN_TRAIN_CONTROLLER_REVERSER = block("train/parts/modern_train_controller/reverse_handle"),
+	MODERN_TRAIN_CONTROLLER_THROTTLE = block("train/parts/modern_train_controller/controller_handle"),
+
 	// Fluid Loading
 	CISTERN_HATCH_LID = block("train/station/cistern_hatch_lid"),
 	FLUID_TERMINAL_HOSE_UPPER = block("train/station/fluid_terminal_hose_upper"),

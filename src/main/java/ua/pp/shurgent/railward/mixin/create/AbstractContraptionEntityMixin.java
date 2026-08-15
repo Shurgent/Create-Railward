@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionCollector;
 import ua.pp.shurgent.railward.block.train.parts.CisternContraptionFluidSync;
 import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
+import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerState;
 
 @Mixin(value = AbstractContraptionEntity.class, remap = false)
 public class AbstractContraptionEntityMixin {
@@ -25,8 +26,10 @@ public class AbstractContraptionEntityMixin {
 
 	@Inject(method = "stopControlling", at = @At("HEAD"), remap = false)
 	private void railward$clearBufferLightsManualDirection(BlockPos controlsLocalPos, CallbackInfo ci) {
-		if ((Object) this instanceof CarriageContraptionEntity carriageEntity)
+		if ((Object) this instanceof CarriageContraptionEntity carriageEntity) {
+			ModernTrainControllerState.endManualControl(carriageEntity, controlsLocalPos);
 			TrainDirectionState.clearManualControls(carriageEntity);
+		}
 	}
 
 }

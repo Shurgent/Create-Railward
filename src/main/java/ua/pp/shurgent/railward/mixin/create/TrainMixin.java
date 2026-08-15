@@ -17,13 +17,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
 import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
+import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerState;
 
 @Mixin(value = Train.class, remap = false)
 public abstract class TrainMixin {
 
 	@Inject(method = "tick", at = @At("TAIL"), remap = false)
 	private void railward$syncBufferLightsScheduledDirection(Level level, CallbackInfo ci) {
-		TrainDirectionState.syncScheduledControls((Train) (Object) this, level);
+		Train train = (Train) (Object) this;
+		TrainDirectionState.syncScheduledControls(train, level);
+		ModernTrainControllerState.syncScheduledControls(train);
 	}
 
 	@Inject(method = "write", at = @At("RETURN"), remap = false)

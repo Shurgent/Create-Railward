@@ -49,7 +49,7 @@ public class ModernWhistleConfigurationPacket extends SimplePacketBase {
 		if (sender == null || sender.isSpectator() || primaryOrdinal < 0 || primaryOrdinal >= values.length
 			|| secondaryOrdinal < 0 || secondaryOrdinal >= values.length)
 			return;
-		if (!sender.level.hasChunkAt(blockPos))
+		if (!sender.level.isLoaded(blockPos))
 			return;
 		if (sender.distanceToSqr(blockPos.getX() + .5, blockPos.getY() + .5, blockPos.getZ() + .5)
 			> MAX_INTERACTION_DISTANCE_SQUARED)

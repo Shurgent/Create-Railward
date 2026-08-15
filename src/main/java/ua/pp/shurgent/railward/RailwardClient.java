@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import ua.pp.shurgent.railward.client.RailwardContraptionGoggleOverlay;
+import ua.pp.shurgent.railward.client.ModernTrainControllerClient;
 import ua.pp.shurgent.railward.client.ModernWhistleSecondaryHonkKeyHandler;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightForwardRenderer;
@@ -30,11 +31,13 @@ public class RailwardClient {
 		forgeEventBus.addListener(RailingInteractionHighlight::render);
 		forgeEventBus.addListener(WagonFrameInteractionHighlight::render);
 		forgeEventBus.addListener(ModernWhistleSecondaryHonkKeyHandler::onClientTick);
+		forgeEventBus.addListener(ModernTrainControllerClient::onClientTick);
 		
 	}
 
 	public static void clientInit(final FMLClientSetupEvent event) {
 		ClientRegistry.registerKeyBinding(ModernWhistleSecondaryHonkKeyHandler.SECONDARY_HONK);
+		ClientRegistry.registerKeyBinding(ModernTrainControllerClient.REVERSER);
 		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.HOTBAR_ELEMENT, "Railward Contraption Goggles",
 			RailwardContraptionGoggleOverlay.OVERLAY);
 	}

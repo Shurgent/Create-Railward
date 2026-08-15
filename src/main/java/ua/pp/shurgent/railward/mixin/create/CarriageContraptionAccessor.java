@@ -12,4 +12,10 @@ public interface CarriageContraptionAccessor {
 	@Accessor("storageProxy")
 	MountedStorageManager railward$getStorageProxy();
 
+	@Accessor("forwardControls")
+	void railward$setForwardControls(boolean value);
+
+	@Accessor("backwardControls")
+	void railward$setBackwardControls(boolean value);
+
 }

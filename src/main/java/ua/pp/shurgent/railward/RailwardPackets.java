@@ -18,6 +18,7 @@ import ua.pp.shurgent.railward.network.CabSignalTrainStatePacket;
 import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
 import ua.pp.shurgent.railward.network.LocomotiveBufferLightsTrainStatePacket;
 import ua.pp.shurgent.railward.network.ModernWhistleArrivalPacket;
+import ua.pp.shurgent.railward.network.ModernTrainControllerReverserPacket;
 import ua.pp.shurgent.railward.network.ModernWhistleConfigurationPacket;
 import ua.pp.shurgent.railward.network.ModernWhistleSecondaryHonkPacket;
 import ua.pp.shurgent.railward.network.ModernWhistleSecondaryHonkRequestPacket;
@@ -29,7 +30,7 @@ import com.simibubi.create.foundation.networking.SimplePacketBase;
 public class RailwardPackets {
 
 	private static final ResourceLocation CHANNEL_NAME = Railward.asResource("main");
-	private static final String NETWORK_VERSION = "3";
+	private static final String NETWORK_VERSION = "4";
 	private static SimpleChannel channel;
 	private static int index = 0;
 
@@ -52,6 +53,7 @@ public class RailwardPackets {
 			PLAY_TO_SERVER);
 		register(ModernWhistleConfigurationPacket.class, ModernWhistleConfigurationPacket::new, PLAY_TO_SERVER);
 		register(ModernWhistleSecondaryHonkPacket.class, ModernWhistleSecondaryHonkPacket::new, PLAY_TO_CLIENT);
+		register(ModernTrainControllerReverserPacket.class, ModernTrainControllerReverserPacket::new, PLAY_TO_SERVER);
 	}
 
 	public static SimpleChannel getChannel() {

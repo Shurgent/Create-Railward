@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "create:controls"
+    },
+    {
+      "item": "create:controls"
+    }
+  ],
+  "result": {
+    "item": "railward:train/parts/modern_train_controller"
+  }
+}

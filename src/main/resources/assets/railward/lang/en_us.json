@@ -245,5 +245,10 @@
     "block.railward.train.bogey.triple_axle_equalized_locomotive": "Triple-Axle Equalized Locomotive Bogey",
     "railward.bogey.style.triple_axle_equalized_locomotive": "Triple-Axle Equalized Locomotive",
     "block.railward.train.parts.cab_signal": "Cab Signal",
-    "subtitle.railward.cab_signal.red": "Cab signal warning"
+    "subtitle.railward.cab_signal.red": "Cab signal warning",
+    "block.railward.train.parts.modern_train_controller": "Modern Train Controller",
+    "key.railward.train_reverser": "Train control reverser",
+    "railward.modern_train_controller.reverser.forward": "Reverser: FORWARD",
+    "railward.modern_train_controller.reverser.backward": "Reverser: BACKWARD",
+    "railward.modern_train_controller.reverser.must_stop": "Stop the train before changing direction"
 }

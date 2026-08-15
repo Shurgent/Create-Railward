@@ -12,9 +12,12 @@ import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
+import com.simibubi.create.content.contraptions.actors.trainControls.ControlsBlock;
+import com.simibubi.create.content.contraptions.actors.trainControls.ControlsInteractionBehaviour;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorMovementBehaviour;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.simibubi.create.foundation.data.BuilderTransformers;
+import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
@@ -30,6 +33,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import ua.pp.shurgent.railward.block.train.bogey.FreightBogey18_100Block;
 import ua.pp.shurgent.railward.block.train.bogey.TripleAxleEqualizedLocomotiveBogeyBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
@@ -46,6 +50,8 @@ import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlock;
+import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerBlock;
+import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerMovementBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.RailingBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
@@ -82,6 +88,8 @@ public class AllBlocks {
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
 	private static final LocomotiveSpotlightMovementBehaviour LOCOMOTIVE_SPOTLIGHT_MOVEMENT =
 		new LocomotiveSpotlightMovementBehaviour();
+	private static final ModernTrainControllerMovementBehaviour MODERN_TRAIN_CONTROLLER_MOVEMENT =
+		new ModernTrainControllerMovementBehaviour();
 	private static final List<BlockEntry<TrainDoorBlock>> HINGED_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainDoorBlock>> SLIDING_TRAIN_DOOR_ENTRIES = new ArrayList<>();
 	private static final DyeColor[] TRAIN_DOOR_SOLID_COLORS = {
@@ -574,6 +582,33 @@ public class AllBlocks {
 			.addLayer(() -> RenderType::translucent)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
+
+	public static final BlockEntry<ModernTrainControllerBlock> MODERN_TRAIN_CONTROLLER = REGISTRATE
+			.block("train/parts/modern_train_controller", ModernTrainControllerBlock::new)
+			.initialProperties(SharedProperties::softMetal)
+			.properties(p -> p.color(MaterialColor.TERRACOTTA_BLUE)
+				.sound(SoundType.NETHERITE_BLOCK)
+				.noOcclusion())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::cutoutMipped)
+			.blockstate((ctx, prov) -> prov.getVariantBuilder(ctx.get()).forAllStates(state -> {
+				String modelName = state.getValue(ControlsBlock.OPEN) ? "block_open" : "block_closed";
+				ModelFile model = prov.models().getExistingFile(
+					prov.modLoc(PATH_TRAINPARTS + "modern_train_controller/" + modelName));
+				int rotation = switch (ModernTrainControllerBlock.getPhysicalFacing(state)) {
+				case EAST -> 90;
+				case SOUTH -> 180;
+				case WEST -> 270;
+				default -> 0;
+				};
+				return ConfiguredModel.builder().modelFile(model).rotationY(rotation).build();
+			}))
+			.onRegister(movementBehaviour(MODERN_TRAIN_CONTROLLER_MOVEMENT))
+			.onRegister(interactionBehaviour(new ControlsInteractionBehaviour()))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+				prov.modLoc(PATH_TRAINPARTS + "modern_train_controller/block_closed")))
+			.build().register();
 
 	public static final BlockEntry<LocomotiveSpotlightBlock> LOCOMOTIVE_SPOTLIGHT = REGISTRATE
 			.block("train/parts/locomotive_spotlight", LocomotiveSpotlightBlock::new)
