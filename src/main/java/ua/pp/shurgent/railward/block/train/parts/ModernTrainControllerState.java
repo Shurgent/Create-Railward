@@ -145,8 +145,7 @@ public final class ModernTrainControllerState {
 		updateBlock(entity, localPos, info, updated, player);
 		TrainDirectionState.syncManualControls(entity, localPos, player);
 
-		boolean backwards = TrainDirectionState.resolveServer(carriage.train)
-			== TrainDirectionState.DirectionState.BACKWARD;
+		boolean backwards = updated.getValue(ModernTrainControllerBlock.REVERSED);
 		BlockPos soundPos = globalPos(entity, localPos);
 		AllSoundEvents.CONTROLLER_CLICK.play(entity.level, null, soundPos, 1, backwards ? .75f : 1.05f);
 		sendPrompt(player, backwards ? "railward.modern_train_controller.reverser.backward"

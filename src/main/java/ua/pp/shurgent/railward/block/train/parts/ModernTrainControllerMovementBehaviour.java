@@ -6,6 +6,7 @@ import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.content.contraptions.render.ContraptionRenderDispatcher;
+import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
@@ -67,6 +68,8 @@ public class ModernTrainControllerMovementBehaviour implements MovementBehaviour
 		ContraptionMatrices matrices, MultiBufferSource buffer) {
 		if (!(context.contraption.entity instanceof CarriageContraptionEntity carriageEntity))
 			return;
+		if (!(context.contraption instanceof CarriageContraption carriageContraption))
+			return;
 		StructureBlockInfo info = context.contraption.getBlocks().get(context.localPos);
 		if (info == null || !(info.state.getBlock() instanceof ModernTrainControllerBlock))
 			return;
@@ -74,16 +77,23 @@ public class ModernTrainControllerMovementBehaviour implements MovementBehaviour
 		BlockState state = info.state;
 		boolean active = state.getValue(ModernTrainControllerBlock.ACTIVE);
 		DirectionState direction = active ? TrainDirectionState.resolveSynced(carriageEntity) : DirectionState.NONE;
+		Direction physicalFacing = ModernTrainControllerBlock.getPhysicalFacing(state);
+		float reverserTarget = 0;
+		if (direction != DirectionState.NONE) {
+			// DirectionState is relative to the assembled train; the lever is relative
+			// to the cab in which this particular controller is installed.
+			boolean trainMovesForward = direction == DirectionState.FORWARD;
+			boolean cabFacesForward = physicalFacing == carriageContraption.getAssemblyDirection();
+			reverserTarget = trainMovesForward == cabFacesForward ? 1 : -1;
+		}
 		LeverAnimations animations = getAnimations(context);
-		animations.reverser.chase(direction == DirectionState.FORWARD ? 1
-			: direction == DirectionState.BACKWARD ? -1 : 0, .25f, Chaser.EXP);
+		animations.reverser.chase(reverserTarget, .25f, Chaser.EXP);
 		animations.brake.chase(active && state.getValue(ModernTrainControllerBlock.BRAKING) ? 1 : 0,
 			.3f, Chaser.EXP);
 		animations.throttle.chase(active && state.getValue(ModernTrainControllerBlock.THROTTLE) ? 1 : 0,
 			.3f, Chaser.EXP);
 
 		float partialTicks = AnimationTickHolder.getPartialTicks(context.world);
-		Direction physicalFacing = ModernTrainControllerBlock.getPhysicalFacing(state);
 		int light = ContraptionRenderDispatcher.getContraptionWorldLight(context, renderWorld);
 		render(AllPartialModels.MODERN_TRAIN_CONTROLLER_REVERSER, state, physicalFacing, REVERSER_PIVOT,
 			45 * animations.reverser.getValue(partialTicks), light, matrices, buffer);
