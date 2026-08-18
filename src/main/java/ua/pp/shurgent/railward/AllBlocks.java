@@ -206,6 +206,33 @@ public class AllBlocks {
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_RED = REGISTRATE
+			.block("train/parts/train_floor_red", properties -> new TrainFloorBlock(properties, MaterialColor.COLOR_RED))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_YELLOW = REGISTRATE
+			.block("train/parts/train_floor_yellow", properties -> new TrainFloorBlock(properties, MaterialColor.COLOR_YELLOW))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
+	public static final BlockEntry<TrainFloorBlock> TRAIN_FLOOR_GRAY = REGISTRATE
+			.block("train/parts/train_floor_gray", properties -> new TrainFloorBlock(properties, MaterialColor.COLOR_GRAY))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build().register();
+
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE = REGISTRATE
 			.block("train/parts/train_wall_blue", TrainWallBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
@@ -679,15 +706,15 @@ public class AllBlocks {
 			.transform(customItemModel()).register();
 
 	public static final BlockEntry<RailingBlock> RAILING_RED =
-			railing("railing_red", "red", MaterialColor.COLOR_RED, 0xb43a32);
+			railing("railing_red", "red", MaterialColor.COLOR_RED, 0x922222);
 	public static final BlockEntry<RailingBlock> RAILING_YELLOW =
-			railing("railing_yellow", "yellow", MaterialColor.COLOR_YELLOW, 0xe6b944);
+			railing("railing_yellow", "yellow", MaterialColor.COLOR_YELLOW, 0xf8b416);
 	public static final BlockEntry<RailingBlock> RAILING_ORANGE =
-			railing("railing_orange", "orange", MaterialColor.COLOR_ORANGE, 0xdb762b);
+			railing("railing_orange", "orange", MaterialColor.COLOR_ORANGE, 0xe66401);
 	public static final BlockEntry<RailingBlock> RAILING_WHITE =
-			railing("railing_white", "white", MaterialColor.SNOW, 0xe4e4de);
+			railing("railing_white", "white", MaterialColor.SNOW, 0xd5dbdc);
 	public static final BlockEntry<RailingBlock> RAILING_GRAY =
-			railing("railing_gray", "gray", MaterialColor.COLOR_GRAY, 0x777d82);
+			railing("railing_gray", "gray", MaterialColor.COLOR_GRAY, 0x393c40);
 
 	public static final BlockEntry<BulkCargoContainerBlock> BULK_CARGO_CONTAINER =
 			bulkCargoContainer("bulk_cargo_container");

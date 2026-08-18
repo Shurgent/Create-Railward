@@ -8,11 +8,12 @@ $outputDirectory = [System.IO.Path]::GetFullPath($outputDirectory)
 
 $palettes = [ordered]@{
     "railing_base"   = @(248, 248, 248)
-    "railing_red"    = @(180, 58, 50)
-    "railing_yellow" = @(230, 185, 68)
-    "railing_orange" = @(219, 118, 43)
-    "railing_white"  = @(228, 228, 222)
-    "railing_gray"   = @(119, 125, 130)
+    # Average colors sampled from the matching vanilla 1.18.2 concrete textures.
+    "railing_red"    = @(142, 33, 33)
+    "railing_yellow" = @(241, 175, 21)
+    "railing_orange" = @(224, 97, 1)
+    "railing_white"  = @(207, 213, 214)
+    "railing_gray"   = @(55, 58, 62)
 }
 
 function Clamp-Channel([int] $value) {

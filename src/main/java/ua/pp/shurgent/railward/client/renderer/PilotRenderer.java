@@ -1,7 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -33,14 +32,12 @@ public class PilotRenderer extends SmartBlockEntityRenderer<PilotBlockEntity> {
 		PilotSide side = state.getValue(PilotBlock.SIDE);
 		PartialModel model = getModel(block.getPilotType(), side);
 
-		ms.pushPose();
-		TransformStack.cast(ms).centre()
-			.rotateY(getFacingRotation(facing))
-			.unCentre();
 		CachedBufferer.partial(model, state)
+			.centre()
+			.rotateY(getFacingRotation(facing))
+			.unCentre()
 			.light(light)
 			.renderInto(ms, buffers.getBuffer(RenderType.solid()));
-		ms.popPose();
 	}
 
 	private PartialModel getModel(PilotType type, PilotSide side) {
