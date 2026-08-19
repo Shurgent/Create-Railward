@@ -3,8 +3,13 @@ package ua.pp.shurgent.railward.block.train.parts.copycat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -15,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -60,8 +66,28 @@ public class HalfWallPanelBlock extends WallPanelCopycatBlock {
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		AABB bounds = getBounds(state);
-		return Block.box(bounds.minX * 16, bounds.minY * 16, bounds.minZ * 16,
+		VoxelShape primary = Block.box(bounds.minX * 16, bounds.minY * 16, bounds.minZ * 16,
 				bounds.maxX * 16, bounds.maxY * 16, bounds.maxZ * 16);
+		return DualPanelCopycatBehaviour.addSecondaryShape(state, level, pos, primary);
+	}
+
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hit) {
+		InteractionResult result = DualPanelCopycatBehaviour.use(this, state, level, pos, player, hand, hit);
+		return result != null ? result : super.use(state, level, pos, player, hand, hit);
+	}
+
+	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		InteractionResult result = DualPanelCopycatBehaviour.onWrenched(state, context);
+		return result != null ? result : super.onWrenched(state, context);
+	}
+
+	@Override
+	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
+		InteractionResult result = DualPanelCopycatBehaviour.onSneakWrenched(state, context);
+		return result != null ? result : super.onSneakWrenched(state, context);
 	}
 
 	public static AABB getBounds(BlockState state) {

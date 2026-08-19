@@ -36,6 +36,9 @@
                    "railward:train/parts/train_sliding_door_green_window_small",
                    "railward:train/parts/train_sliding_door_green_window_big",
                    "railward:train/parts/train_sliding_door_light_blue_window_small",
-                   "railward:train/parts/train_sliding_door_light_blue_window_big"
+                   "railward:train/parts/train_sliding_door_light_blue_window_big",
+                   "railward:train/parts/train_cab_corner_door_blue_window_big",
+                   "railward:train/parts/train_cab_corner_door_green_window_big",
+                   "railward:train/parts/train_cab_corner_door_light_blue_window_big"
                ]
 }

@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward;
 
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
 
-import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
@@ -24,10 +23,13 @@ import ua.pp.shurgent.railward.block.train.parts.CabSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.PilotBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.RadiatorFanBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.RailingBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlockEntity;
+import ua.pp.shurgent.railward.block.train.parts.copycat.DualPanelCopycatBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
@@ -41,10 +43,12 @@ import ua.pp.shurgent.railward.client.renderer.FluidTerminalRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsRenderer;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightRenderer;
 import ua.pp.shurgent.railward.client.renderer.PilotRenderer;
+import ua.pp.shurgent.railward.client.renderer.RadiatorFanRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernWhistleRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailingRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardHingedDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailwardSlidingDoorRenderer;
+import ua.pp.shurgent.railward.client.renderer.CabCornerDoorRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainWallPanelAttachmentRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingBunkerRenderer;
@@ -67,10 +71,10 @@ public class AllBlockEntities {
 			.renderer(() -> BogeyBlockEntityRenderer::new)
 			.register();
 
-	public static final BlockEntityEntry<CopycatBlockEntity> WALL_PANEL_COPYCAT = REGISTRATE
-			.blockEntity("train/parts/wall_panel_copycat", CopycatBlockEntity::new)
+	public static final BlockEntityEntry<DualPanelCopycatBlockEntity> WALL_PANEL_COPYCAT = REGISTRATE
+			.blockEntity("train/parts/wall_panel_copycat", DualPanelCopycatBlockEntity::new)
 			.validBlocks(AllBlocks.WALL_PANEL_VERTICAL_SLICE, AllBlocks.WALL_PANEL_HORIZONTAL_SLICE,
-					AllBlocks.WALL_PANEL_CORNER, AllBlocks.HALF_WALL_PANEL)
+					AllBlocks.WALL_PANEL_CORNER, AllBlocks.COPYCAT_WALL_PANEL, AllBlocks.HALF_WALL_PANEL)
 			.register();
 
 	public static final BlockEntityEntry<CopycatSlabBlockEntity> COPYCAT_SLAB = REGISTRATE
@@ -88,6 +92,14 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/sliding_train_door", SlidingDoorBlockEntity::new)
 			.validBlocks(AllBlocks.slidingTrainDoorBlocks())
 			.renderer(() -> RailwardSlidingDoorRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<CabCornerDoorBlockEntity> CAB_CORNER_TRAIN_DOOR = REGISTRATE
+			.blockEntity("train/parts/cab_corner_train_door", CabCornerDoorBlockEntity::new)
+			.validBlocks(AllBlocks.TRAIN_CAB_CORNER_DOOR_BLUE_WINDOW_BIG,
+				AllBlocks.TRAIN_CAB_CORNER_DOOR_GREEN_WINDOW_BIG,
+				AllBlocks.TRAIN_CAB_CORNER_DOOR_LIGHT_BLUE_WINDOW_BIG)
+			.renderer(() -> CabCornerDoorRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<TrainWallPanelBlockEntity> TRAIN_WALL_PANEL = REGISTRATE
@@ -154,6 +166,12 @@ public class AllBlockEntities {
 			.blockEntity("train/parts/wagon_frame", WagonFrameBlockEntity::new)
 			.validBlocks(AllBlocks.WAGON_FRAME)
 			.renderer(() -> WagonFrameRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<RadiatorFanBlockEntity> RADIATOR_FAN = REGISTRATE
+			.blockEntity("train/parts/radiator_fan", RadiatorFanBlockEntity::new)
+			.validBlocks(AllBlocks.RADIATOR_FAN)
+			.renderer(() -> RadiatorFanRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<RailingBlockEntity> RAILING = REGISTRATE

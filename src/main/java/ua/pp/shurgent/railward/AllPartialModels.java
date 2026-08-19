@@ -7,6 +7,7 @@ import java.util.Map;
 import com.jozufozu.flywheel.core.PartialModel;
 
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorPanelVariant;
 
 public class AllPartialModels {
 
@@ -69,6 +70,10 @@ public class AllPartialModels {
 	WAGON_FRAME_BRAKE_PIPE = block("train/parts/wagon_frame_brake_pipe"),
 	WAGON_FRAME_FUEL_TANK = block("train/parts/wagon_frame_fuel_tank"),
 	WAGON_FRAME_HAND_BRAKE_VALVE = block("train/parts/wagon_frame_hand_brake_valve"),
+
+	// Radiator Fan
+	RADIATOR_FAN_BASE = block("train/parts/radiator_fan_base"),
+	RADIATOR_FAN_ROTOR = block("train/parts/radiator_fan_rotor"),
 
 	// Railings
 	RAILING_VERTICAL_CORE = block("train/parts/railing/vertical_core"),
@@ -152,6 +157,8 @@ public class AllPartialModels {
 	};
 
 	private static final Map<String, SlidingDoorPartialModels> SLIDING_TRAIN_DOORS = createSlidingTrainDoors();
+	private static final Map<String, CabCornerDoorPartialModels> CAB_CORNER_TRAIN_DOORS =
+		createCabCornerTrainDoors();
 
 	private static PartialModel block(String path) {
 		return new PartialModel(Railward.asResource("block/" + path));
@@ -207,6 +214,30 @@ public class AllPartialModels {
 				block(base + "/block_top_right")));
 	}
 
+	public static CabCornerDoorPartialModels getCabCornerDoorModels(String blockPath) {
+		return CAB_CORNER_TRAIN_DOORS.get(blockPath);
+	}
+
+	private static Map<String, CabCornerDoorPartialModels> createCabCornerTrainDoors() {
+		Map<String, CabCornerDoorPartialModels> models = new HashMap<>();
+		for (String color : TRAIN_DOOR_WINDOW_COLORS) {
+			String id = "train_cab_corner_door_" + color + "_window_big";
+			String doorBase = "train/parts/train_hinged_door_" + color + "_window_big/";
+			Map<CabCornerDoorPanelVariant, PartialModel> panels =
+				new java.util.EnumMap<>(CabCornerDoorPanelVariant.class);
+			for (CabCornerDoorPanelVariant variant : CabCornerDoorPanelVariant.values())
+				panels.put(variant, block("train/parts/train_wall_panel_" + color
+					+ variant.getModelSuffix()));
+			models.put("train/parts/" + id, new CabCornerDoorPartialModels(
+				block(doorBase + "block_bottom"),
+				block(doorBase + "block_bottom_hinge"),
+				block(doorBase + "block_top"),
+				block(doorBase + "block_top_hinge"),
+				Collections.unmodifiableMap(panels)));
+		}
+		return Collections.unmodifiableMap(models);
+	}
+
 	public static class SlidingDoorPartialModels {
 		private final PartialModel bottomLeft;
 		private final PartialModel bottomRight;
@@ -235,6 +266,21 @@ public class AllPartialModels {
 
 	public record LocomotiveSpotlightPartialModels(PartialModel base, PartialModel lampOn, PartialModel lampOff,
 		PartialModel lensOff, PartialModel glow) {
+	}
+
+	public record CabCornerDoorPartialModels(PartialModel bottomLeft, PartialModel bottomRight,
+		PartialModel topLeft, PartialModel topRight,
+		Map<CabCornerDoorPanelVariant, PartialModel> panels) {
+
+		public PartialModel getDoor(DoubleBlockHalf half, boolean rightHinge) {
+			if (half == DoubleBlockHalf.UPPER)
+				return rightHinge ? topRight : topLeft;
+			return rightHinge ? bottomRight : bottomLeft;
+		}
+
+		public PartialModel getPanel(CabCornerDoorPanelVariant variant) {
+			return panels.get(variant);
+		}
 	}
 	
 	public static void init() {

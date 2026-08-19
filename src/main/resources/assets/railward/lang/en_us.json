@@ -239,6 +239,7 @@
     "block.railward.train.parts.wall_panel_vertical_slice": "Wall Panel Vertical Slice",
     "block.railward.train.parts.wall_panel_horizontal_slice": "Wall Panel Horizontal Slice",
     "block.railward.train.parts.wall_panel_corner": "Wall Panel Corner",
+    "block.railward.train.parts.copycat_wall_panel": "Copycat Wall Panel",
     "block.railward.train.parts.half_wall_panel": "Half Wall Panel",
     "block.railward.train.parts.copycat_slab": "Copycat Slab",
     "block.railward.train.parts.pilot_type_1": "Pilot (Type 1)",
@@ -253,5 +254,9 @@
     "key.railward.train_reverser": "Train control reverser",
     "railward.modern_train_controller.reverser.forward": "Reverser: FORWARD",
     "railward.modern_train_controller.reverser.backward": "Reverser: BACKWARD",
-    "railward.modern_train_controller.reverser.must_stop": "Stop the train before changing direction"
+    "railward.modern_train_controller.reverser.must_stop": "Stop the train before changing direction",
+    "block.railward.train.parts.train_cab_corner_door_blue_window_big": "Blue Cab Corner Door with Large Window",
+    "block.railward.train.parts.train_cab_corner_door_green_window_big": "Green Cab Corner Door with Large Window",
+    "block.railward.train.parts.train_cab_corner_door_light_blue_window_big": "Light Blue Cab Corner Door with Large Window",
+    "block.railward.train.parts.radiator_fan": "Radiator Fan"
 }

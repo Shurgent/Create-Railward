@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "railward:train/parts/train_cab_corner_door_green_window_big"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "railward:train/parts/train_cab_corner_door_green_window_big",
+          "properties": { "half": "lower" }
+        }
+      ]
+    }
+  ]
+}

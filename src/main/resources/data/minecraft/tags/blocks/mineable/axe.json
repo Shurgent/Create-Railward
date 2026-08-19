@@ -4,6 +4,7 @@
     "railward:train/parts/wall_panel_vertical_slice",
     "railward:train/parts/wall_panel_horizontal_slice",
     "railward:train/parts/wall_panel_corner",
+    "railward:train/parts/copycat_wall_panel",
     "railward:train/parts/half_wall_panel",
     "railward:train/parts/copycat_slab"
   ]

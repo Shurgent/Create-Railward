@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "railward:train/parts/train_wall_panel_green_smooth",
+    "railward:train/parts/train_wall_panel_green",
+    "railward:train/parts/train_wall_panel_green_hood",
+    "railward:train/parts/train_wall_panel_green_grille",
+    "railward:train/parts/train_wall_panel_green_stripe_yellow",
+    "railward:train/parts/train_wall_panel_green_stripe_yellow_smooth",
+    "railward:train/parts/train_wall_panel_green_stripe_yellow_grille",
+    "railward:train/parts/train_wall_panel_green_stripe_red",
+    "railward:train/parts/train_wall_panel_green_stripe_red_smooth",
+    "railward:train/parts/train_wall_panel_green_stripe_red_double_smooth"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "railward:block/train/parts/cab_corner_door_inventory",
+  "textures": {
+    "door_side": "railward:block/train/parts/doors/train_hinged_door_light_blue_window_big_side",
+    "door_bottom": "railward:block/train/parts/doors/train_hinged_door_light_blue_window_big_bottom_handle_right",
+    "door_top": "railward:block/train/parts/doors/train_hinged_door_light_blue_window_big_top",
+    "panel": "railward:block/train/parts/train_wall_panel_light_blue_smooth"
+  }
+}

@@ -1,3 +1,10 @@
 {
-  "parent": "railward:block/train/parts/copycat_base/wall_panel_horizontal_slice"
+  "parent": "railward:block/train/parts/copycat_base/wall_panel_horizontal_slice",
+  "display": {
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [2.875, 2.1, 0],
+      "scale": [0.625, 0.625, 0.625]
+    }
+  }
 }

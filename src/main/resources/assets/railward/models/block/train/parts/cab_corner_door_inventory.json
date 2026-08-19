@@ -1,0 +1,67 @@
+{
+  "credit": "Railward cab corner door inventory model",
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "#door_bottom"
+  },
+  "elements": [
+    {
+      "name": "door_lower",
+      "from": [0, 0, 13],
+      "to": [13, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#door_bottom"},
+        "east": {"uv": [1, 9, 15, 12], "rotation": 270, "texture": "#door_side"},
+        "south": {"uv": [16, 0, 0, 16], "texture": "#door_bottom"},
+        "west": {"uv": [1, 12, 15, 15], "rotation": 270, "texture": "#door_side"},
+        "down": {"uv": [1, 1, 4, 15], "rotation": 90, "texture": "#door_side"}
+      }
+    },
+    {
+      "name": "door_upper",
+      "from": [0, 16, 13],
+      "to": [13, 32, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#door_top"},
+        "east": {"uv": [1, 1, 15, 4], "rotation": 90, "texture": "#door_side"},
+        "south": {"uv": [16, 0, 0, 16], "texture": "#door_top"},
+        "west": {"uv": [1, 4, 15, 7], "rotation": 90, "texture": "#door_side"},
+        "up": {"uv": [1, 1, 4, 15], "rotation": 90, "texture": "#door_side"}
+      }
+    },
+    {
+      "name": "panel_lower",
+      "from": [13, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [8, 8, 9.5, 16], "texture": "#panel"},
+        "east": {"uv": [0, 0, 8, 8], "texture": "#panel"},
+        "south": {"uv": [9.5, 8, 11, 16], "texture": "#panel"},
+        "west": {"uv": [0, 8, 8, 16], "texture": "#panel"},
+        "up": {"uv": [16, 1.5, 8, 0], "rotation": 90, "texture": "#panel"},
+        "down": {"uv": [16, 1.5, 8, 3], "rotation": 90, "texture": "#panel"}
+      }
+    },
+    {
+      "name": "panel_upper",
+      "from": [13, 16, 0],
+      "to": [16, 32, 16],
+      "faces": {
+        "north": {"uv": [8, 8, 9.5, 16], "texture": "#panel"},
+        "east": {"uv": [0, 0, 8, 8], "texture": "#panel"},
+        "south": {"uv": [9.5, 8, 11, 16], "texture": "#panel"},
+        "west": {"uv": [0, 8, 8, 16], "texture": "#panel"},
+        "up": {"uv": [16, 1.5, 8, 0], "rotation": 90, "texture": "#panel"},
+        "down": {"uv": [16, 1.5, 8, 3], "rotation": 90, "texture": "#panel"}
+      }
+    }
+  ],
+  "display": {
+    "ground": {"rotation": [0, 45, 0], "translation": [0, 2, 0], "scale": [0.22, 0.22, 0.22]},
+    "fixed": {"rotation": [0, 225, 0], "translation": [0, -2, 0], "scale": [0.4, 0.4, 0.4]},
+    "thirdperson": {"rotation": [70, 45, 0], "translation": [0, 1, 0], "scale": [0.28, 0.28, 0.28]},
+    "firstperson": {"rotation": [0, 225, 0], "translation": [0, -1, 0], "scale": [0.35, 0.35, 0.35]},
+    "gui": {"rotation": [25, 135, 0], "translation": [0, -2.25, 0], "scale": [0.38, 0.38, 0.38]}
+  }
+}

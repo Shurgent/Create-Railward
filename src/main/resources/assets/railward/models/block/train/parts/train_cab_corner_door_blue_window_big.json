@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "railward:block/train/parts/doors/train_hinged_door_blue_window_big_bottom"
+  }
+}

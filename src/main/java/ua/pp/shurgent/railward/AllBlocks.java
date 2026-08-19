@@ -46,6 +46,7 @@ import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlock;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightMovementBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.PilotBlock;
 import ua.pp.shurgent.railward.block.train.parts.PilotType;
+import ua.pp.shurgent.railward.block.train.parts.RadiatorFanBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainBufferBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainCouplerInteractionBehaviour;
@@ -60,11 +61,14 @@ import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
+import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlock;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlock;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchMovement;
 import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlock;
@@ -86,6 +90,7 @@ public class AllBlocks {
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
 	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_CUTOUT_ENTRIES = new ArrayList<>();
 	private static final LocomotiveSpotlightMovementBehaviour LOCOMOTIVE_SPOTLIGHT_MOVEMENT =
 		new LocomotiveSpotlightMovementBehaviour();
 	private static final ModernTrainControllerMovementBehaviour MODERN_TRAIN_CONTROLLER_MOVEMENT =
@@ -130,6 +135,13 @@ public class AllBlocks {
 		registerTrainDoorSet("train_sliding_door", TrainDoorAnimation.SLIDING, SLIDING_TRAIN_DOOR_ENTRIES);
 	}
 
+	public static final BlockEntry<CabCornerDoorBlock> TRAIN_CAB_CORNER_DOOR_BLUE_WINDOW_BIG =
+		cabCornerDoor("blue", MaterialColor.COLOR_BLUE);
+	public static final BlockEntry<CabCornerDoorBlock> TRAIN_CAB_CORNER_DOOR_GREEN_WINDOW_BIG =
+		cabCornerDoor("green", MaterialColor.COLOR_GREEN);
+	public static final BlockEntry<CabCornerDoorBlock> TRAIN_CAB_CORNER_DOOR_LIGHT_BLUE_WINDOW_BIG =
+		cabCornerDoor("light_blue", MaterialColor.COLOR_LIGHT_BLUE);
+
 	public static final BlockEntry<WallPanelVerticalSliceBlock> WALL_PANEL_VERTICAL_SLICE = REGISTRATE
 			.block("train/parts/wall_panel_vertical_slice", WallPanelVerticalSliceBlock::new)
 			.transform(BuilderTransformers.copycat())
@@ -160,11 +172,21 @@ public class AllBlocks {
 			.build()
 			.register();
 
+	public static final BlockEntry<CopycatWallPanelBlock> COPYCAT_WALL_PANEL = REGISTRATE
+			.block("train/parts/copycat_wall_panel", CopycatWallPanelBlock::new)
+			.transform(BuilderTransformers.copycat())
+			.onRegister(WallPanelCopycatModelRegistration.wallPanel())
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+					prov.modLoc(PATH_TRAINPARTS + "copycat_base/copycat_wall_panel")))
+			.build()
+			.register();
+
 	public static final BlockEntry<HalfWallPanelBlock> HALF_WALL_PANEL = REGISTRATE
 			.block("train/parts/half_wall_panel", HalfWallPanelBlock::new)
 			.transform(BuilderTransformers.copycat())
 			.onRegister(WallPanelCopycatModelRegistration.halfPanel())
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 					prov.modLoc(PATH_TRAINPARTS + "copycat_base/half_wall_panel")))
 			.build()
@@ -281,7 +303,7 @@ public class AllBlocks {
 			.block("train/parts/train_wall_panel_blue", TrainWallPanelBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -289,7 +311,7 @@ public class AllBlocks {
 			.block("train/parts/train_wall_panel_blue_stripe_yellow", TrainWallPanelBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -297,7 +319,7 @@ public class AllBlocks {
 			.block("train/parts/train_wall_panel_blue_stripe_red", TrainWallPanelBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 	
@@ -306,7 +328,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -315,7 +337,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -369,7 +391,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -378,7 +400,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -387,7 +409,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -396,7 +418,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -405,7 +427,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -459,7 +481,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -468,7 +490,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -477,7 +499,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -486,7 +508,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -495,7 +517,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK).addLayer(() -> RenderType::cutout)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
 
@@ -705,6 +727,19 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
+	public static final BlockEntry<RadiatorFanBlock> RADIATOR_FAN = REGISTRATE
+			.block("train/parts/radiator_fan", RadiatorFanBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::cutoutMipped)
+			.blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().getExistingFile(
+				prov.modLoc(PATH_TRAINPARTS + "radiator_fan_inventory"))))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+				prov.modLoc(PATH_TRAINPARTS + "radiator_fan_inventory")))
+			.build().register();
+
 	public static final BlockEntry<RailingBlock> RAILING_RED =
 			railing("railing_red", "red", MaterialColor.COLOR_RED, 0x922222);
 	public static final BlockEntry<RailingBlock> RAILING_YELLOW =
@@ -823,6 +858,16 @@ public class AllBlocks {
 				.anyMatch(entry -> entry.has(state));
 	}
 
+	public static boolean isCutoutTrainWallPanelState(BlockState state) {
+		return TRAIN_WALL_PANEL_BLUE_WINDOW_SMALL.has(state)
+				|| TRAIN_WALL_PANEL_BLUE_WINDOW_BIG.has(state)
+				|| TRAIN_WALL_PANEL_GREEN_WINDOW_SMALL.has(state)
+				|| TRAIN_WALL_PANEL_GREEN_WINDOW_BIG.has(state)
+				|| TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_SMALL.has(state)
+				|| TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG.has(state)
+				|| TRAIN_WALL_PANEL_CUTOUT_ENTRIES.stream().anyMatch(entry -> entry.has(state));
+	}
+
 	public static boolean isAttachableTrainWallPanelState(BlockState state) {
 		return TRAIN_WALL_PANEL_BLUE.has(state)
 				|| TRAIN_WALL_PANEL_BLUE_STRIPE_YELLOW.has(state)
@@ -915,6 +960,38 @@ public class AllBlocks {
 				.register();
 	}
 
+	private static BlockEntry<CabCornerDoorBlock> cabCornerDoor(String colorName, MaterialColor color) {
+		String name = "train_cab_corner_door_" + colorName + "_window_big";
+		return REGISTRATE.block("train/parts/" + name, CabCornerDoorBlock::new)
+			.initialProperties(() -> Blocks.OAK_DOOR)
+			.properties(p -> p.color(color)
+				.sound(SoundType.NETHERITE_BLOCK)
+				.strength(3, 6)
+				.noOcclusion()
+				.requiresCorrectToolForDrops())
+			.blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models()
+				.getExistingFile(prov.modLoc(PATH_TRAINPARTS + name))))
+			.addLayer(() -> RenderType::cutout)
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.DOORS, AllBlockTags.NON_DOUBLE_DOOR.tag)
+			.onRegister(interactionBehaviour(new DoorMovingInteraction()))
+			.onRegister(movementBehaviour(new SlidingDoorMovementBehaviour()))
+			.loot((loot, block) -> loot.add(block, BlockLoot.createDoorTable(block)))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.tag(ItemTags.DOORS, AllItemTags.CONTRAPTION_CONTROLLED.tag)
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+				prov.modLoc(PATH_TRAINPARTS + "cab_corner_door_inventory"))
+				.texture("door_side", prov.modLoc("block/train/parts/doors/train_hinged_door_"
+					+ colorName + "_window_big_side"))
+				.texture("door_bottom", prov.modLoc("block/train/parts/doors/train_hinged_door_"
+					+ colorName + "_window_big_bottom_handle_right"))
+				.texture("door_top", prov.modLoc("block/train/parts/doors/train_hinged_door_"
+					+ colorName + "_window_big_top"))
+				.texture("panel", prov.modLoc("block/train/parts/train_wall_panel_"
+					+ colorName + "_smooth")))
+			.build()
+			.register();
+	}
+
 	private static BlockEntry<TrainWallBlock> trainWallVariant(String name, MaterialColor color, boolean cutout) {
 		var builder = REGISTRATE.block("train/parts/" + name, properties -> new TrainWallBlock(properties, color))
 				.initialProperties(() -> Blocks.IRON_BLOCK);
@@ -944,10 +1021,12 @@ public class AllBlocks {
 				.properties(p -> cutout ? p.noOcclusion().requiresCorrectToolForDrops()
 						: p.requiresCorrectToolForDrops())
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 				.build().register();
 		TRAIN_WALL_PANEL_ENTRIES.add(entry);
+		if (cutout)
+			TRAIN_WALL_PANEL_CUTOUT_ENTRIES.add(entry);
 		if (!cutout)
 			TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
 		return entry;

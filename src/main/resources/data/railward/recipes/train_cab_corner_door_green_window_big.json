@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "railward:train/parts/train_hinged_door_green_window_big" },
+    { "tag": "railward:train_wall_panels/green_non_window" },
+    { "tag": "railward:train_wall_panels/green_non_window" }
+  ],
+  "result": {
+    "item": "railward:train/parts/train_cab_corner_door_green_window_big"
+  }
+}

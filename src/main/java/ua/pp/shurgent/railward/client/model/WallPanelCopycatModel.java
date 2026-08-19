@@ -16,6 +16,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelHorizontalSliceBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceBlock;
@@ -33,6 +34,7 @@ public class WallPanelCopycatModel extends CopycatModel {
 		VERTICAL_SLICE,
 		HORIZONTAL_SLICE,
 		CORNER,
+		WALL_PANEL,
 		HALF_PANEL
 	}
 
@@ -54,6 +56,8 @@ public class WallPanelCopycatModel extends CopycatModel {
 		AABB target = getTargetBounds(state);
 		if (shape == Shape.HALF_PANEL)
 			return getHalfPanelQuads(templateQuads, target);
+		if (shape == Shape.WALL_PANEL)
+			return getFullPanelQuads(templateQuads, target);
 
 		List<BakedQuad> result = new ArrayList<>(templateQuads.size());
 		for (BakedQuad quad : templateQuads) {
@@ -92,12 +96,21 @@ public class WallPanelCopycatModel extends CopycatModel {
 		return result;
 	}
 
+	private static List<BakedQuad> getFullPanelQuads(List<BakedQuad> templateQuads, AABB target) {
+		List<Piece> pieces = getPanelPieces(target, false);
+		return renderPieces(templateQuads, target, pieces);
+	}
+
 	private static List<Piece> getHalfPanelPieces(AABB target) {
+		return getPanelPieces(target, true);
+	}
+
+	private static List<Piece> getPanelPieces(AABB target, boolean halfHeight) {
 		double middleY = target.minY + .25;
-		Segment[] vertical = {
+		Segment[] vertical = halfHeight ? new Segment[] {
 				new Segment(target.minY, middleY, 0, .25),
 				new Segment(middleY, target.maxY, .75, 1)
-		};
+		} : new Segment[] { new Segment(target.minY, target.maxY, 0, 1) };
 
 		boolean normalIsX = target.maxX - target.minX < .5;
 		double normalMin = normalIsX ? target.minX : target.minZ;
@@ -131,6 +144,23 @@ public class WallPanelCopycatModel extends CopycatModel {
 		return pieces;
 	}
 
+	private static List<BakedQuad> renderPieces(List<BakedQuad> templateQuads, AABB target, List<Piece> pieces) {
+		List<BakedQuad> result = new ArrayList<>(templateQuads.size() * 2);
+		for (BakedQuad quad : templateQuads) {
+			Direction face = quad.getDirection();
+			for (Piece piece : pieces) {
+				if (!isOuterFace(piece.destination, target, face))
+					continue;
+				Vec3 offset = new Vec3(piece.destination.minX - piece.source.minX,
+						piece.destination.minY - piece.source.minY,
+						piece.destination.minZ - piece.source.minZ);
+				result.add(BakedQuadHelper.cloneWithCustomGeometry(quad,
+						BakedModelHelper.cropAndMove(quad.getVertices(), quad.getSprite(), piece.source, offset)));
+			}
+		}
+		return result;
+	}
+
 	private static boolean isOuterFace(AABB piece, AABB target, Direction face) {
 		double pieceFace = switch (face) {
 			case WEST -> piece.minX;
@@ -156,6 +186,7 @@ public class WallPanelCopycatModel extends CopycatModel {
 			case VERTICAL_SLICE -> WallPanelVerticalSliceBlock.getBounds(state);
 			case HORIZONTAL_SLICE -> WallPanelHorizontalSliceBlock.getBounds(state);
 			case CORNER -> WallPanelCornerBlock.getBounds(state);
+			case WALL_PANEL -> CopycatWallPanelBlock.getBounds(state);
 			case HALF_PANEL -> HalfWallPanelBlock.getBounds(state);
 		};
 	}

@@ -32,6 +32,10 @@ public final class WallPanelCopycatModelRegistration {
 		return create(ModelShape.HALF_PANEL);
 	}
 
+	public static <T extends Block> NonNullConsumer<? super T> wallPanel() {
+		return create(ModelShape.WALL_PANEL);
+	}
+
 	public static <T extends Block> NonNullConsumer<? super T> slab() {
 		return DistExecutor.<NonNullConsumer<? super T>>unsafeRunForDist(
 				() -> () -> Client.<T>createSlab(),
@@ -50,6 +54,7 @@ public final class WallPanelCopycatModelRegistration {
 		VERTICAL_SLICE,
 		HORIZONTAL_SLICE,
 		CORNER,
+		WALL_PANEL,
 		HALF_PANEL
 	}
 
@@ -61,10 +66,14 @@ public final class WallPanelCopycatModelRegistration {
 				case VERTICAL_SLICE -> WallPanelCopycatModel.Shape.VERTICAL_SLICE;
 				case HORIZONTAL_SLICE -> WallPanelCopycatModel.Shape.HORIZONTAL_SLICE;
 				case CORNER -> WallPanelCopycatModel.Shape.CORNER;
+				case WALL_PANEL -> WallPanelCopycatModel.Shape.WALL_PANEL;
 				case HALF_PANEL -> WallPanelCopycatModel.Shape.HALF_PANEL;
 			};
-			return CreateRegistrate.blockModel(
-					() -> model -> new WallPanelCopycatModel(model, clientShape));
+			return CreateRegistrate.blockModel(() -> model -> {
+				WallPanelCopycatModel copycatModel = new WallPanelCopycatModel(model, clientShape);
+				return shape == ModelShape.HALF_PANEL || shape == ModelShape.WALL_PANEL
+						? new DualPanelCopycatModel(copycatModel) : copycatModel;
+			});
 		}
 
 		private static <T extends Block> NonNullConsumer<? super T> createSlab() {

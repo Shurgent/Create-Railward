@@ -1,3 +1,10 @@
 {
-  "parent": "railward:block/train/signal/speed_sign"
+  "parent": "railward:block/train/signal/speed_sign",
+  "display": {
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, -2.5, 0],
+      "scale": [0.55, 0.55, 0.55]
+    }
+  }
 }

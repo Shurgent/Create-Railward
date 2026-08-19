@@ -9,7 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -81,6 +83,20 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 			Direction direction) {
 		// None of these 3 px pieces covers a complete block face.
 		return false;
+	}
+
+	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (DualPanelCopycatBehaviour.isSupported(state) && !state.is(newState.getBlock()) && !isMoving)
+			DualPanelCopycatBehaviour.dropSecondary(level, pos, state);
+		super.onRemove(state, level, pos, newState, isMoving);
+	}
+
+	@Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		if (player.isCreative() && DualPanelCopycatBehaviour.isSupported(state))
+			DualPanelCopycatBehaviour.clearSecondaryForCreative(level, pos);
+		super.playerWillDestroy(level, pos, state, player);
 	}
 
 	protected static Direction cornerFacing(double localX, double localZ) {

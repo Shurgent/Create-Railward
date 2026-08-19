@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -44,6 +45,8 @@ import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveBufferLightsAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveSpotlightAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelPlacement;
 
 public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	implements IBE<TrainWallPanelBlockEntity>, IWrenchable {
@@ -61,6 +64,9 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	public VoxelShape getShape(BlockState state, BlockGetter w, BlockPos pos, CollisionContext ctx) {
 		VoxelShape shape = SHAPE.get(state.getValue(FACING));
 		if (w.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) {
+			BlockState secondary = panel.getSecondaryPanel();
+			if (secondary != null)
+				shape = Shapes.or(shape, Shapes.create(getSecondaryBounds(state, secondary.getValue(FACING))));
 			TrainPanelAttachment attachment = panel.getAttachment();
 			if (attachment != null)
 				shape = Shapes.or(shape, attachment.getInteractionShape(state));
@@ -71,7 +77,12 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
 		CollisionContext context) {
-		return SHAPE.get(state.getValue(FACING));
+		VoxelShape shape = SHAPE.get(state.getValue(FACING));
+		if (level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel
+				&& panel.getSecondaryPanel() != null)
+			shape = Shapes.or(shape,
+					Shapes.create(getSecondaryBounds(state, panel.getSecondaryPanel().getValue(FACING))));
+		return shape;
 	}
 
 	public TrainWallPanelBlock(BlockBehaviour.Properties properties) {
@@ -105,6 +116,9 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
 			ItemStack heldItem = player.getItemInHand(hand);
+			if (heldItem.getItem() instanceof DualPanelBlockItem panelItem
+					&& DualPanelPlacement.find(new UseOnContext(player, hand, ray), panelItem.getBlock()) != null)
+				return InteractionResult.PASS;
 			if (AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(heldItem))
 				return tryAttachLocomotiveBufferLights(state, world, pos, player, hand);
 			if (AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(heldItem))
@@ -208,6 +222,17 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
 		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
+		if (level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel
+				&& isSecondaryPanelHit(state, pos, context.getClickLocation(), panel)) {
+			if (level.isClientSide)
+				return InteractionResult.SUCCESS;
+			ItemStack drop = panel.removeSecondaryPanel();
+			Player player = context.getPlayer();
+			if (!drop.isEmpty() && player != null && !player.isCreative())
+				player.getInventory().placeItemBackInInventory(drop);
+			playRemoveSound(level, pos);
+			return InteractionResult.SUCCESS;
+		}
 
 		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) || !panel.hasAttachment())
 			return IWrenchable.super.onSneakWrenched(state, context);
@@ -233,6 +258,38 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 			.anyMatch(box -> box.inflate(1.0E-5D)
 				.move(pos)
 				.contains(hit));
+	}
+
+	public static boolean isSecondaryPanelHit(BlockState state, BlockPos pos, Vec3 hit,
+			TrainWallPanelBlockEntity panel) {
+		BlockState secondary = panel.getSecondaryPanel();
+		if (secondary == null)
+			return false;
+		Vec3 local = hit.subtract(pos.getX(), pos.getY(), pos.getZ());
+		AABB secondaryBounds = getSecondaryBounds(state, secondary.getValue(FACING)).inflate(1.0E-5D);
+		AABB primaryBounds = getPanelBounds(state.getValue(FACING)).inflate(1.0E-5D);
+		return secondaryBounds.contains(local) && !primaryBounds.contains(local);
+	}
+
+	public static AABB getPanelBounds(Direction facing) {
+		return SHAPE.get(facing).bounds();
+	}
+
+	public static AABB getSecondaryBounds(BlockState primaryState, Direction secondaryFacing) {
+		AABB primary = getPanelBounds(primaryState.getValue(FACING));
+		AABB secondary = getPanelBounds(secondaryFacing);
+		Direction.Axis axis = primaryState.getValue(FACING).getAxis();
+		boolean primaryAtLowSide = axis.choose(primary.minX, primary.minY, primary.minZ) < .25;
+		double joint = primaryAtLowSide
+				? axis.choose(primary.maxX, primary.maxY, primary.maxZ)
+				: axis.choose(primary.minX, primary.minY, primary.minZ);
+		return switch (axis) {
+			case X -> new AABB(primaryAtLowSide ? joint : secondary.minX, secondary.minY, secondary.minZ,
+					primaryAtLowSide ? secondary.maxX : joint, secondary.maxY, secondary.maxZ);
+			case Y -> secondary;
+			case Z -> new AABB(secondary.minX, secondary.minY, primaryAtLowSide ? joint : secondary.minZ,
+					secondary.maxX, secondary.maxY, primaryAtLowSide ? secondary.maxZ : joint);
+		};
 	}
 
 	@Override
@@ -284,9 +341,18 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!level.isClientSide && !isMoving && !state.is(newState.getBlock())
-			&& level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel)
+			&& level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) {
 			panel.dropAttachment(level, pos);
+			panel.dropSecondaryPanel(level, pos);
+		}
 		IBE.onRemove(state, level, pos, newState);
+	}
+
+	@Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		if (player.isCreative() && level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel)
+			panel.setSecondaryPanel(null);
+		super.playerWillDestroy(level, pos, state, player);
 	}
 
 	@Override
@@ -324,6 +390,16 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 				return PlacementOffset.success(pos.relative(directions.get(0)),
 						s -> s.setValue(FACING, state.getValue(FACING)));
 			}
+		}
+
+		@Override
+		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
+				BlockHitResult ray, ItemStack heldItem) {
+			if (heldItem.getItem() instanceof DualPanelBlockItem panelItem
+					&& DualPanelPlacement.find(new UseOnContext(player, InteractionHand.MAIN_HAND, ray),
+							panelItem.getBlock()) != null)
+				return PlacementOffset.fail();
+			return IPlacementHelper.super.getOffset(player, world, state, pos, ray, heldItem);
 		}
 	}
 
