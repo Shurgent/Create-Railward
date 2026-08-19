@@ -2,10 +2,12 @@ package ua.pp.shurgent.railward;
 
 import com.simibubi.create.CreateClient;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -13,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import ua.pp.shurgent.railward.client.RailwardContraptionGoggleOverlay;
 import ua.pp.shurgent.railward.client.model.TrainWallPanelDualModel;
+import ua.pp.shurgent.railward.client.particle.DieselExhaustParticle;
 import ua.pp.shurgent.railward.client.ModernTrainControllerClient;
 import ua.pp.shurgent.railward.client.ModernWhistleSecondaryHonkKeyHandler;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPreview;
@@ -21,6 +24,7 @@ import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightForwardRendere
 import ua.pp.shurgent.railward.client.renderer.RailingInteractionHighlight;
 import ua.pp.shurgent.railward.client.renderer.SurfaceMountedPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
+import ua.pp.shurgent.railward.particle.RailwardParticleTypes;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RailwardClient {
@@ -30,6 +34,7 @@ public class RailwardClient {
 		AllPartialModels.init();
 		
 		modEventBus.addListener(RailwardClient::clientInit);
+		modEventBus.addListener(RailwardClient::registerParticleFactories);
 		forgeEventBus.addListener(LocomotiveBufferLightsPlacementPreview::render);
 		forgeEventBus.addListener(DualPanelPlacementPreview::render);
 		forgeEventBus.addListener(SurfaceMountedPlacementPreview::render);
@@ -40,6 +45,11 @@ public class RailwardClient {
 		forgeEventBus.addListener(ModernWhistleSecondaryHonkKeyHandler::onClientTick);
 		forgeEventBus.addListener(ModernTrainControllerClient::onClientTick);
 		
+	}
+
+	public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+		Minecraft.getInstance().particleEngine.register(RailwardParticleTypes.DIESEL_EXHAUST.get(),
+			DieselExhaustParticle.Factory::new);
 	}
 
 	public static void clientInit(final FMLClientSetupEvent event) {

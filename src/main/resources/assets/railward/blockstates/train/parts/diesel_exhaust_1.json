@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "railward:block/train/parts/diesel_exhaust_1" },
+    "facing=east": { "model": "railward:block/train/parts/diesel_exhaust_1", "y": 90 },
+    "facing=south": { "model": "railward:block/train/parts/diesel_exhaust_1", "y": 180 },
+    "facing=west": { "model": "railward:block/train/parts/diesel_exhaust_1", "y": 270 }
+  }
+}

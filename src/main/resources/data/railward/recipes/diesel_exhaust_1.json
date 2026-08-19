@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "###"
+  ],
+  "key": {
+    "I": { "item": "create:fluid_pipe" },
+    "#": { "item": "create:iron_sheet" }
+  },
+  "result": {
+    "item": "railward:train/parts/diesel_exhaust_1"
+  }
+}

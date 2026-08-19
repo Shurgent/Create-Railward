@@ -43,5 +43,6 @@ public class LocomotiveBufferLightsEvents {
 	public static void onServerStopping(ServerStoppingEvent event) {
 		TrainDirectionState.clearServerDirections();
 		CabSignalTrainState.clearServerStates();
+		DieselExhaustEmitter.clear();
 	}
 }

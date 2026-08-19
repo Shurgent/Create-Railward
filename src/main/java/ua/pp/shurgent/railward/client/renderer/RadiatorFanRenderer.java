@@ -1,7 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -30,31 +29,22 @@ public class RadiatorFanRenderer extends SmartBlockEntityRenderer<RadiatorFanBlo
 			MultiBufferSource buffers, int light, int overlay) {
 		BlockState state = be.getBlockState();
 		float angle = (AnimationTickHolder.getRenderTime(be.getLevel()) * DEGREES_PER_TICK) % 360;
+		double yOffset = state.getValue(RadiatorFanBlock.HALF) == Half.TOP ? .5 : 0;
+		float facingRotation = getFacingRotation(state.getValue(RadiatorFanBlock.FACING));
 
-		ms.pushPose();
-		TransformStack.cast(ms)
-			.translate(0, state.getValue(RadiatorFanBlock.HALF) == Half.TOP ? .5 : 0, 0)
-			.centre()
-			.rotateY(getFacingRotation(state.getValue(RadiatorFanBlock.FACING)))
-			.unCentre();
-
-		render(AllPartialModels.RADIATOR_FAN_BASE, state, ms, buffers, light);
-
-		ms.pushPose();
-		TransformStack.cast(ms).centre()
-			.rotateY(angle)
-			.unCentre();
-		render(AllPartialModels.RADIATOR_FAN_ROTOR, state, ms, buffers, light);
-		ms.popPose();
-
-		ms.popPose();
+		render(AllPartialModels.RADIATOR_FAN_BASE, state, ms, buffers, light, yOffset, facingRotation);
+		render(AllPartialModels.RADIATOR_FAN_ROTOR, state, ms, buffers, light, yOffset,
+			facingRotation + angle);
 	}
 
 	private void render(PartialModel model, BlockState state, PoseStack ms,
-			MultiBufferSource buffers, int light) {
+			MultiBufferSource buffers, int light, double yOffset, float rotation) {
 		CachedBufferer.partial(model, state)
+			.translate(0, yOffset, 0)
+			.centre()
+			.rotateY(rotation)
+			.unCentre()
 			.light(light)
-			.fullNormalTransform()
 			.renderInto(ms, buffers.getBuffer(RenderType.cutoutMipped()));
 	}
 

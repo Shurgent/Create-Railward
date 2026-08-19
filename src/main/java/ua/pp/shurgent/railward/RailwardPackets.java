@@ -16,6 +16,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
 import ua.pp.shurgent.railward.network.CabSignalTrainStatePacket;
 import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
+import ua.pp.shurgent.railward.network.DieselExhaustParticlePacket;
 import ua.pp.shurgent.railward.network.LocomotiveBufferLightsTrainStatePacket;
 import ua.pp.shurgent.railward.network.ModernWhistleArrivalPacket;
 import ua.pp.shurgent.railward.network.ModernTrainControllerReverserPacket;
@@ -30,7 +31,7 @@ import com.simibubi.create.foundation.networking.SimplePacketBase;
 public class RailwardPackets {
 
 	private static final ResourceLocation CHANNEL_NAME = Railward.asResource("main");
-	private static final String NETWORK_VERSION = "4";
+	private static final String NETWORK_VERSION = "5";
 	private static SimpleChannel channel;
 	private static int index = 0;
 
@@ -54,6 +55,7 @@ public class RailwardPackets {
 		register(ModernWhistleConfigurationPacket.class, ModernWhistleConfigurationPacket::new, PLAY_TO_SERVER);
 		register(ModernWhistleSecondaryHonkPacket.class, ModernWhistleSecondaryHonkPacket::new, PLAY_TO_CLIENT);
 		register(ModernTrainControllerReverserPacket.class, ModernTrainControllerReverserPacket::new, PLAY_TO_SERVER);
+		register(DieselExhaustParticlePacket.class, DieselExhaustParticlePacket::new, PLAY_TO_CLIENT);
 	}
 
 	public static SimpleChannel getChannel() {

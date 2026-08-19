@@ -1464,6 +1464,7 @@ public class TrainCouplerHandler {
 		collectEntities(train, entities);
 		TrainDirectionState.removeServerDirection(removedTrainId);
 		CabSignalTrainState.removeServerState(removedTrainId);
+		DieselExhaustEmitter.remove(removedTrainId);
 
 		RailwardPackets.getChannel()
 			.send(PacketDistributor.ALL.noArg(),

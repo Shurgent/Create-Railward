@@ -16,6 +16,7 @@ import com.simibubi.create.content.trains.graph.TrackGraph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
+import ua.pp.shurgent.railward.block.train.parts.DieselExhaustEmitter;
 import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState;
 import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerState;
 
@@ -27,6 +28,7 @@ public abstract class TrainMixin {
 		Train train = (Train) (Object) this;
 		TrainDirectionState.syncScheduledControls(train, level);
 		ModernTrainControllerState.syncScheduledControls(train);
+		DieselExhaustEmitter.tick(train, level);
 	}
 
 	@Inject(method = "write", at = @At("RETURN"), remap = false)

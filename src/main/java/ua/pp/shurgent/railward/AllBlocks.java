@@ -41,6 +41,7 @@ import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerInteractionBe
 import ua.pp.shurgent.railward.block.train.parts.CabSignalBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlock;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.DieselExhaustBlock;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveBufferLightsBlock;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightBlock;
 import ua.pp.shurgent.railward.block.train.parts.LocomotiveSpotlightMovementBehaviour;
@@ -738,6 +739,28 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
 				prov.modLoc(PATH_TRAINPARTS + "radiator_fan_inventory")))
+			.build().register();
+
+	public static final BlockEntry<DieselExhaustBlock> DIESEL_EXHAUST_1 = REGISTRATE
+			.block("train/parts/diesel_exhaust_1", DieselExhaustBlock::type1)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.addLayer(() -> RenderType::cutoutMipped)
+			.blockstate((ctx, prov) -> prov.getVariantBuilder(ctx.get()).forAllStates(state -> {
+				ModelFile model = prov.models().getExistingFile(
+					prov.modLoc(PATH_TRAINPARTS + "diesel_exhaust_1"));
+				int rotation = switch (state.getValue(DieselExhaustBlock.FACING)) {
+				case EAST -> 90;
+				case SOUTH -> 180;
+				case WEST -> 270;
+				default -> 0;
+				};
+				return ConfiguredModel.builder().modelFile(model).rotationY(rotation).build();
+			}))
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+				prov.modLoc(PATH_TRAINPARTS + "diesel_exhaust_1")))
 			.build().register();
 
 	public static final BlockEntry<RailingBlock> RAILING_RED =
