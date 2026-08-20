@@ -60,6 +60,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
+import ua.pp.shurgent.railward.block.train.parts.WindshieldBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
@@ -69,6 +70,7 @@ import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelVerticalSliceB
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorAnimation;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlock;
+import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorMovementBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlock;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchMovement;
@@ -89,9 +91,9 @@ public class AllBlocks {
 
 	static final String PATH_TRAINPARTS = "block/train/parts/";
 	static final String PATH_TRAINSIGNAL = "block/train/signal/";
-	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
-	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
-	private static final List<BlockEntry<TrainWallPanelBlock>> TRAIN_WALL_PANEL_CUTOUT_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<? extends TrainWallPanelBlock>> TRAIN_WALL_PANEL_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<? extends TrainWallPanelBlock>> TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES = new ArrayList<>();
+	private static final List<BlockEntry<? extends TrainWallPanelBlock>> TRAIN_WALL_PANEL_CUTOUT_ENTRIES = new ArrayList<>();
 	private static final LocomotiveSpotlightMovementBehaviour LOCOMOTIVE_SPOTLIGHT_MOVEMENT =
 		new LocomotiveSpotlightMovementBehaviour();
 	private static final ModernTrainControllerMovementBehaviour MODERN_TRAIN_CONTROLLER_MOVEMENT =
@@ -606,6 +608,10 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_smooth_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 
+	public static final BlockEntry<WindshieldBlock> WINDSHIELD_BLUE = windshield("windshield_blue", MaterialColor.COLOR_BLUE);
+	public static final BlockEntry<WindshieldBlock> WINDSHIELD_GREEN = windshield("windshield_green", MaterialColor.COLOR_GREEN);
+	public static final BlockEntry<WindshieldBlock> WINDSHIELD_LIGHT_BLUE = windshield("windshield_light_blue", MaterialColor.COLOR_LIGHT_BLUE);
+
 	public static final BlockEntry<TrainRoofBlock> TRAIN_ROOF_LIGHT_BLUE = REGISTRATE
 			.block("train/parts/train_roof_light_blue", TrainRoofBlock::new)
 			.initialProperties(() -> Blocks.IRON_BLOCK)
@@ -997,7 +1003,7 @@ public class AllBlocks {
 			.addLayer(() -> RenderType::cutout)
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.DOORS, AllBlockTags.NON_DOUBLE_DOOR.tag)
 			.onRegister(interactionBehaviour(new DoorMovingInteraction()))
-			.onRegister(movementBehaviour(new SlidingDoorMovementBehaviour()))
+			.onRegister(movementBehaviour(new CabCornerDoorMovementBehaviour()))
 			.loot((loot, block) -> loot.add(block, BlockLoot.createDoorTable(block)))
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.tag(ItemTags.DOORS, AllItemTags.CONTRAPTION_CONTROLLED.tag)
@@ -1052,6 +1058,21 @@ public class AllBlocks {
 			TRAIN_WALL_PANEL_CUTOUT_ENTRIES.add(entry);
 		if (!cutout)
 			TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
+		return entry;
+	}
+
+	private static BlockEntry<WindshieldBlock> windshield(String name, MaterialColor color) {
+		BlockEntry<WindshieldBlock> entry = REGISTRATE
+				.block("train/parts/" + name, properties -> new WindshieldBlock(properties, color))
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.addLayer(() -> RenderType::cutout)
+				.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+				.build().register();
+		TRAIN_WALL_PANEL_ENTRIES.add(entry);
+		TRAIN_WALL_PANEL_CUTOUT_ENTRIES.add(entry);
 		return entry;
 	}
 

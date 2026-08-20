@@ -1,4 +1,7 @@
 {
+    "block.railward.train.parts.windshield_blue": "Лобове скло (синє)",
+    "block.railward.train.parts.windshield_green": "Лобове скло (зелене)",
+    "block.railward.train.parts.windshield_light_blue": "Лобове скло (блакитне)",
     "itemGroup.railward":  "Create: Railward",
     "block.railward.train.parts.train_floor_blue":  "Підлога поїзда (синя)",
     "block.railward.train.parts.train_floor_green":  "Підлога поїзда (зелена)",

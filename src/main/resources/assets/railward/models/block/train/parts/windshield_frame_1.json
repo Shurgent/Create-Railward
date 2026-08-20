@@ -1,0 +1,21 @@
+{
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "texture_size": [64, 64],
+  "textures": {
+    "particle": "#windshield"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 13],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [4, 0, 8, 4], "texture": "#windshield"},
+        "east": {"uv": [4.75, 8, 5.5, 12], "texture": "#windshield"},
+        "south": {"uv": [8, 4, 4, 8], "texture": "#windshield"},
+        "up": {"uv": [4, 8.75, 0, 8], "texture": "#windshield"},
+        "down": {"uv": [4, 8.75, 0, 9.5], "texture": "#windshield"}
+      }
+    }
+  ]
+}

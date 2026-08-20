@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/windshield_frame_2",
+  "textures": {
+    "windshield": "railward:block/train/parts/windshield_blue"
+  }
+}

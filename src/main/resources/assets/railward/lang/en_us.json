@@ -1,4 +1,7 @@
 {
+    "block.railward.train.parts.windshield_blue": "Windshield (Blue)",
+    "block.railward.train.parts.windshield_green": "Windshield (Green)",
+    "block.railward.train.parts.windshield_light_blue": "Windshield (Light Blue)",
     "itemGroup.railward":  "Create: Railward",
     "block.railward.train.parts.train_floor_blue":  "Train Floor (Blue)",
     "block.railward.train.parts.train_floor_green":  "Train Floor (Green)",

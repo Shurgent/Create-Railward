@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "railward:train/parts/windshield_green" },
+    { "item": "railward:train/parts/windshield_green" },
+    { "item": "railward:train/parts/windshield_green" },
+    { "item": "railward:train/parts/windshield_green" }
+  ],
+  "result": {
+    "item": "railward:train/parts/train_wall_green_window_big"
+  }
+}

@@ -5,6 +5,7 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "railward:block/train/parts/train_wall_panel_blue_window_big",
+		"top": "railward:block/train/parts/train_wall_panel_blue",
 		"particle": "railward:block/train/parts/train_wall_panel_blue_window_big"
 	},
 	"elements": [
@@ -17,7 +18,7 @@
 				"east": {"uv": [9.5, 8, 11, 16], "texture": "#1"},
 				"south": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"west": {"uv": [8, 8, 9.5, 16], "texture": "#1"},
-				"up": {"uv": [16, 1.5, 8, 0], "texture": "#1"},
+				"up": {"uv": [16, 1.5, 8, 0], "texture": "#top"},
 				"down": {"uv": [16, 1.5, 8, 3], "texture": "#1"}
 			}
 		}

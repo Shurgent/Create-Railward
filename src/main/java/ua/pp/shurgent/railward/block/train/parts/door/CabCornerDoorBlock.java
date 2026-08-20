@@ -100,7 +100,6 @@ public class CabCornerDoorBlock extends SlidingDoorBlock {
 		return state.getValue(HINGE) == DoorHingeSide.RIGHT;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {

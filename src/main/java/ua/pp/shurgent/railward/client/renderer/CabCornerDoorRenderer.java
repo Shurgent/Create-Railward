@@ -21,7 +21,6 @@ import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.CabCornerDoorPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlockEntity;
-import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorPanelVariant;
 import ua.pp.shurgent.railward.mixin.create.SlidingDoorBlockEntityAccessor;
 
 public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoorBlockEntity> {

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,frame=0": {
+      "model": "railward:block/train/parts/windshield_blue",
+      "y": 180
+    },
+    "facing=north,frame=1": {
+      "model": "railward:block/train/parts/windshield_blue_frame_1",
+      "y": 180
+    },
+    "facing=north,frame=2": {
+      "model": "railward:block/train/parts/windshield_blue_frame_2",
+      "y": 180
+    },
+    "facing=north,frame=3": {
+      "model": "railward:block/train/parts/windshield_blue_frame_3",
+      "y": 180
+    },
+    "facing=south,frame=0": {
+      "model": "railward:block/train/parts/windshield_blue"
+    },
+    "facing=south,frame=1": {
+      "model": "railward:block/train/parts/windshield_blue_frame_1"
+    },
+    "facing=south,frame=2": {
+      "model": "railward:block/train/parts/windshield_blue_frame_2"
+    },
+    "facing=south,frame=3": {
+      "model": "railward:block/train/parts/windshield_blue_frame_3"
+    },
+    "facing=west,frame=0": {
+      "model": "railward:block/train/parts/windshield_blue",
+      "y": 90
+    },
+    "facing=west,frame=1": {
+      "model": "railward:block/train/parts/windshield_blue_frame_1",
+      "y": 90
+    },
+    "facing=west,frame=2": {
+      "model": "railward:block/train/parts/windshield_blue_frame_2",
+      "y": 90
+    },
+    "facing=west,frame=3": {
+      "model": "railward:block/train/parts/windshield_blue_frame_3",
+      "y": 90
+    },
+    "facing=east,frame=0": {
+      "model": "railward:block/train/parts/windshield_blue",
+      "y": 270
+    },
+    "facing=east,frame=1": {
+      "model": "railward:block/train/parts/windshield_blue_frame_1",
+      "y": 270
+    },
+    "facing=east,frame=2": {
+      "model": "railward:block/train/parts/windshield_blue_frame_2",
+      "y": 270
+    },
+    "facing=east,frame=3": {
+      "model": "railward:block/train/parts/windshield_blue_frame_3",
+      "y": 270
+    }
+  }
+}

@@ -32,8 +32,17 @@ public final class DualPanelPlacement {
 		if (player == null || player.isShiftKeyDown())
 			return null;
 		Level level = context.getLevel();
+		BlockState clicked = level.getBlockState(context.getClickedPos());
+		if (clicked.getBlock() instanceof TrainWallPanelBlock
+				|| clicked.getBlock() instanceof CopycatWallPanelBlock
+				|| clicked.getBlock() instanceof HalfWallPanelBlock)
+			return null;
 		BlockPlaceContext placeContext = new BlockPlaceContext(context);
 		BlockPos targetPos = placeContext.getClickedPos();
+		// A merge is only an ordinary placement into the block next to the clicked support.
+		// Clicking the existing panel itself must remain available to Create's placement helper.
+		if (targetPos.equals(context.getClickedPos()))
+			return null;
 		BlockState primary = level.getBlockState(targetPos);
 		BlockState normallyPlaced = heldBlock.getStateForPlacement(placeContext);
 		if (normallyPlaced == null)

@@ -15,6 +15,7 @@ public class DieselExhaustParticleData implements ParticleOptions {
 	public static final Codec<DieselExhaustParticleData> CODEC = Codec.INT.xmap(
 		id -> new DieselExhaustParticleData(Profile.byId(id)), data -> data.profile.id);
 
+	@SuppressWarnings("deprecation")
 	public static final Deserializer<DieselExhaustParticleData> DESERIALIZER =
 		new Deserializer<DieselExhaustParticleData>() {
 			@Override

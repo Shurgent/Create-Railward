@@ -45,8 +45,6 @@ import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveBufferLightsAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveSpotlightAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
-import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
-import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelPlacement;
 
 public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 	implements IBE<TrainWallPanelBlockEntity>, IWrenchable {
@@ -116,9 +114,6 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
 			ItemStack heldItem = player.getItemInHand(hand);
-			if (heldItem.getItem() instanceof DualPanelBlockItem panelItem
-					&& DualPanelPlacement.find(new UseOnContext(player, hand, ray), panelItem.getBlock()) != null)
-				return InteractionResult.PASS;
 			if (AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.isIn(heldItem))
 				return tryAttachLocomotiveBufferLights(state, world, pos, player, hand);
 			if (AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(heldItem))
@@ -195,6 +190,15 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 
 		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel))
 			return InteractionResult.FAIL;
+		BlockState secondary = panel.getSecondaryPanel();
+		if (secondary != null && secondary.getBlock() instanceof WindshieldBlock
+				&& isSecondaryPanelHit(state, pos, context.getClickLocation(), panel)) {
+			if (level.isClientSide)
+				return InteractionResult.SUCCESS;
+			panel.setSecondaryPanel(WindshieldBlock.cycleFrame(secondary));
+			playRotateSound(level, pos);
+			return InteractionResult.SUCCESS;
+		}
 		TrainPanelAttachment attachment = panel.getAttachment();
 		if (attachment == null || !isAttachmentHit(state, pos, context.getClickLocation(), attachment))
 			return InteractionResult.FAIL;
@@ -392,15 +396,6 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 			}
 		}
 
-		@Override
-		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
-				BlockHitResult ray, ItemStack heldItem) {
-			if (heldItem.getItem() instanceof DualPanelBlockItem panelItem
-					&& DualPanelPlacement.find(new UseOnContext(player, InteractionHand.MAIN_HAND, ray),
-							panelItem.getBlock()) != null)
-				return PlacementOffset.fail();
-			return IPlacementHelper.super.getOffset(player, world, state, pos, ray, heldItem);
-		}
 	}
 
 }

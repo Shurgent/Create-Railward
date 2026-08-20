@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "railward:train_wall_variants/green_window_big"
+  },
+  "result": "railward:train/parts/windshield_green",
+  "count": 4
+}

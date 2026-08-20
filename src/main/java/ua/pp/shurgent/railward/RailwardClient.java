@@ -16,6 +16,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import ua.pp.shurgent.railward.client.RailwardContraptionGoggleOverlay;
 import ua.pp.shurgent.railward.client.model.TrainWallPanelDualModel;
 import ua.pp.shurgent.railward.client.particle.DieselExhaustParticle;
+import ua.pp.shurgent.railward.client.particle.DieselExhaustParticleRenderer;
 import ua.pp.shurgent.railward.client.ModernTrainControllerClient;
 import ua.pp.shurgent.railward.client.ModernWhistleSecondaryHonkKeyHandler;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPreview;
@@ -40,6 +41,8 @@ public class RailwardClient {
 		forgeEventBus.addListener(SurfaceMountedPlacementPreview::render);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::prepare);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::onClientLogout);
+		forgeEventBus.addListener(DieselExhaustParticleRenderer::render);
+		forgeEventBus.addListener(DieselExhaustParticleRenderer::onClientLogout);
 		forgeEventBus.addListener(RailingInteractionHighlight::render);
 		forgeEventBus.addListener(WagonFrameInteractionHighlight::render);
 		forgeEventBus.addListener(ModernWhistleSecondaryHonkKeyHandler::onClientTick);
