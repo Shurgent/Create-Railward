@@ -13,7 +13,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -44,14 +47,16 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 		super(properties.strength(1.0f, 6f)
 			.sound(SoundType.METAL)
 			.color(MaterialColor.COLOR_LIGHT_BLUE));
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH)
+		registerDefaultState(TrainRoofPartitionBehaviour.withDefaults(defaultBlockState()
+			.setValue(FACING, Direction.NORTH)
 			.setValue(SHAPE, StairsShape.STRAIGHT)
-			.setValue(AXIS, Direction.Axis.X));
+			.setValue(AXIS, Direction.Axis.X)));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(FACING, SHAPE, AXIS);
+		TrainRoofPartitionBehaviour.addProperties(builder);
 	}
 
 	@Override
@@ -59,24 +64,35 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 		BlockState state = defaultBlockState()
 			.setValue(FACING, context.getHorizontalDirection())
 			.setValue(AXIS, TrainRoofBlock.getPlacementAxis(context));
-		return state.setValue(SHAPE, getRoofShape(state, context.getLevel(), context.getClickedPos()));
+		state = state.setValue(SHAPE, getRoofShape(state, context.getLevel(), context.getClickedPos()));
+		return TrainRoofPartitionBehaviour.enablePartitionsFromBelow(state, context.getLevel(),
+			context.getClickedPos());
 	}
 
 	@Override
 	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
 			BlockPos pos, BlockPos neighborPos) {
-		return state.setValue(SHAPE, getRoofShape(state, level, pos));
+		state = TrainRoofPartitionBehaviour.clearUnsupported(
+			state.setValue(SHAPE, getRoofShape(state, level, pos)));
+		return direction == Direction.DOWN || direction.getAxis().isHorizontal()
+			? TrainRoofPartitionBehaviour.enablePartitionsFromBelow(state, level, pos)
+			: state;
 	}
 
 	@Override
 	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
 		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
+		Direction partition = TrainRoofPartitionBehaviour.resolveTarget(state, pos, context.getClickLocation(),
+			context.getClickedFace());
 
 		if (level.isClientSide)
 			return InteractionResult.SUCCESS;
 
-		level.setBlock(pos, state.setValue(AXIS, TrainRoofBlock.nextAxis(state.getValue(AXIS))), 3);
+		BlockState updated = partition == null
+			? state.setValue(AXIS, TrainRoofBlock.nextAxis(state.getValue(AXIS)))
+			: TrainRoofPartitionBehaviour.togglePartition(state, partition);
+		level.setBlock(pos, updated, 3);
 		playRotateSound(level, pos);
 		return InteractionResult.SUCCESS;
 	}
@@ -88,22 +104,45 @@ public class TrainRoofSlopeBlock extends HorizontalDirectionalBlock implements I
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return shapeFor(state);
+		VoxelShape roofShape = shapeFor(state);
+		return TrainRoofPartitionBehaviour.getSelectionShape(state, roofShape, context);
 	}
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return shapeFor(state);
+		return TrainRoofPartitionBehaviour.addPartitions(state, shapeFor(state));
 	}
 
 	@Override
 	public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-		return shapeFor(state);
+		return TrainRoofPartitionBehaviour.addPartitions(state, shapeFor(state));
 	}
 
 	@Override
 	public boolean useShapeForLightOcclusion(BlockState state) {
 		return true;
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		BlockState rotated = super.rotate(state, rotation);
+		rotated = TrainRoofPartitionBehaviour.rotatePartitions(state, rotated, rotation);
+		return TrainRoofBlock.isQuarterTurn(rotation)
+				? rotated.setValue(AXIS, TrainRoofBlock.nextAxis(rotated.getValue(AXIS)))
+				: rotated;
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		if (mirror == Mirror.NONE)
+			return state;
+		BlockState mirrored = state.setValue(FACING, mirror.mirror(state.getValue(FACING)))
+			.setValue(SHAPE, TrainRoofPartitionBehaviour.mirrorShape(state.getValue(SHAPE)));
+		return TrainRoofPartitionBehaviour.mirrorPartitions(state, mirrored, mirror);
+	}
+
+	public VoxelShape getHighlightedPartitionShape(BlockState state, BlockPos pos, Vec3 hit, Direction hitFace) {
+		return TrainRoofPartitionBehaviour.getHighlightShape(state, pos, hit, hitFace);
 	}
 
 	private static VoxelShape shapeFor(BlockState state) {

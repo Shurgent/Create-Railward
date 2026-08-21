@@ -627,6 +627,7 @@ public class AllBlocks {
 			.initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.requiresCorrectToolForDrops())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.onRegister(TrainRoofModelRegistration.create(false))
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 

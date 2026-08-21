@@ -1,0 +1,14 @@
+{
+  "ambientocclusion": false,
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "textures": {
+    "interior": "railward:block/train/parts/train_roof_interior",
+    "exterior": "railward:block/train/parts/train_roof_light_blue",
+    "particle": "railward:block/train/parts/train_roof_interior"
+  },
+  "model": "railward:models/block/train/parts/train_roof_partition_wedge_clockwise.obj",
+  "flip-v": true,
+  "ambientToFullbright": false,
+  "diffuseLighting": true
+}

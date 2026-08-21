@@ -1,11 +1,21 @@
 package ua.pp.shurgent.railward.block.train.parts.copycat;
 
+import java.util.List;
+import java.util.function.Predicate;
+
+import com.simibubi.create.content.contraptions.StructureTransform;
+import com.simibubi.create.foundation.placement.IPlacementHelper;
+import com.simibubi.create.foundation.placement.PlacementHelpers;
+import com.simibubi.create.foundation.placement.PlacementOffset;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -19,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -26,6 +37,7 @@ public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	private static final double THICKNESS = 3;
+	private static final int PLACEMENT_HELPER_ID = PlacementHelpers.register(new PlacementHelper());
 
 	public CopycatWallPanelBlock(Properties properties) {
 		super(properties);
@@ -55,7 +67,20 @@ public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
 		InteractionResult result = DualPanelCopycatBehaviour.use(this, state, level, pos, player, hand, hit);
-		return result != null ? result : super.use(state, level, pos, player, hand, hit);
+		if (result != null)
+			return result;
+
+		if (!player.isShiftKeyDown() && player.mayBuild()) {
+			ItemStack held = player.getItemInHand(hand);
+			IPlacementHelper helper = PlacementHelpers.get(PLACEMENT_HELPER_ID);
+			if (helper.matchesItem(held)) {
+				helper.getOffset(player, level, state, pos, hit)
+						.placeInWorld(level, (BlockItem) held.getItem(), player, hand, hit);
+				return InteractionResult.SUCCESS;
+			}
+		}
+
+		return super.use(state, level, pos, player, hand, hit);
 	}
 
 	@Override
@@ -100,5 +125,43 @@ public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 	@SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.getRotation(state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockState transform(BlockState state, StructureTransform transform) {
+		Direction facing = state.getValue(FACING);
+		Vec3 normal = transform.applyWithoutOffsetUncentered(Vec3.atLowerCornerOf(facing.getNormal()));
+		Direction transformedFacing = Direction.getNearest((float) normal.x, (float) normal.y, (float) normal.z);
+		// The full wall panel must never be reclassified as one of the 3x3 slices.
+		// Train/contraption transforms rotate it around Y, so its normal remains horizontal.
+		return transformedFacing.getAxis().isHorizontal()
+				? state.setValue(FACING, transformedFacing)
+				: state;
+	}
+
+	private static class PlacementHelper implements IPlacementHelper {
+
+		@Override
+		public Predicate<ItemStack> getItemPredicate() {
+			return stack -> stack.getItem() instanceof BlockItem item
+					&& item.getBlock() instanceof CopycatWallPanelBlock;
+		}
+
+		@Override
+		public Predicate<BlockState> getStatePredicate() {
+			return state -> state.getBlock() instanceof CopycatWallPanelBlock;
+		}
+
+		@Override
+		public PlacementOffset getOffset(Player player, Level level, BlockState state, BlockPos pos,
+				BlockHitResult hit) {
+			List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, hit.getLocation(),
+					state.getValue(FACING).getAxis(),
+					direction -> level.getBlockState(pos.relative(direction)).getMaterial().isReplaceable());
+			if (directions.isEmpty())
+				return PlacementOffset.fail();
+			return PlacementOffset.success(pos.relative(directions.get(0)),
+					placed -> placed.setValue(FACING, state.getValue(FACING)));
+		}
 	}
 }

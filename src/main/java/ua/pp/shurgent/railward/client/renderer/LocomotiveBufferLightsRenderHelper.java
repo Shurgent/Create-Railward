@@ -172,6 +172,8 @@ public class LocomotiveBufferLightsRenderHelper {
 		case TYPE_9 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_9;
 		case TYPE_10 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_10;
 		case TYPE_11 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_11;
+		case TYPE_12 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_12;
+		case TYPE_13 -> AllPartialModels.LOCOMOTIVE_BUFFER_LIGHTS_13;
 		};
 	}
 

@@ -15,8 +15,12 @@ public final class TrainRoofModelRegistration {
 	}
 
 	public static <T extends Block> NonNullConsumer<? super T> create() {
+		return create(true);
+	}
+
+	public static <T extends Block> NonNullConsumer<? super T> create(boolean expandCopycatSource) {
 		return DistExecutor.<NonNullConsumer<? super T>>unsafeRunForDist(
-				() -> () -> Client.<T>create(),
+				() -> () -> Client.<T>create(expandCopycatSource),
 				() -> () -> block -> {
 				});
 	}
@@ -24,8 +28,9 @@ public final class TrainRoofModelRegistration {
 	@OnlyIn(Dist.CLIENT)
 	private static final class Client {
 
-		private static <T extends Block> NonNullConsumer<? super T> create() {
-			return CreateRegistrate.blockModel(() -> TrainRoofModel::new);
+		private static <T extends Block> NonNullConsumer<? super T> create(boolean expandCopycatSource) {
+			return CreateRegistrate.blockModel(
+				() -> model -> new TrainRoofModel(model, expandCopycatSource));
 		}
 	}
 }

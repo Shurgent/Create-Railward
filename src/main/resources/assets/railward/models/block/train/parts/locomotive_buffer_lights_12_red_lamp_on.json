@@ -1,0 +1,74 @@
+﻿{
+    "parent":  "railward:block/train/parts/locomotive_buffer_lights_12_base",
+    "elements":  [
+                     {
+                         "name":  "red_lamp_left_on",
+                         "from":  [
+                                      12.6,
+                                      1.4,
+                                      14
+                                  ],
+                         "to":  [
+                                    14.6,
+                                    3.4,
+                                    14.5
+                                ],
+                         "rotation":  {
+                                          "angle":  0,
+                                          "axis":  "y",
+                                          "origin":  [
+                                                         14.1,
+                                                         2.9,
+                                                         12.5
+                                                     ]
+                                      },
+                         "faces":  {
+                                       "north":  {
+                                                     "uv":  [
+                                                                3,
+                                                                8.5,
+                                                                4,
+                                                                9.5
+                                                            ],
+                                                     "texture":  "#0"
+                                                 },
+                                       "east":  {
+                                                    "uv":  [
+                                                               2.75,
+                                                               8.5,
+                                                               3,
+                                                               9.5
+                                                           ],
+                                                    "texture":  "#0"
+                                                },
+                                       "west":  {
+                                                    "uv":  [
+                                                               2.75,
+                                                               8.5,
+                                                               3,
+                                                               9.5
+                                                           ],
+                                                    "texture":  "#0"
+                                                },
+                                       "up":  {
+                                                  "uv":  [
+                                                             4,
+                                                             8.5,
+                                                             3,
+                                                             8.25
+                                                         ],
+                                                  "texture":  "#0"
+                                              },
+                                       "down":  {
+                                                    "uv":  [
+                                                               4,
+                                                               8.25,
+                                                               3,
+                                                               8.5
+                                                           ],
+                                                    "texture":  "#0"
+                                                }
+                                   }
+                     }
+                 ]
+}

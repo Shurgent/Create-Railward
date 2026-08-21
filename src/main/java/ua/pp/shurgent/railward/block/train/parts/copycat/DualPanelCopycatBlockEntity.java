@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import ua.pp.shurgent.railward.block.train.parts.TrainRoofPartitionBehaviour;
 
 /** Copycat data owned by Railward; Create's copycat block entities remain untouched. */
 public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
@@ -60,6 +61,8 @@ public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
 	public void railward$setSecondaryFacing(@Nullable Direction facing) {
 		secondaryFacing = facing;
 		configurationChanged();
+		if (facing != null && level != null)
+			TrainRoofPartitionBehaviour.enablePartitionsAbove(level, worldPosition);
 	}
 
 	@Override

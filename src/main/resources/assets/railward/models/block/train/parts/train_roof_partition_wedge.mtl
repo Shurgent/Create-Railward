@@ -1,0 +1,5 @@
+newmtl interior
+map_Kd #interior
+
+newmtl exterior
+map_Kd #exterior

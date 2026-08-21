@@ -49,6 +49,7 @@ public class RailwardHingedDoorRenderer extends SafeBlockEntityRenderer<SlidingD
 					.setValue(DoorBlock.OPEN, false)
 					.setValue(DoorBlock.HALF, half));
 
+			ContraptionDiffuseLighting.apply(door, partialTicks);
 			door
 					.centre()
 					.rotateY(blockStateRotation(facing))

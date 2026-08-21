@@ -53,14 +53,16 @@ public class RailwardSlidingDoorRenderer extends SafeBlockEntityRenderer<Sliding
 
 		VertexConsumer vb = buffer.getBuffer(RenderType.cutout());
 		for (DoubleBlockHalf half : DoubleBlockHalf.values()) {
-			renderHalf(models, state, facing, half, true, leftOffset, ms, vb, light);
-			renderHalf(models, state, facing, half, false, rightOffset, ms, vb, light);
+			renderHalf(models, state, facing, half, true, leftOffset, partialTicks, ms, vb, light);
+			renderHalf(models, state, facing, half, false, rightOffset, partialTicks, ms, vb, light);
 		}
 	}
 
 	private static void renderHalf(SlidingDoorPartialModels models, BlockState state, Direction facing,
-			DoubleBlockHalf half, boolean left, Vec3 offset, PoseStack ms, VertexConsumer vb, int light) {
+			DoubleBlockHalf half, boolean left, Vec3 offset, float partialTicks, PoseStack ms, VertexConsumer vb,
+			int light) {
 		SuperByteBuffer door = CachedBufferer.partial(models.get(half, left), state);
+		ContraptionDiffuseLighting.apply(door, partialTicks);
 		door
 				.centre()
 				.rotateY(blockStateRotation(facing))

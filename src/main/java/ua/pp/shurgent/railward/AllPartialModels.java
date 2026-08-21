@@ -58,6 +58,14 @@ public class AllPartialModels {
 	PILOT_TYPE_2_LEFT = block("train/parts/pilot_type_2_left"),
 	PILOT_TYPE_2_RIGHT = block("train/parts/pilot_type_2_right"),
 
+	// Train Roof Partitions
+	TRAIN_ROOF_PARTITION = block("train/parts/train_roof_partition"),
+	TRAIN_ROOF_PARTITION_INTERIOR = block("train/parts/train_roof_partition_interior"),
+	TRAIN_ROOF_PARTITION_WEDGE_COUNTER_CLOCKWISE = block("train/parts/train_roof_partition_wedge_counter_clockwise"),
+	TRAIN_ROOF_PARTITION_WEDGE_COUNTER_CLOCKWISE_INTERIOR = block("train/parts/train_roof_partition_wedge_counter_clockwise_interior"),
+	TRAIN_ROOF_PARTITION_WEDGE_CLOCKWISE = block("train/parts/train_roof_partition_wedge_clockwise"),
+	TRAIN_ROOF_PARTITION_WEDGE_CLOCKWISE_INTERIOR = block("train/parts/train_roof_partition_wedge_clockwise_interior"),
+
 	// Wagon Frame
 	WAGON_FRAME_BASE = block("train/parts/wagon_frame_base"),
 	WAGON_FRAME_MEMBER_THIN = block("train/parts/wagon_frame_member_thin"),
@@ -132,6 +140,10 @@ public class AllPartialModels {
 		locomotiveBufferLights("10");
 	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_11 =
 		locomotiveBufferLights("11");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_12 =
+		locomotiveBufferLights("12");
+	public static final LocomotiveBufferLightsPartialModels LOCOMOTIVE_BUFFER_LIGHTS_13 =
+		locomotiveBufferLights("13");
 	public static final LocomotiveSpotlightPartialModels LOCOMOTIVE_SPOTLIGHT_SMALL = locomotiveSpotlight("1");
 	public static final LocomotiveSpotlightPartialModels LOCOMOTIVE_SPOTLIGHT_LARGE = locomotiveSpotlight("2");
 

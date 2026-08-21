@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/train_roof_partition",
+  "textures": {
+    "exterior": "railward:block/train/parts/train_roof_interior"
+  }
+}

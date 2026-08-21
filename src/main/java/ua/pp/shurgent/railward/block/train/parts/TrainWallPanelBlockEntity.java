@@ -73,6 +73,8 @@ public class TrainWallPanelBlockEntity extends SmartBlockEntity implements ITran
 	public void setSecondaryPanel(@Nullable BlockState state) {
 		secondaryPanel = state;
 		configurationChanged();
+		if (state != null && level != null)
+			TrainRoofPartitionBehaviour.enablePartitionsAbove(level, worldPosition);
 	}
 
 	public ItemStack removeSecondaryPanel() {

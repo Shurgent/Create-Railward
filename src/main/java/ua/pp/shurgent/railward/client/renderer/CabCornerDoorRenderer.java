@@ -50,15 +50,17 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 
 		for (DoubleBlockHalf half : DoubleBlockHalf.values()) {
 			// SuperByteBuffer's local Y rotation has the opposite handedness to VoxelShaper.
-			renderPanel(models.getPanel(be.getPanel(half)), state, facing, !panelOnRight, half, ms, vb, light);
-			renderDoor(models.getDoor(half, panelOnRight), state, facing, panelOnRight, half, eased, ms, vb, light);
+			renderPanel(models.getPanel(be.getPanel(half)), state, facing, !panelOnRight, half, partialTicks, ms, vb,
+				light);
+			renderDoor(models.getDoor(half, panelOnRight), state, facing, panelOnRight, half, eased, partialTicks, ms,
+				vb, light);
 		}
 	}
 
 	private static void renderPanel(PartialModel model, BlockState state, Direction facing, boolean panelOnRight,
-			DoubleBlockHalf half, PoseStack ms, VertexConsumer vb, int light) {
+			DoubleBlockHalf half, float partialTicks, PoseStack ms, VertexConsumer vb, int light) {
 		int panelRotation = blockStateRotation(facing) + (panelOnRight ? 270 : 90);
-		CachedBufferer.partial(model, state)
+		ContraptionDiffuseLighting.apply(CachedBufferer.partial(model, state), partialTicks)
 			.centre()
 			.rotateY(panelRotation)
 			.unCentre()
@@ -68,7 +70,7 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 	}
 
 	private static void renderDoor(PartialModel model, BlockState state, Direction facing, boolean panelOnRight,
-			DoubleBlockHalf half, float eased, PoseStack ms, VertexConsumer vb, int light) {
+			DoubleBlockHalf half, float eased, float partialTicks, PoseStack ms, VertexConsumer vb, int light) {
 		// Keep the hinge axis 1.5 pixels clear of the panel. When open, the
 		// three-pixel door is therefore flush with the panel instead of intersecting it.
 		Vec3 hingePivot = new Vec3(panelOnRight ? 11.5f / 16f : 4.5f / 16f, 0, 14.5f / 16f);
@@ -76,6 +78,7 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 		float angle = (panelOnRight ? -90 : 90) * eased;
 
 		SuperByteBuffer door = CachedBufferer.partial(model, state);
+		ContraptionDiffuseLighting.apply(door, partialTicks);
 		door
 			.centre()
 			.rotateY(blockStateRotation(facing))
