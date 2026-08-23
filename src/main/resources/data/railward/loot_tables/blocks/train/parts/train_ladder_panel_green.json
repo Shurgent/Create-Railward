@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{"type": "minecraft:item", "name": "railward:train/parts/train_ladder_panel_green"}],
+    "conditions": [{"condition": "minecraft:survives_explosion"}]
+  }]
+}

@@ -1,4 +1,10 @@
 {
+    "block.railward.train.parts.train_ladder_panel_blue": "Лестница поезда (синяя)",
+    "block.railward.train.parts.train_ladder_panel_gray": "Лестница поезда (серая)",
+    "block.railward.train.parts.train_ladder_panel_green": "Лестница поезда (зелёная)",
+    "block.railward.train.parts.train_ladder_panel_light_blue": "Лестница поезда (голубая)",
+    "block.railward.train.parts.train_ladder_panel_red": "Лестница поезда (красная)",
+    "block.railward.train.parts.train_ladder_panel_yellow": "Лестница поезда (жёлтая)",
     "block.railward.train.parts.windshield_blue": "Лобовое стекло (синее)",
     "block.railward.train.parts.windshield_green": "Лобовое стекло (зелёное)",
     "block.railward.train.parts.windshield_light_blue": "Лобовое стекло (голубое)",

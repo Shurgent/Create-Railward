@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "railward:train/parts/train_ladder_panel_blue",
+    "railward:train/parts/train_ladder_panel_gray",
+    "railward:train/parts/train_ladder_panel_green",
+    "railward:train/parts/train_ladder_panel_light_blue",
+    "railward:train/parts/train_ladder_panel_red",
+    "railward:train/parts/train_ladder_panel_yellow"
+  ]
+}

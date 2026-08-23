@@ -1,0 +1,4 @@
+{
+  "parent": "railward:block/train/parts/train_ladder_panel",
+  "textures": {"0": "railward:block/train/parts/train_ladder_panel_light_blue"}
+}

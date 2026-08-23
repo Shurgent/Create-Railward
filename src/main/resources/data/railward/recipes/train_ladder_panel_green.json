@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "railward:train/parts/train_floor_green"
+  },
+  "result": "railward:train/parts/train_ladder_panel_green",
+  "count": 4
+}

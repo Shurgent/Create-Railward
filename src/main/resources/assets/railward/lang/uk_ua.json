@@ -1,4 +1,10 @@
 {
+    "block.railward.train.parts.train_ladder_panel_blue": "Драбина поїзда (синя)",
+    "block.railward.train.parts.train_ladder_panel_gray": "Драбина поїзда (сіра)",
+    "block.railward.train.parts.train_ladder_panel_green": "Драбина поїзда (зелена)",
+    "block.railward.train.parts.train_ladder_panel_light_blue": "Драбина поїзда (блакитна)",
+    "block.railward.train.parts.train_ladder_panel_red": "Драбина поїзда (червона)",
+    "block.railward.train.parts.train_ladder_panel_yellow": "Драбина поїзда (жовта)",
     "block.railward.train.parts.windshield_blue": "Лобове скло (синє)",
     "block.railward.train.parts.windshield_green": "Лобове скло (зелене)",
     "block.railward.train.parts.windshield_light_blue": "Лобове скло (блакитне)",

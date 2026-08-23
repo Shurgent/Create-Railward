@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": {"model": "railward:block/train/parts/train_ladder_panel_red"},
+    "facing=east": {"model": "railward:block/train/parts/train_ladder_panel_red", "y": 90},
+    "facing=south": {"model": "railward:block/train/parts/train_ladder_panel_red", "y": 180},
+    "facing=west": {"model": "railward:block/train/parts/train_ladder_panel_red", "y": 270}
+  }
+}

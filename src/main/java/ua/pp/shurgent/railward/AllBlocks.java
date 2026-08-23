@@ -56,6 +56,7 @@ import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerBlock;
 import ua.pp.shurgent.railward.block.train.parts.ModernTrainControllerMovementBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.RailingBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainLadderPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
@@ -608,6 +609,19 @@ public class AllBlocks {
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 	public static final BlockEntry<TrainWallPanelBlock> TRAIN_WALL_PANEL_LIGHT_BLUE_WINDOW_BIG_SMOOTH_FRAME_WHITE = trainWallPanelVariant("train_wall_panel_light_blue_window_big_smooth_frame_white", MaterialColor.COLOR_LIGHT_BLUE, true);
 
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_BLUE =
+		trainLadderPanel("train_ladder_panel_blue", MaterialColor.COLOR_BLUE);
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_GRAY =
+		trainLadderPanel("train_ladder_panel_gray", MaterialColor.COLOR_GRAY);
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_GREEN =
+		trainLadderPanel("train_ladder_panel_green", MaterialColor.COLOR_GREEN);
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_LIGHT_BLUE =
+		trainLadderPanel("train_ladder_panel_light_blue", MaterialColor.COLOR_LIGHT_BLUE);
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_RED =
+		trainLadderPanel("train_ladder_panel_red", MaterialColor.COLOR_RED);
+	public static final BlockEntry<TrainLadderPanelBlock> TRAIN_LADDER_PANEL_YELLOW =
+		trainLadderPanel("train_ladder_panel_yellow", MaterialColor.COLOR_YELLOW);
+
 	public static final BlockEntry<WindshieldBlock> WINDSHIELD_BLUE = windshield("windshield_blue", MaterialColor.COLOR_BLUE);
 	public static final BlockEntry<WindshieldBlock> WINDSHIELD_GREEN = windshield("windshield_green", MaterialColor.COLOR_GREEN);
 	public static final BlockEntry<WindshieldBlock> WINDSHIELD_LIGHT_BLUE = windshield("windshield_light_blue", MaterialColor.COLOR_LIGHT_BLUE);
@@ -1059,6 +1073,21 @@ public class AllBlocks {
 			TRAIN_WALL_PANEL_CUTOUT_ENTRIES.add(entry);
 		if (!cutout)
 			TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
+		return entry;
+	}
+
+	private static BlockEntry<TrainLadderPanelBlock> trainLadderPanel(String name, MaterialColor color) {
+		BlockEntry<TrainLadderPanelBlock> entry = REGISTRATE
+				.block("train/parts/" + name, properties -> new TrainLadderPanelBlock(properties, color))
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.properties(p -> p.requiresCorrectToolForDrops())
+				.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.CLIMBABLE)
+				.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+				.build()
+				.register();
+		TRAIN_WALL_PANEL_ENTRIES.add(entry);
+		TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
 		return entry;
 	}
 
