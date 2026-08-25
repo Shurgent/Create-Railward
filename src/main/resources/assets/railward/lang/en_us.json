@@ -1,4 +1,10 @@
 {
+    "block.railward.train.parts.train_stairs_blue": "Train Stairs (Blue)",
+    "block.railward.train.parts.train_stairs_gray": "Train Stairs (Gray)",
+    "block.railward.train.parts.train_stairs_green": "Train Stairs (Green)",
+    "block.railward.train.parts.train_stairs_light_blue": "Train Stairs (Light Blue)",
+    "block.railward.train.parts.train_stairs_red": "Train Stairs (Red)",
+    "block.railward.train.parts.train_stairs_yellow": "Train Stairs (Yellow)",
     "block.railward.train.parts.train_ladder_panel_blue": "Train Ladder (Blue)",
     "block.railward.train.parts.train_ladder_panel_gray": "Train Ladder (Gray)",
     "block.railward.train.parts.train_ladder_panel_green": "Train Ladder (Green)",

@@ -1,4 +1,10 @@
 {
+    "block.railward.train.parts.train_stairs_blue": "Сходинки поїзда (сині)",
+    "block.railward.train.parts.train_stairs_gray": "Сходинки поїзда (сірі)",
+    "block.railward.train.parts.train_stairs_green": "Сходинки поїзда (зелені)",
+    "block.railward.train.parts.train_stairs_light_blue": "Сходинки поїзда (блакитні)",
+    "block.railward.train.parts.train_stairs_red": "Сходинки поїзда (червоні)",
+    "block.railward.train.parts.train_stairs_yellow": "Сходинки поїзда (жовті)",
     "block.railward.train.parts.train_ladder_panel_blue": "Драбина поїзда (синя)",
     "block.railward.train.parts.train_ladder_panel_gray": "Драбина поїзда (сіра)",
     "block.railward.train.parts.train_ladder_panel_green": "Драбина поїзда (зелена)",

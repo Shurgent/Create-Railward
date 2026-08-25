@@ -1,0 +1,80 @@
+{
+  "credit": "Made with Blockbench by Shurgent",
+  "parent": "block/block",
+  "ambientocclusion": true,
+  "texture_size": [32, 32],
+  "textures": {
+    "particle": "#0"
+  },
+  "elements": [
+    {
+      "name": "base",
+      "from": [0, 0, 9],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 8, 8], "texture": "#0"},
+        "east": {"uv": [8, 0, 4.5, 8], "texture": "#0"},
+        "south": {"uv": [0, 0, 8, 8], "texture": "#0"},
+        "west": {"uv": [4.5, 0, 8, 8], "texture": "#0"},
+        "up": {"uv": [8, 11.5, 0, 8], "texture": "#0"},
+        "down": {"uv": [16, 8, 8, 11.5], "texture": "#0"}
+      }
+    },
+    {
+      "name": "side.1",
+      "from": [0, 0, 0],
+      "to": [1, 16, 9],
+      "faces": {
+        "north": {"uv": [3, 0, 3.5, 8], "texture": "#0"},
+        "east": {"uv": [4.5, 0, 0, 8], "texture": "#0"},
+        "west": {"uv": [0, 0, 4.5, 8], "texture": "#0"},
+        "up": {"uv": [8, 16, 7.5, 11.5], "texture": "#0"},
+        "down": {"uv": [16, 11.5, 15.5, 16], "texture": "#0"}
+      }
+    },
+    {
+      "name": "side.2",
+      "from": [15, 0, 0],
+      "to": [16, 16, 9],
+      "faces": {
+        "north": {"uv": [3, 0, 3.5, 8], "texture": "#0"},
+        "east": {"uv": [4.5, 0, 0, 8], "texture": "#0"},
+        "west": {"uv": [0, 0, 4.5, 8], "texture": "#0"},
+        "up": {"uv": [0.5, 16, 0, 11.5], "texture": "#0"},
+        "down": {"uv": [8.5, 11.5, 8, 16], "texture": "#0"}
+      }
+    },
+    {
+      "name": "stair.1",
+      "from": [1, 0, 0],
+      "to": [15, 2, 5],
+      "faces": {
+        "north": {"uv": [8.5, 6, 15.5, 7], "texture": "#0"},
+        "south": {"uv": [8.5, 6, 15.5, 7], "texture": "#0"},
+        "up": {"uv": [15.5, 2.5, 8.5, 0], "texture": "#0"},
+        "down": {"uv": [15.5, 3, 8.5, 5.5], "texture": "#0"}
+      }
+    },
+    {
+      "name": "stair.3",
+      "from": [1, 12, 6],
+      "to": [15, 14, 9],
+      "faces": {
+        "north": {"uv": [8.5, 6, 15.5, 7], "texture": "#0"},
+        "up": {"uv": [15.5, 2.5, 8.5, 1], "texture": "#0"},
+        "down": {"uv": [15.5, 4, 8.5, 5.5], "texture": "#0"}
+      }
+    },
+    {
+      "name": "stair.2",
+      "from": [1, 6, 3],
+      "to": [15, 8, 8],
+      "faces": {
+        "north": {"uv": [8.5, 6, 15.5, 7], "texture": "#0"},
+        "south": {"uv": [8.5, 6, 15.5, 7], "texture": "#0"},
+        "up": {"uv": [15.5, 2.5, 8.5, 0], "texture": "#0"},
+        "down": {"uv": [15.5, 3, 8.5, 5.5], "texture": "#0"}
+      }
+    }
+  ]
+}

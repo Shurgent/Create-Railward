@@ -59,6 +59,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainFloorBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainLadderPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofSlopeBlock;
+import ua.pp.shurgent.railward.block.train.parts.TrainStairsBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.WindshieldBlock;
@@ -258,6 +259,19 @@ public class AllBlocks {
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 			.build().register();
+
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_BLUE =
+		trainStairs("train_stairs_blue", MaterialColor.COLOR_BLUE);
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_GRAY =
+		trainStairs("train_stairs_gray", MaterialColor.COLOR_GRAY);
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_GREEN =
+		trainStairs("train_stairs_green", MaterialColor.COLOR_GREEN);
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_LIGHT_BLUE =
+		trainStairs("train_stairs_light_blue", MaterialColor.COLOR_LIGHT_BLUE);
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_RED =
+		trainStairs("train_stairs_red", MaterialColor.COLOR_RED);
+	public static final BlockEntry<TrainStairsBlock> TRAIN_STAIRS_YELLOW =
+		trainStairs("train_stairs_yellow", MaterialColor.COLOR_YELLOW);
 
 	public static final BlockEntry<TrainWallBlock> TRAIN_WALL_BLUE = REGISTRATE
 			.block("train/parts/train_wall_blue", TrainWallBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
@@ -1089,6 +1103,19 @@ public class AllBlocks {
 		TRAIN_WALL_PANEL_ENTRIES.add(entry);
 		TRAIN_WALL_PANEL_ATTACHABLE_ENTRIES.add(entry);
 		return entry;
+	}
+
+	private static BlockEntry<TrainStairsBlock> trainStairs(String name, MaterialColor color) {
+		return REGISTRATE
+			.block("train/parts/" + name, properties -> new TrainStairsBlock(properties, color))
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
+			.model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+				prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
+			.build()
+			.register();
 	}
 
 	private static BlockEntry<WindshieldBlock> windshield(String name, MaterialColor color) {

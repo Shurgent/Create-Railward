@@ -1,4 +1,10 @@
 {
+    "block.railward.train.parts.train_stairs_blue": "Ступеньки поезда (синие)",
+    "block.railward.train.parts.train_stairs_gray": "Ступеньки поезда (серые)",
+    "block.railward.train.parts.train_stairs_green": "Ступеньки поезда (зелёные)",
+    "block.railward.train.parts.train_stairs_light_blue": "Ступеньки поезда (голубые)",
+    "block.railward.train.parts.train_stairs_red": "Ступеньки поезда (красные)",
+    "block.railward.train.parts.train_stairs_yellow": "Ступеньки поезда (жёлтые)",
     "block.railward.train.parts.train_ladder_panel_blue": "Лестница поезда (синяя)",
     "block.railward.train.parts.train_ladder_panel_gray": "Лестница поезда (серая)",
     "block.railward.train.parts.train_ladder_panel_green": "Лестница поезда (зелёная)",

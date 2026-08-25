@@ -63,6 +63,12 @@
                    "railward:train/parts/train_ladder_panel_light_blue",
                    "railward:train/parts/train_ladder_panel_red",
                    "railward:train/parts/train_ladder_panel_yellow",
+                   "railward:train/parts/train_stairs_blue",
+                   "railward:train/parts/train_stairs_gray",
+                   "railward:train/parts/train_stairs_green",
+                   "railward:train/parts/train_stairs_light_blue",
+                   "railward:train/parts/train_stairs_red",
+                   "railward:train/parts/train_stairs_yellow",
                    "railward:train/parts/windshield_blue",
                    "railward:train/parts/windshield_green",
                    "railward:train/parts/windshield_light_blue"

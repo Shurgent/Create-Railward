@@ -1,0 +1,6 @@
+{
+  "parent": "railward:block/train/parts/train_stairs",
+  "textures": {
+    "0": "railward:block/train/parts/train_stairs_green"
+  }
+}
