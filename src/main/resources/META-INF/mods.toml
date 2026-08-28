@@ -13,7 +13,7 @@ description='''Railway signals, infrastructure and rolling stock details for Cre
 [[dependencies.railward]]
 modId="forge"
 mandatory=true
-versionRange="[40,)"
+versionRange="[40.3.12,)"
 ordering="NONE"
 side="BOTH"
 
