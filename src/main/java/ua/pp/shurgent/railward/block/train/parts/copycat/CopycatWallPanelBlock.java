@@ -32,6 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelPlacement;
 
 public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 
@@ -72,11 +74,17 @@ public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
 			ItemStack held = player.getItemInHand(hand);
+			if (held.getItem() instanceof DualPanelBlockItem panelItem) {
+				InteractionResult merged = DualPanelPlacement.tryPlace(new UseOnContext(player, hand, hit),
+						panelItem.getBlock());
+				if (merged != null)
+					return merged;
+			}
 			IPlacementHelper helper = PlacementHelpers.get(PLACEMENT_HELPER_ID);
 			if (helper.matchesItem(held)) {
-				helper.getOffset(player, level, state, pos, hit)
-						.placeInWorld(level, (BlockItem) held.getItem(), player, hand, hit);
-				return InteractionResult.SUCCESS;
+				PlacementOffset offset = helper.getOffset(player, level, state, pos, hit);
+				if (offset.isSuccessful())
+					return offset.placeInWorld(level, (BlockItem) held.getItem(), player, hand, hit);
 			}
 		}
 
@@ -155,6 +163,8 @@ public class CopycatWallPanelBlock extends WallPanelCopycatBlock {
 		@Override
 		public PlacementOffset getOffset(Player player, Level level, BlockState state, BlockPos pos,
 				BlockHitResult hit) {
+			if (DualPanelPlacement.hasPlacement(player, hit))
+				return PlacementOffset.fail();
 			List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, hit.getLocation(),
 					state.getValue(FACING).getAxis(),
 					direction -> level.getBlockState(pos.relative(direction)).getMaterial().isReplaceable());

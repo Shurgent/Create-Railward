@@ -6,7 +6,6 @@ import com.simibubi.create.AllItems;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -112,8 +111,8 @@ public class LocomotiveBufferLightsPlacementPreview {
 			.getBuffer(RenderType.lines());
 
 		poseStack.pushPose();
-		LevelRenderer.renderVoxelShape(poseStack, lines, shape, pos.getX() - cameraPos.x, pos.getY() - cameraPos.y,
-			pos.getZ() - cameraPos.z, 1f, 0.55f, 0.25f, 1f);
+		VoxelShapeOutlineRenderer.render(poseStack, lines, shape, pos.getX() - cameraPos.x, pos.getY() - cameraPos.y,
+			pos.getZ() - cameraPos.z, 0.15f, 0.85f, 1f, 1f);
 		poseStack.popPose();
 	}
 

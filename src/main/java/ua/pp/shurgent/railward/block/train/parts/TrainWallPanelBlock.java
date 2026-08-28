@@ -42,6 +42,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 import ua.pp.shurgent.railward.AllBlocks;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelPlacement;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveBufferLightsAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveSpotlightAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
@@ -118,12 +120,18 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 				return tryAttachLocomotiveBufferLights(state, world, pos, player, hand);
 			if (AllBlocks.LOCOMOTIVE_SPOTLIGHT.isIn(heldItem))
 				return tryAttachLocomotiveSpotlight(state, world, pos, player, hand);
+			if (heldItem.getItem() instanceof DualPanelBlockItem panelItem) {
+				InteractionResult merged = DualPanelPlacement.tryPlace(new UseOnContext(player, hand, ray),
+						panelItem.getBlock());
+				if (merged != null)
+					return merged;
+			}
 
 			IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
 			if (placementHelper.matchesItem(heldItem)) {
-				placementHelper.getOffset(player, world, state, pos, ray).placeInWorld(world,
-						(BlockItem) heldItem.getItem(), player, hand, ray);
-				return InteractionResult.SUCCESS;
+				PlacementOffset offset = placementHelper.getOffset(player, world, state, pos, ray);
+				if (offset.isSuccessful())
+					return offset.placeInWorld(world, (BlockItem) heldItem.getItem(), player, hand, ray);
 			}
 		}
 
@@ -384,6 +392,8 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 		@Override
 		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
 				BlockHitResult ray) {
+			if (DualPanelPlacement.hasPlacement(player, ray))
+				return PlacementOffset.fail();
 			List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, ray.getLocation(),
 					state.getValue(FACING).getAxis(),
 					dir -> world.getBlockState(pos.relative(dir)).getMaterial().isReplaceable());

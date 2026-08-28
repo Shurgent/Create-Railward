@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
@@ -22,8 +26,21 @@ import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 
 /** Shared placement calculation used by both the item action and its client preview. */
 public final class DualPanelPlacement {
+	private static final double END_ZONE = 3 / 16d;
+	private static final double EPSILON = 1 / 1024d;
 
 	private DualPanelPlacement() {
+	}
+
+	public static boolean hasPlacement(Player player, BlockHitResult hit) {
+		for (InteractionHand hand : InteractionHand.values()) {
+			ItemStack held = player.getItemInHand(hand);
+			if (!(held.getItem() instanceof DualPanelBlockItem item))
+				continue;
+			if (find(new UseOnContext(player, hand, hit), item.getBlock()) != null)
+				return true;
+		}
+		return false;
 	}
 
 	@Nullable
@@ -32,22 +49,74 @@ public final class DualPanelPlacement {
 		if (player == null || player.isShiftKeyDown())
 			return null;
 		Level level = context.getLevel();
-		BlockState clicked = level.getBlockState(context.getClickedPos());
-		if (clicked.getBlock() instanceof TrainWallPanelBlock
-				|| clicked.getBlock() instanceof CopycatWallPanelBlock
-				|| clicked.getBlock() instanceof HalfWallPanelBlock)
-			return null;
+		Placement direct = findDirectEndPlacement(context, heldBlock);
+		if (direct != null)
+			return direct;
+
 		BlockPlaceContext placeContext = new BlockPlaceContext(context);
 		BlockPos targetPos = placeContext.getClickedPos();
 		// A merge is only an ordinary placement into the block next to the clicked support.
-		// Clicking the existing panel itself must remain available to Create's placement helper.
+		// The support may itself be a panel (for example, directly above or below the target).
 		if (targetPos.equals(context.getClickedPos()))
 			return null;
 		BlockState primary = level.getBlockState(targetPos);
 		BlockState normallyPlaced = heldBlock.getStateForPlacement(placeContext);
 		if (normallyPlaced == null)
 			return null;
+		return createPlacement(level, targetPos, primary, heldBlock, normallyPlaced);
+	}
 
+	@Nullable
+	private static Placement findDirectEndPlacement(UseOnContext context, Block heldBlock) {
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		BlockState primary = level.getBlockState(pos);
+		Direction primaryFacing;
+		AABB bounds;
+		if (primary.getBlock() instanceof TrainWallPanelBlock) {
+			primaryFacing = primary.getValue(TrainWallPanelBlock.FACING);
+			bounds = TrainWallPanelBlock.getPanelBounds(primaryFacing);
+		} else if (primary.getBlock() instanceof CopycatWallPanelBlock) {
+			primaryFacing = primary.getValue(CopycatWallPanelBlock.FACING);
+			bounds = CopycatWallPanelBlock.getBounds(primary);
+		} else if (primary.getBlock() instanceof HalfWallPanelBlock) {
+			primaryFacing = primary.getValue(HalfWallPanelBlock.FACING);
+			bounds = HalfWallPanelBlock.getBounds(primary);
+		} else {
+			return null;
+		}
+
+		Vec3 localHit = context.getClickLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+		if (!bounds.inflate(EPSILON).contains(localHit))
+			return null;
+		Direction.Axis endAxis = primaryFacing.getAxis() == Direction.Axis.X
+				? Direction.Axis.Z : Direction.Axis.X;
+		double coordinate = endAxis.choose(localHit.x, localHit.y, localHit.z);
+		double min = endAxis.choose(bounds.minX, bounds.minY, bounds.minZ);
+		double max = endAxis.choose(bounds.maxX, bounds.maxY, bounds.maxZ);
+		Direction facing;
+		if (coordinate <= min + END_ZONE + EPSILON)
+			facing = endAxis == Direction.Axis.X ? Direction.WEST : Direction.NORTH;
+		else if (coordinate >= max - END_ZONE - EPSILON)
+			facing = endAxis == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
+		else
+			return null;
+
+		BlockState secondary = heldBlock.defaultBlockState();
+		if (heldBlock instanceof TrainWallPanelBlock)
+			secondary = secondary.setValue(TrainWallPanelBlock.FACING, facing);
+		else if (heldBlock instanceof HalfWallPanelBlock)
+			secondary = secondary.setValue(HalfWallPanelBlock.FACING, facing);
+		else if (heldBlock instanceof CopycatWallPanelBlock)
+			secondary = secondary.setValue(CopycatWallPanelBlock.FACING, facing);
+		else
+			return null;
+		return createPlacement(level, pos, primary, heldBlock, secondary);
+	}
+
+	@Nullable
+	private static Placement createPlacement(Level level, BlockPos targetPos, BlockState primary, Block heldBlock,
+			BlockState normallyPlaced) {
 		if (primary.getBlock() instanceof TrainWallPanelBlock
 				&& heldBlock instanceof TrainWallPanelBlock
 				&& level.getBlockEntity(targetPos) instanceof TrainWallPanelBlockEntity panel

@@ -8,7 +8,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,32 +48,9 @@ public final class TrainRoofPartitionHighlight {
 		VertexConsumer lines = event.getMultiBufferSource().getBuffer(RenderType.lines());
 
 		poseStack.pushPose();
-		renderUniformShape(poseStack, lines, shape, pos.getX() - cameraPos.x,
-			pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+		VoxelShapeOutlineRenderer.render(poseStack, lines, shape, pos.getX() - cameraPos.x,
+			pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z, .15f, .85f, 1, 1);
 		poseStack.popPose();
-	}
-
-	private static void renderUniformShape(PoseStack poseStack, VertexConsumer lines, VoxelShape shape,
-			double offsetX, double offsetY, double offsetZ) {
-		PoseStack.Pose pose = poseStack.last();
-		shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
-			float normalX = (float) (x2 - x1);
-			float normalY = (float) (y2 - y1);
-			float normalZ = (float) (z2 - z1);
-			float length = Mth.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
-			normalX /= length;
-			normalY /= length;
-			normalZ /= length;
-
-			lines.vertex(pose.pose(), (float) (x1 + offsetX), (float) (y1 + offsetY), (float) (z1 + offsetZ))
-				.color(.15f, .85f, 1, 1)
-				.normal(pose.normal(), normalX, normalY, normalZ)
-				.endVertex();
-			lines.vertex(pose.pose(), (float) (x2 + offsetX), (float) (y2 + offsetY), (float) (z2 + offsetZ))
-				.color(.15f, .85f, 1, 1)
-				.normal(pose.normal(), normalX, normalY, normalZ)
-				.endVertex();
-		});
 	}
 
 	private static boolean isHoldingWrench(Player player) {

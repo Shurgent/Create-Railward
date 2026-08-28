@@ -1,11 +1,20 @@
 package ua.pp.shurgent.railward.block.train.parts.copycat;
 
+import java.util.function.Predicate;
+
+import com.simibubi.create.foundation.placement.IPlacementHelper;
+import com.simibubi.create.foundation.placement.PlacementHelpers;
+import com.simibubi.create.foundation.placement.PlacementOffset;
+import com.simibubi.create.foundation.placement.PoleHelper;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -23,6 +32,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelBlockItem;
+import ua.pp.shurgent.railward.block.train.parts.panel.DualPanelPlacement;
 
 public class HalfWallPanelBlock extends WallPanelCopycatBlock {
 
@@ -30,6 +41,7 @@ public class HalfWallPanelBlock extends WallPanelCopycatBlock {
 	public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
 	private static final double HEIGHT = 8;
 	private static final double THICKNESS = 3;
+	private static final int PLACEMENT_HELPER_ID = PlacementHelpers.register(new PlacementHelper());
 
 	public HalfWallPanelBlock(Properties properties) {
 		super(properties);
@@ -75,7 +87,25 @@ public class HalfWallPanelBlock extends WallPanelCopycatBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
 		InteractionResult result = DualPanelCopycatBehaviour.use(this, state, level, pos, player, hand, hit);
-		return result != null ? result : super.use(state, level, pos, player, hand, hit);
+		if (result != null)
+			return result;
+		if (!player.isShiftKeyDown() && player.mayBuild()
+				&& player.getItemInHand(hand).getItem() instanceof DualPanelBlockItem panelItem) {
+			InteractionResult merged = DualPanelPlacement.tryPlace(new UseOnContext(player, hand, hit),
+					panelItem.getBlock());
+			if (merged != null)
+				return merged;
+		}
+		if (!player.isShiftKeyDown() && player.mayBuild()) {
+			ItemStack held = player.getItemInHand(hand);
+			IPlacementHelper helper = PlacementHelpers.get(PLACEMENT_HELPER_ID);
+			if (helper.matchesItem(held)) {
+				PlacementOffset offset = helper.getOffset(player, level, state, pos, hit);
+				if (offset.isSuccessful())
+					return offset.placeInWorld(level, (BlockItem) held.getItem(), player, hand, hit);
+			}
+		}
+		return super.use(state, level, pos, player, hand, hit);
 	}
 
 	@Override
@@ -116,6 +146,50 @@ public class HalfWallPanelBlock extends WallPanelCopycatBlock {
 		return longAxis.choose(Math.abs(offset.getX()), Math.abs(offset.getY()), Math.abs(offset.getZ())) == 1
 				&& (longAxis == Axis.X ? offset.getY() == 0 && offset.getZ() == 0
 						: offset.getX() == 0 && offset.getY() == 0);
+	}
+
+	private static class PlacementHelper extends PoleHelper<Direction> {
+
+		private PlacementHelper() {
+			super(candidate -> candidate.getBlock() instanceof HalfWallPanelBlock,
+					candidate -> candidate.getValue(FACING).getClockWise().getAxis(), FACING);
+		}
+
+		@Override
+		public Predicate<ItemStack> getItemPredicate() {
+			return stack -> stack.getItem() instanceof BlockItem item
+					&& item.getBlock() instanceof HalfWallPanelBlock;
+		}
+
+		@Override
+		public int attachedPoles(Level level, BlockPos pos, Direction direction) {
+			BlockState origin = level.getBlockState(pos);
+			BlockPos checkPos = pos.relative(direction);
+			int count = 0;
+			while (matchesRow(origin, level.getBlockState(checkPos))) {
+				count++;
+				checkPos = checkPos.relative(direction);
+			}
+			return count;
+		}
+
+		@Override
+		public PlacementOffset getOffset(Player player, Level level, BlockState state, BlockPos pos,
+				BlockHitResult hit) {
+			if (DualPanelPlacement.hasPlacement(player, hit))
+				return PlacementOffset.fail();
+			PlacementOffset offset = super.getOffset(player, level, state, pos, hit);
+			if (offset.isSuccessful())
+				offset.withTransform(offset.getTransform()
+						.andThen(placed -> placed.setValue(HALF, state.getValue(HALF))));
+			return offset;
+		}
+
+		private static boolean matchesRow(BlockState origin, BlockState candidate) {
+			return candidate.getBlock() instanceof HalfWallPanelBlock
+					&& candidate.getValue(FACING) == origin.getValue(FACING)
+					&& candidate.getValue(HALF) == origin.getValue(HALF);
+		}
 	}
 
 	@Override
