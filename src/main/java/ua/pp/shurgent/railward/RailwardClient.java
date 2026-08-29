@@ -10,6 +10,7 @@ import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -42,7 +43,7 @@ public class RailwardClient {
 		forgeEventBus.addListener(SurfaceMountedPlacementPreview::render);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::prepare);
 		forgeEventBus.addListener(LocomotiveSpotlightForwardRenderer::onClientLogout);
-		forgeEventBus.addListener(DieselExhaustParticleRenderer::render);
+		forgeEventBus.addListener(EventPriority.LOWEST, DieselExhaustParticleRenderer::render);
 		forgeEventBus.addListener(DieselExhaustParticleRenderer::onClientLogout);
 		forgeEventBus.addListener(RailingInteractionHighlight::render);
 		forgeEventBus.addListener(TrainRoofPartitionHighlight::render);

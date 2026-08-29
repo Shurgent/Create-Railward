@@ -7,19 +7,22 @@ import java.util.WeakHashMap;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
+import ua.pp.shurgent.railward.RailwardConfig;
 
 /**
- * Renders diesel exhaust after Minecraft's cloud pass. The particles deliberately
- * do not write depth, so rendering them in ParticleEngine's earlier pass would
- * allow clouds to be drawn over smoke that is closer to the camera.
+ * Renders diesel exhaust after clouds and Create's late train coupling pass. The
+ * particles deliberately do not write depth, so all opaque geometry must have
+ * populated the depth buffer before the smoke is blended.
  */
 public final class DieselExhaustParticleRenderer {
 
@@ -33,10 +36,8 @@ public final class DieselExhaustParticleRenderer {
 		PARTICLES.add(particle);
 	}
 
-	public static void render(RenderLevelStageEvent event) {
-		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_WEATHER)
-			return;
-
+	@SuppressWarnings("removal")
+	public static void render(RenderLevelLastEvent event) {
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientLevel level = minecraft.level;
 		if (level == null) {
@@ -45,11 +46,18 @@ public final class DieselExhaustParticleRenderer {
 		}
 
 		PARTICLES.removeIf(particle -> !particle.isAlive() || !particle.isInLevel(level));
-		if (PARTICLES.isEmpty())
+		int renderDistance = RailwardConfig.CLIENT.dieselExhaustParticleRenderDistance.get();
+		if (PARTICLES.isEmpty() || renderDistance == 0)
 			return;
 
-		Vec3 cameraPosition = event.getCamera().getPosition();
+		Camera camera = minecraft.gameRenderer.getMainCamera();
+		Vec3 cameraPosition = camera.getPosition();
+		double renderDistanceSqr = (double) renderDistance * renderDistance;
 		ArrayList<DieselExhaustParticle> sortedParticles = new ArrayList<>(PARTICLES);
+		sortedParticles.removeIf(particle -> particle.distanceToSqr(
+			cameraPosition.x, cameraPosition.y, cameraPosition.z) > renderDistanceSqr);
+		if (sortedParticles.isEmpty())
+			return;
 		sortedParticles.sort((first, second) -> Double.compare(
 			second.distanceToSqr(cameraPosition.x, cameraPosition.y, cameraPosition.z),
 			first.distanceToSqr(cameraPosition.x, cameraPosition.y, cameraPosition.z)));
@@ -58,18 +66,21 @@ public final class DieselExhaustParticleRenderer {
 		lightTexture.turnOnLightLayer();
 		RenderSystem.enableDepthTest();
 		RenderSystem.setShaderColor(1, 1, 1, 1);
+		PoseStack modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushPose();
+		modelViewStack.mulPoseMatrix(event.getPoseStack().last().pose());
+		RenderSystem.applyModelViewMatrix();
 
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder builder = tesselator.getBuilder();
 		DieselExhaustParticle.TRANSLUCENT_NO_DEPTH_WRITE.begin(builder, minecraft.getTextureManager());
-		for (DieselExhaustParticle particle : sortedParticles) {
-			if (!particle.shouldCull() || event.getFrustum().isVisible(particle.getBoundingBox()))
-				particle.render(builder, event.getCamera(), event.getPartialTick());
-		}
+		for (DieselExhaustParticle particle : sortedParticles)
+			particle.render(builder, camera, event.getPartialTick());
 		DieselExhaustParticle.TRANSLUCENT_NO_DEPTH_WRITE.end(tesselator);
 
-		// AFTER_WEATHER normally continues with depth writes disabled.
-		RenderSystem.depthMask(false);
+		modelViewStack.popPose();
+		RenderSystem.applyModelViewMatrix();
+		RenderSystem.depthMask(true);
 		RenderSystem.disableBlend();
 		lightTexture.turnOffLightLayer();
 	}

@@ -25,6 +25,7 @@ public class RailwardConfig {
 		public final ForgeConfigSpec.BooleanValue locomotiveSpotlightProjectedLight;
 		public final ForgeConfigSpec.IntValue locomotiveSpotlightBeamLength;
 		public final ForgeConfigSpec.IntValue locomotiveSpotlightBeamWidth;
+		public final ForgeConfigSpec.IntValue dieselExhaustParticleRenderDistance;
 
 		private Client(ForgeConfigSpec.Builder builder) {
 			builder.push("locomotiveSpotlight");
@@ -37,6 +38,12 @@ public class RailwardConfig {
 			locomotiveSpotlightBeamWidth = builder
 				.comment("Full projected spotlight beam width at its far end, in blocks.")
 				.defineInRange("beamWidth", 32, 1, 64);
+			builder.pop();
+
+			builder.push("dieselExhaust");
+			dieselExhaustParticleRenderDistance = builder
+				.comment("Diesel exhaust particle render distance in blocks. Set to 0 to disable the particles.")
+				.defineInRange("particleRenderDistance", 128, 0, 256);
 			builder.pop();
 		}
 	}

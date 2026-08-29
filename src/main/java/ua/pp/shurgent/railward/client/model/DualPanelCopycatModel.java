@@ -51,11 +51,13 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 
 	@Override
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random random, IModelData data) {
-		List<BakedQuad> primary = originalModel.getQuads(state, side, random, data);
 		if (state == null)
-			return primary;
+			return originalModel.getQuads(null, side, random, data);
 		Direction facing = data.getData(DualPanelCopycatModelData.SECONDARY_FACING);
 		BlockState material = data.getData(DualPanelCopycatModelData.SECONDARY_MATERIAL);
+		List<BakedQuad> primary = facing == null
+				? originalModel.getQuads(state, side, random, data)
+				: getPrimaryQuads(state, side, random, data);
 		if (facing == null || material == null)
 			return primary;
 
@@ -65,7 +67,31 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 		IModelData wrapped = data.getData(DualPanelCopycatModelData.SECONDARY_WRAPPED_DATA);
 		if (wrapped == null)
 			wrapped = EmptyModelData.INSTANCE;
-		List<BakedQuad> templates = CopycatModel.getModelOf(material).getQuads(material, side, random, wrapped);
+
+		/*
+		 * The copied inner face is physically inside the block, but its source quad is
+		 * still assigned to the matching block cull face. WorldModelBuilder checks that
+		 * cull face against the neighbouring block while baking a contraption and can
+		 * consequently discard the face. Static chunk rendering does not expose this in
+		 * the common case, which made the issue appear train-only.
+		 *
+		 * Move that one face to the unculled (side == null) batch. This mirrors the
+		 * workaround used by Create's CopycatModel for faces which have been moved away
+		 * from the edge of their block space.
+		 */
+		Direction innerFace = facing.getOpposite();
+		if (side == innerFace)
+			return primary;
+
+		BakedModel materialModel = CopycatModel.getModelOf(material);
+		List<BakedQuad> templates = materialModel.getQuads(material, side, random, wrapped);
+		if (side == null) {
+			List<BakedQuad> innerTemplates = materialModel.getQuads(material, innerFace, random, wrapped);
+			if (!innerTemplates.isEmpty()) {
+				templates = new ArrayList<>(templates);
+				templates.addAll(innerTemplates);
+			}
+		}
 		if (templates.isEmpty())
 			return primary;
 
@@ -82,6 +108,27 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 						cropMoveAndScale(quad, piece.source, piece.destination)));
 			}
 		}
+		return result;
+	}
+
+	private List<BakedQuad> getPrimaryQuads(BlockState state, Direction side, Random random, IModelData data) {
+		Direction facing = state.getBlock() instanceof HalfWallPanelBlock
+				? state.getValue(HalfWallPanelBlock.FACING)
+				: state.getValue(CopycatWallPanelBlock.FACING);
+		Direction innerFace = facing.getOpposite();
+		if (side == innerFace)
+			return List.of();
+
+		List<BakedQuad> quads = originalModel.getQuads(state, side, random, data);
+		if (side != null)
+			return quads;
+
+		List<BakedQuad> innerQuads = originalModel.getQuads(state, innerFace, random, data);
+		if (innerQuads.isEmpty())
+			return quads;
+		List<BakedQuad> result = new ArrayList<>(quads.size() + innerQuads.size());
+		result.addAll(quads);
+		result.addAll(innerQuads);
 		return result;
 	}
 

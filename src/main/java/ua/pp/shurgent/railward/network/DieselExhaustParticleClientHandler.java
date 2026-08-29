@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import ua.pp.shurgent.railward.RailwardConfig;
 import ua.pp.shurgent.railward.particle.DieselExhaustParticleData;
 import ua.pp.shurgent.railward.particle.DieselExhaustParticleData.Profile;
 
@@ -23,6 +24,9 @@ public final class DieselExhaustParticleClientHandler {
 		ClientLevel level = minecraft.level;
 		if (level == null)
 			return;
+		int renderDistance = RailwardConfig.CLIENT.dieselExhaustParticleRenderDistance.get();
+		if (renderDistance == 0)
+			return;
 
 		Entity found = level.getEntity(carriageEntityId);
 		if (!(found instanceof CarriageContraptionEntity entity))
@@ -36,8 +40,11 @@ public final class DieselExhaustParticleClientHandler {
 			Mth.lerp(partialTicks, entity.yo, entity.getY()),
 			Mth.lerp(partialTicks, entity.zo, entity.getZ()));
 		emitter = emitter.add(interpolatedAnchor.subtract(entity.position())).add(nozzleDirection.scale(.035));
+		if (minecraft.gameRenderer.getMainCamera().getPosition().distanceToSqr(emitter)
+			> (double) renderDistance * renderDistance)
+			return;
 
-		level.addParticle(new DieselExhaustParticleData(profile), emitter.x, emitter.y, emitter.z,
+		level.addParticle(new DieselExhaustParticleData(profile), true, emitter.x, emitter.y, emitter.z,
 			velocity.x, velocity.y, velocity.z);
 	}
 }
