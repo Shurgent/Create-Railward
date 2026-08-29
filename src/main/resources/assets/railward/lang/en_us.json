@@ -274,5 +274,7 @@
     "block.railward.train.parts.train_cab_corner_door_green_window_big": "Green Cab Corner Door with Large Window",
     "block.railward.train.parts.train_cab_corner_door_light_blue_window_big": "Light Blue Cab Corner Door with Large Window",
     "block.railward.train.parts.radiator_fan": "Radiator Fan",
-    "block.railward.train.parts.diesel_exhaust_1": "Diesel Exhaust (Type 1)"
+    "block.railward.train.parts.diesel_exhaust_1": "Diesel Exhaust (Type 1)",
+    "item.railward.music_disc_echoes": "Music Disc",
+    "item.railward.music_disc_echoes.desc": "Shurgent - Echoes"
 }

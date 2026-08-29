@@ -24,6 +24,7 @@ This mod is aimed at players who want more believable rail environments without 
 - Blue train wall blocks with multiple livery variants
 - Matching wall panels for more modular carriage exteriors
 - Windowed variants for shaping passenger rolling stock
+- A music disc featuring **Shurgent - Echoes**
 
 ## Design Direction
 
@@ -38,6 +39,10 @@ peripheral with structured arrival predictions and live schedule information.
 CC:Tweaked is not required and is not bundled with Railward. See the
 [station peripheral documentation](docs/create_station_peripheral.md) for the
 Lua API and examples.
+
+## Music Credits
+
+- **Shurgent - Echoes** — written and performed by Shurgent
 
 ## License
 

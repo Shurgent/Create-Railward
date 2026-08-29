@@ -102,5 +102,13 @@
         "name": "railward:train/parts/cab_signal"
       }
     ]
+  },
+  "music_disc.echoes": {
+    "sounds": [
+      {
+        "name": "railward:records/echoes",
+        "stream": true
+      }
+    ]
   }
 }

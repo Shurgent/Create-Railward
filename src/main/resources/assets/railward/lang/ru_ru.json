@@ -274,5 +274,7 @@
     "block.railward.train.parts.train_cab_corner_door_green_window_big": "Зелёная угловая дверь кабины с большим окном",
     "block.railward.train.parts.train_cab_corner_door_light_blue_window_big": "Голубая угловая дверь кабины с большим окном",
     "block.railward.train.parts.radiator_fan": "Вентилятор радиатора",
-    "block.railward.train.parts.diesel_exhaust_1": "Дизельный выхлоп (вид 1)"
+    "block.railward.train.parts.diesel_exhaust_1": "Дизельный выхлоп (вид 1)",
+    "item.railward.music_disc_echoes": "Музыкальная пластинка",
+    "item.railward.music_disc_echoes.desc": "Shurgent - Echoes"
 }

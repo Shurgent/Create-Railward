@@ -52,11 +52,13 @@ public class Railward {
 		MinecraftForge.EVENT_BUS.register(this);
 		REGISTRATE.registerEventListeners(modEventBus);
 		RailwardSoundEvents.register(modEventBus);
+		RailwardLootModifiers.register(modEventBus);
 		RailwardParticleTypes.register(modEventBus);
 		RailwardPackets.registerPackets();
 		RailwardScheduleInstructions.register();
 		
 		AllEdgePointTypes.register();
+		AllItems.register();
 		AllBlocks.register();
 		RailwardBogeyStyles.register();
 		AllBlockEntities.register();
