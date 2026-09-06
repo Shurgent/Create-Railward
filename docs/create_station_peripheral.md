@@ -9,8 +9,8 @@ normally.
 
 ## `getArrivals([limit])`
 
-Returns the predicted calls at this station, ordered by arrival time. The
-optional `limit` argument restricts the number of returned entries and must be
+Returns assigned calls and unassigned schedule candidates for this station,
+ordered by arrival time. The optional `limit` argument restricts the number of returned entries and must be
 greater than zero.
 
 Each entry contains:
@@ -21,6 +21,15 @@ Each entry contains:
   normally the next station on the route, but it may be changed by a Rename
   instruction in the schedule);
 - `station_name` - the station or filter for which the arrival was calculated;
+- `station_filter` - the original Create destination filter, including `*`;
+- `platform_assigned` - whether Create has selected a physical station for
+  this call. This is independent of whether its arrival time is predictable;
+- `station_id` - the selected station UUID, or an empty string before selection;
+- `at_station` - whether this call is the train's current stop at this station;
+- `schedule_entry` - the 1-based schedule entry, or `-1` if unavailable;
+- `call_id` - train UUID plus schedule entry, for merging the same forecast
+  returned by multiple candidate platforms. Identifies a schedule slot, not
+  a unique journey across cycles or schedule edits; do not persist it as history;
 - `arrival_ticks`, `arrival_seconds` - the remaining time until arrival;
 - `create_arrival_ticks`, `create_arrival_seconds` - Create's unadjusted
   prediction, exposed for diagnostics;
@@ -54,6 +63,30 @@ the world's day time advances.
 
 Unknown numeric values are `-1`, unknown formatted times are empty strings, and
 the corresponding `*_predictable` field is `false`.
+
+### Multiple platforms and destination filters
+
+Create itself supports multiple stations with identical names and `*` filters
+such as `Spawn Central P*`. Railward follows the server's actual navigation
+target; it does not choose or reserve a platform and does not require Steam 'n'
+Rails. Changes to routing made by other mods are reflected by the next call.
+
+An assigned arrival is returned only by its physical station, matched by UUID,
+even when other stations have the same name. Before Create chooses a platform,
+the forecast is returned by every station in the train's graph whose name
+matches the schedule filter, with `platform_assigned = false`, `station_id = ""`
+and `at_station = false`. These are candidates, not guarantees of a reachable
+or free platform. The future platform remains unassigned even if only one name
+currently matches. Once Create selects or changes a target, poll again to get
+the updated assignment. A later visit by the same train is a separate schedule
+entry and must not inherit its current visit's platform or `at_station` flag.
+
+For example, connect both `Spawn Central P1` and `Spawn Central P2` and use
+`Spawn Central P*` in the schedule. Merge unassigned forecasts by `call_id`
+and show `--` in `Plat`; show the selected platform once assigned. A computer
+connected only to P1 will no longer receive assigned arrivals at P2.
+
+### Arrival estimate details
 
 Create 0.5.1 applies a conservative `distance / speed * 2` estimate on the
 first traversal of a route. This estimate counts down roughly twice as fast as
@@ -123,6 +156,14 @@ be reported. Polling once per second is usually sufficient for a display,
 allows an unknown time-control mod's rate to be measured, and avoids scanning
 all active trains every game tick.
 
+## `getStationId()`
+
+Returns the UUID of the physical station behind this peripheral, independently
+of its name. It survives renaming and normal saves/reloads; recreating a station
+can give it a new UUID. Use it to map identically named platforms to display
+numbers. Like `getStationName()`, this method raises an error if the station
+is not connected to a track.
+
 ## `getTrainSchedule()`
 
 Returns the schedule of the train currently present at the station. It uses the
@@ -178,10 +219,12 @@ arrivals from all stations, then draws the same board on every monitor. Each
 monitor is laid out independently, so the `Destination` column uses all space
 left by the fixed-width columns.
 
-With one connected station, the platform is always `1`. With multiple
-stations, the last number in each station name is used. Consequently, platform
-station names should end in a number, for example `Spawn Central P1`. A station
-whose name does not end in a number is shown as `--`.
+Unassigned calls show `--` in `Plat` and are merged by `call_id`. For assigned
+calls, `PLATFORM_NUMBERS` can map station UUIDs to platform numbers, including
+when stations share a name. Otherwise, with one connected station the platform
+is `1`; with multiple stations the last number in the station name is used,
+for example `Spawn Central P1`. Names without a final number show `--`.
+This example requires the multiplatform API fields documented above.
 
 While a train is present at its station, its `Arr` value is shown as ` now `.
 Every refresh discovers the peripherals again. If no stations are currently
@@ -195,6 +238,9 @@ Save the program as `startup.lua` to start it automatically:
 local BOARD_TITLE = "TRAIN DEPARTURES"
 local TEXT_SCALE = 0.5
 local REFRESH_SECONDS = 1
+local PLATFORM_NUMBERS = {
+    -- ["station-uuid-from-getStationId"] = "1",
+}
 
 local TRAIN_WIDTH = 8
 local ARRIVAL_WIDTH = 5
@@ -262,7 +308,13 @@ local function findStations()
     return stations
 end
 
-local function getPlatform(stationInfo, stationCount)
+local function getPlatform(arrival, stationInfo, stationCount)
+    if not arrival.platform_assigned then
+        return "--"
+    end
+    if PLATFORM_NUMBERS[arrival.station_id] then
+        return tostring(PLATFORM_NUMBERS[arrival.station_id])
+    end
     if stationCount == 1 then
         return "1"
     end
@@ -280,21 +332,16 @@ end
 
 local function collectArrivals(stations, limit)
     local result = {}
+    local byCall = {}
 
     for _, stationInfo in ipairs(stations) do
         local station = stationInfo.device
-        local platform = getPlatform(stationInfo, #stations)
-        local scheduleOk, presentSchedule = pcall(station.getTrainSchedule)
-        local presentTrainId = scheduleOk
-            and type(presentSchedule) == "table"
-            and presentSchedule.train_id
-            or nil
         local ok, arrivals = pcall(station.getArrivals, limit)
 
         if ok and type(arrivals) == "table" then
             for _, arrival in ipairs(arrivals) do
-                if type(arrival) == "table" then
-                    table.insert(result, {
+                if type(arrival) == "table" and type(arrival.call_id) == "string" then
+                    local row = {
                         train_id = arrival.train_id,
                         train_name = arrival.train_name,
                         destination = arrival.destination,
@@ -303,10 +350,18 @@ local function collectArrivals(stations, limit)
                         arrival_predictable = arrival.arrival_predictable,
                         departure_time = arrival.departure_time,
                         departure_predictable = arrival.departure_predictable,
-                        platform = platform,
-                        at_station = presentTrainId ~= nil
-                            and arrival.train_id == presentTrainId
-                    })
+                        platform = getPlatform(arrival, stationInfo, #stations),
+                        at_station = arrival.at_station,
+                        platform_assigned = arrival.platform_assigned
+                    }
+                    local index = byCall[arrival.call_id]
+                    if not index then
+                        table.insert(result, row)
+                        byCall[arrival.call_id] = #result
+                    elseif row.platform_assigned or not result[index].platform_assigned then
+                        -- Prefer an assignment if it appeared between two polls.
+                        result[index] = row
+                    end
                 end
             end
         end

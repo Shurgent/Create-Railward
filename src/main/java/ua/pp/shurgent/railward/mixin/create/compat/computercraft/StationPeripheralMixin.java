@@ -14,6 +14,7 @@ import com.simibubi.create.compat.computercraft.implementation.peripherals.Stati
 import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
 import com.simibubi.create.content.trains.display.GlobalTrainDisplayData.TrainDeparturePrediction;
 import com.simibubi.create.content.trains.entity.Train;
+import com.simibubi.create.content.trains.graph.EdgePointType;
 import com.simibubi.create.content.trains.schedule.Schedule;
 import com.simibubi.create.content.trains.schedule.ScheduleEntry;
 import com.simibubi.create.content.trains.schedule.ScheduleRuntime;
@@ -32,6 +33,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import ua.pp.shurgent.railward.compat.WorldTimeProjection;
+import ua.pp.shurgent.railward.compat.StationArrivalSelection;
 
 /**
  * Adds machine-readable arrival and schedule data to Create's station
@@ -50,7 +52,7 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 	}
 
 	/**
-	 * Gets predicted calls at this exact station, ordered by ETA.
+	 * Gets assigned calls and unassigned schedule candidates for this station.
 	 * Unknown ETAs use Create's {@code -1} sentinel and are sorted last.
 	 */
 	@LuaFunction(mainThread = true)
@@ -71,11 +73,15 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 		Map<TrainDeparturePrediction, Integer> scheduleEntries = new IdentityHashMap<>();
 		Map<TrainDeparturePrediction, Integer> stableArrivalTicks = new IdentityHashMap<>();
 		Map<TrainDeparturePrediction, String> estimateSources = new IdentityHashMap<>();
+		Map<TrainDeparturePrediction, GlobalStation> assignedStations = new IdentityHashMap<>();
 
 		for (Train train : Create.RAILWAYS.sided(level).trains.values()) {
 			if (train.runtime.paused || train.runtime.getSchedule() == null)
 				continue;
 			if (train.derailed || train.graph == null)
+				continue;
+			// A matching name in an unrelated railway graph is not a candidate.
+			if (train.graph.getPoint(EdgePointType.STATION, station.getId()) != station)
 				continue;
 
 			List<TrainDeparturePrediction> trainPredictions =
@@ -91,13 +97,20 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 			boolean firstPrediction = true;
 			for (TrainDeparturePrediction prediction : trainPredictions) {
 				int entryIndex = resolvePredictionEntry(train, prediction, scheduleCursor, firstPrediction);
+				GlobalStation assignedStation = firstPrediction ? getCurrentPredictionStation(train) : null;
 				firstPrediction = false;
 				if (entryIndex >= 0)
 					scheduleCursor = entryIndex + 1;
 
-				if (station.name.equals(prediction.destination)) {
+				DestinationInstruction instruction = getDestinationInstruction(train, entryIndex);
+				if (StationArrivalSelection.matches(
+					station.getId(), assignedStation == null ? null : assignedStation.getId(),
+					station.name, instruction == null ? null : instruction.getFilterForRegex()
+				)) {
 					arrivals.add(prediction);
 					scheduleEntries.put(prediction, entryIndex);
+					if (assignedStation != null)
+						assignedStations.put(prediction, assignedStation);
 				}
 			}
 		}
@@ -126,6 +139,19 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 			arrival.putString("train_name", prediction.train.name.getString());
 			arrival.putString("destination", prediction.scheduleTitle.getString());
 			arrival.putString("station_name", prediction.destination);
+			GlobalStation assignedStation = assignedStations.get(prediction);
+			int entryIndex = scheduleEntries.getOrDefault(prediction, -1);
+			DestinationInstruction instruction = getDestinationInstruction(prediction.train, entryIndex);
+			arrival.putString("station_filter", instruction == null ? "" : instruction.getFilter());
+			arrival.putBoolean("platform_assigned", assignedStation != null);
+			arrival.putString("station_id", assignedStation == null ? "" : assignedStation.getId().toString());
+			arrival.putBoolean("at_station", assignedStation != null
+				&& prediction.train.runtime.state == ScheduleRuntime.State.POST_TRANSIT
+				&& prediction.train.getCurrentStation() == assignedStation);
+			arrival.putDouble("schedule_entry", entryIndex < 0 ? -1 : entryIndex + 1);
+			// Distinguishes repeated visits to the same name in one schedule.
+			// This identifies a schedule slot, not a historical journey instance.
+			arrival.putString("call_id", prediction.train.id + ":" + (entryIndex + 1));
 			arrival.putDouble("arrival_ticks", arrivalTicks);
 			arrival.putDouble("arrival_seconds", arrivalPredictable ? arrivalTicks / 20.0 : -1);
 			arrival.putDouble("create_arrival_ticks", prediction.ticks);
@@ -164,6 +190,28 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 		}
 
 		return result;
+	}
+
+	@LuaFunction(mainThread = true)
+	public final String getStationId() throws LuaException {
+		return getStationOrThrow().getId().toString();
+	}
+
+	private GlobalStation getCurrentPredictionStation(Train train) {
+		Schedule schedule = train.runtime.getSchedule();
+		// Mirrors the first (current) prediction in Create's submitPredictions().
+		if (train.runtime.state == ScheduleRuntime.State.POST_TRANSIT
+			|| train.runtime.currentEntry >= schedule.entries.size())
+			return train.getCurrentStation();
+		return train.navigation.destination;
+	}
+
+	private DestinationInstruction getDestinationInstruction(Train train, int entryIndex) {
+		Schedule schedule = train.runtime.getSchedule();
+		if (entryIndex < 0 || entryIndex >= schedule.entries.size())
+			return null;
+		return schedule.entries.get(entryIndex).instruction instanceof DestinationInstruction destination
+			? destination : null;
 	}
 
 	/**
@@ -336,11 +384,10 @@ abstract class StationPeripheralMixin extends SyncedPeripheral<StationBlockEntit
 
 		int entryCount = schedule.entries.size();
 		int currentEntry = train.runtime.currentEntry;
-		if (firstPrediction
-			&& currentEntry >= 0
-			&& currentEntry < entryCount
-			&& schedule.entries.get(currentEntry).instruction instanceof DestinationInstruction)
-			return currentEntry;
+		if (firstPrediction && getCurrentPredictionStation(train) != null)
+			return currentEntry >= 0 && currentEntry < entryCount ? currentEntry : -1;
+		if (firstPrediction && train.runtime.state == ScheduleRuntime.State.POST_TRANSIT)
+			searchStart = currentEntry + 1;
 
 		for (int offset = 0; offset < entryCount; offset++) {
 			int entryIndex;
