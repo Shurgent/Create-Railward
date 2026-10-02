@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.CabCornerDoorPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlockEntity;
@@ -33,8 +34,8 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 	protected void renderSafe(CabCornerDoorBlockEntity be, float partialTicks, PoseStack ms,
 			MultiBufferSource buffer, int light, int overlay) {
 		BlockState state = be.getBlockState();
-		CabCornerDoorPartialModels models = AllPartialModels.getCabCornerDoorModels(state.getBlock()
-			.getRegistryName()
+		CabCornerDoorPartialModels models = AllPartialModels.getCabCornerDoorModels(ForgeRegistries.BLOCKS
+			.getKey(state.getBlock())
 			.getPath());
 		if (models == null)
 			return;

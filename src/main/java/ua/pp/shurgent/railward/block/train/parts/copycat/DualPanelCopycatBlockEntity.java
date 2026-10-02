@@ -17,8 +17,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//? if <1.19.2 {
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+//?}
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofPartitionBehaviour;
 
 /** Copycat data owned by Railward; Create's copycat block entities remain untouched. */
@@ -145,7 +149,7 @@ public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
 		secondaryFacing = tag.contains(facingKey)
 				? Direction.from3DDataValue(tag.getInt(facingKey)) : null;
 		secondaryMaterial = tag.contains(materialKey)
-				? NbtUtils.readBlockState(tag.getCompound(materialKey))
+				? ua.pp.shurgent.railward.compat.RailwardComponents.readBlockState(tag.getCompound(materialKey))
 				: AllBlocks.COPYCAT_BASE.getDefaultState();
 		secondaryConsumedItem = tag.contains(itemKey)
 				? ItemStack.of(tag.getCompound(itemKey)) : ItemStack.EMPTY;
@@ -182,6 +186,16 @@ public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public ModelData getModelData() {
+		ModelData.Builder builder = ModelData.builder()
+				.with(CopycatModel.MATERIAL_PROPERTY, getMaterial());
+		if (secondaryFacing != null)
+			builder.with(DualPanelCopycatModelData.SECONDARY_FACING, secondaryFacing)
+					.with(DualPanelCopycatModelData.SECONDARY_MATERIAL, secondaryMaterial);
+		return builder.build();
+	}
+	*///?} else {
 	public IModelData getModelData() {
 		ModelDataMap.Builder builder = new ModelDataMap.Builder()
 				.withInitial(CopycatModel.MATERIAL_PROPERTY, getMaterial());
@@ -190,4 +204,5 @@ public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
 					.withInitial(DualPanelCopycatModelData.SECONDARY_MATERIAL, secondaryMaterial);
 		return builder.build();
 	}
+	//?}
 }

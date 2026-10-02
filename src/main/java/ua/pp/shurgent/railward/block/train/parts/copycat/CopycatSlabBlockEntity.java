@@ -20,8 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//? if <1.19.2 {
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+//?}
 
 /**
  * Stores a material and its consumed item independently for each slab half.
@@ -197,12 +201,21 @@ public class CopycatSlabBlockEntity extends CopycatBlockEntity {
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public ModelData getModelData() {
+		return ModelData.builder()
+				.with(CopycatSlabModelData.BOTTOM_MATERIAL, bottomMaterial)
+				.with(CopycatSlabModelData.TOP_MATERIAL, topMaterial)
+				.build();
+	}
+	*///?} else {
 	public IModelData getModelData() {
 		return new ModelDataMap.Builder()
 				.withInitial(CopycatSlabModelData.BOTTOM_MATERIAL, bottomMaterial)
 				.withInitial(CopycatSlabModelData.TOP_MATERIAL, topMaterial)
 				.build();
 	}
+	//?}
 
 	private void writeCustom(CompoundTag tag, boolean safe) {
 		tag.put("BottomMaterial", NbtUtils.writeBlockState(bottomMaterial));
@@ -223,7 +236,7 @@ public class CopycatSlabBlockEntity extends CopycatBlockEntity {
 	}
 
 	private static BlockState readMaterial(CompoundTag tag, String key) {
-		return tag.contains(key) ? NbtUtils.readBlockState(tag.getCompound(key)) : copycatBase();
+		return tag.contains(key) ? ua.pp.shurgent.railward.compat.RailwardComponents.readBlockState(tag.getCompound(key)) : copycatBase();
 	}
 
 	private static BlockState copycatBase() {

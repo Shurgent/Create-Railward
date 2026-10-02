@@ -26,6 +26,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -278,7 +280,10 @@ public class ModernWhistleTrainAudio {
 
 		protected MovingTrainSound(SoundEvent soundEvent, CarriageContraptionEntity carriageEntity, float volume,
 			float pitch) {
-			super(soundEvent, SoundSource.NEUTRAL);
+			super(soundEvent, SoundSource.NEUTRAL
+					//? if >=1.19.2
+					/*, RandomSource.create()*/
+			);
 			this.carriageEntity = new WeakReference<>(carriageEntity);
 			this.baseVolume = volume;
 			this.basePitch = pitch;

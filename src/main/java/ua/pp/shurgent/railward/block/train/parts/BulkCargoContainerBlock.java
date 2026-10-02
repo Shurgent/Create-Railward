@@ -276,9 +276,7 @@ public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoConta
 		for (int x = 0; x < sizeX; x++)
 			for (int z = 0; z < sizeZ; z++) {
 				BlockPos target = new BlockPos(controllerPos.getX() + x, targetY, controllerPos.getZ() + z);
-				if (!level.getBlockState(target)
-					.getMaterial()
-					.isReplaceable())
+				if (!level.getBlockState(target).getMaterial().isReplaceable())
 					return false;
 			}
 

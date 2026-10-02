@@ -25,6 +25,8 @@ import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CClient;
 
 import net.minecraft.client.Minecraft;
+//? if >=1.20.1
+/*import net.minecraft.client.gui.GuiGraphics;*/
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -55,7 +57,7 @@ public final class RailwardContraptionGoggleOverlay {
 	private RailwardContraptionGoggleOverlay() {
 	}
 
-	public static void renderOverlay(ForgeIngameGui gui, PoseStack poseStack, float partialTicks, int width,
+	public static void renderOverlay(ForgeIngameGui gui, PoseStack graphics, float partialTicks, int width,
 		int height) {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (minecraft.options.hideGui || minecraft.gameMode == null
@@ -83,7 +85,7 @@ public final class RailwardContraptionGoggleOverlay {
 		TargetKey key = new TargetKey(target.entityId(), target.localPos());
 		hoverTicks = key.equals(lastTarget) ? hoverTicks + 1 : 1;
 		lastTarget = key;
-		renderTooltip(poseStack, tooltip, target.goggleInformation()
+		renderTooltip(graphics, tooltip, target.goggleInformation()
 			.getIcon(isShifting), partialTicks, width, height);
 	}
 
@@ -180,10 +182,10 @@ public final class RailwardContraptionGoggleOverlay {
 			? new TooltipTarget(entity.getId(), localPos, goggleInformation) : null;
 	}
 
-	private static void renderTooltip(PoseStack poseStack, List<Component> tooltip, ItemStack item, float partialTicks,
+	private static void renderTooltip(PoseStack graphics, List<Component> tooltip, ItemStack item, float partialTicks,
 		int width, int height) {
 		Minecraft minecraft = Minecraft.getInstance();
-		poseStack.pushPose();
+		graphics.pushPose();
 
 		int tooltipTextWidth = 0;
 		for (FormattedText textLine : tooltip)
@@ -215,7 +217,7 @@ public final class RailwardContraptionGoggleOverlay {
 				.copy();
 
 		if (fade < 1) {
-			poseStack.translate(Math.pow(1 - fade, 3) * Math.signum(config.overlayOffsetX.get() + .5f) * 8, 0, 0);
+			graphics.translate(Math.pow(1 - fade, 3) * Math.signum(config.overlayOffsetX.get() + .5f) * 8, 0, 0);
 			colorBackground.scaleAlpha(fade);
 			colorBorderTop.scaleAlpha(fade);
 			colorBorderBot.scaleAlpha(fade);
@@ -223,12 +225,12 @@ public final class RailwardContraptionGoggleOverlay {
 
 		GuiGameElement.of(item.isEmpty() ? AllItems.GOGGLES.asStack() : item)
 			.at(posX + 10, posY - 16, 450)
-			.render(poseStack);
+			.render(graphics);
 
 		if (!Mods.MODERNUI.isLoaded()) {
-			RemovedGuiUtils.drawHoveringText(poseStack, tooltip, posX, posY, width, height, -1,
+			RemovedGuiUtils.drawHoveringText(graphics, tooltip, posX, posY, width, height, -1,
 				colorBackground.getRGB(), colorBorderTop.getRGB(), colorBorderBot.getRGB(), minecraft.font);
-			poseStack.popPose();
+			graphics.popPose();
 			return;
 		}
 
@@ -240,13 +242,13 @@ public final class RailwardContraptionGoggleOverlay {
 		((MouseHandlerAccessor) mouseHandler).create$setXPos(Math.round(cursorX / guiScale) * guiScale);
 		((MouseHandlerAccessor) mouseHandler).create$setYPos(Math.round(cursorY / guiScale) * guiScale);
 
-		RemovedGuiUtils.drawHoveringText(poseStack, tooltip, posX, posY, width, height, -1,
+		RemovedGuiUtils.drawHoveringText(graphics, tooltip, posX, posY, width, height, -1,
 			colorBackground.getRGB(), colorBorderTop.getRGB(), colorBorderBot.getRGB(), minecraft.font);
 
 		((MouseHandlerAccessor) mouseHandler).create$setXPos(cursorX);
 		((MouseHandlerAccessor) mouseHandler).create$setYPos(cursorY);
 
-		poseStack.popPose();
+		graphics.popPose();
 	}
 
 	private static void clearHover() {

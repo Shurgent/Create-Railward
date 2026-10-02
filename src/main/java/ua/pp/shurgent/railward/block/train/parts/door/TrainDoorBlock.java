@@ -46,6 +46,9 @@ public class TrainDoorBlock extends SlidingDoorBlock {
 	private final TrainDoorAnimation animation;
 
 	public TrainDoorBlock(Properties properties, TrainDoorAnimation animation) {
+		//? if >=1.20.1
+		/*super(properties, net.minecraft.world.level.block.state.properties.BlockSetType.IRON, false);
+		*///? if <1.20.1
 		super(properties, false);
 		this.animation = animation;
 	}

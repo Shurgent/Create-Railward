@@ -367,7 +367,7 @@ public final class BulkCargoContraptionHelper {
 
 	static MountedStorageManager getStorageManager(Contraption contraption) {
 		MountedStorageManager base = getBaseStorageManager(contraption);
-		if (contraption.entity != null && contraption.entity.level.isClientSide)
+		if (contraption.entity != null && (contraption.entity).level.isClientSide)
 			return base;
 
 		MountedStorageManager storageProxy = getStorageProxyManager(contraption);

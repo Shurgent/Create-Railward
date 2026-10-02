@@ -61,6 +61,11 @@ public final class CabSignalTrainState {
 		return CLIENT_ASPECTS.getOrDefault(carriage.train.id, CabSignalAspect.OFF);
 	}
 
+	public static CabSignalAspect resolveServer(Train train) {
+		ServerState state = SERVER_STATES.get(train.id);
+		return state == null ? CabSignalAspect.OFF : state.aspect;
+	}
+
 	public static void setClientAspect(UUID trainId, CabSignalAspect aspect) {
 		CLIENT_ASPECTS.put(trainId, aspect);
 	}

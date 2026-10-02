@@ -1,6 +1,8 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
@@ -87,6 +89,21 @@ public final class CisternContraptionHelper {
 					.copy()));
 	}
 
+	public static void syncAllFluids(AbstractContraptionEntity entity) {
+		if (entity.level.isClientSide || entity.getContraption() == null)
+			return;
+
+		Contraption contraption = entity.getContraption();
+		Set<BlockPos> seenControllers = new HashSet<>();
+		for (Map.Entry<BlockPos, StructureBlockInfo> entry : contraption.getBlocks().entrySet()) {
+			if (!(entry.getValue().state.getBlock() instanceof CisternBlock))
+				continue;
+			ControllerData data = resolveController(contraption, entry.getKey());
+			if (data != null && seenControllers.add(data.controllerPos()))
+				syncFluid(entity, data);
+		}
+	}
+
 	public static boolean applyClientFluid(AbstractContraptionEntity entity, BlockPos controllerPos, FluidStack fluid) {
 		Contraption contraption = entity.getContraption();
 		if (contraption == null)
@@ -139,7 +156,7 @@ public final class CisternContraptionHelper {
 
 	private static MountedStorageManager getStorageManager(Contraption contraption) {
 		MountedStorageManager base = getBaseStorageManager(contraption);
-		if (contraption.entity != null && contraption.entity.level.isClientSide)
+		if (contraption.entity != null && (contraption.entity).level.isClientSide)
 			return base;
 
 		MountedStorageManager storageProxy = getStorageProxyManager(contraption);

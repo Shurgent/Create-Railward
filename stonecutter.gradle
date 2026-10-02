@@ -1,0 +1,200 @@
+plugins {
+    id 'dev.kikugie.stonecutter'
+}
+
+stonecutter {
+    // Minecraft 1.18.2 is Railward's canonical development target.
+    active '1.18.2'
+
+    parameters { params ->
+        def replaceAfter118 = { String from, String to ->
+            params.replacements { replacements ->
+                replacements.string(params.current.version != '1.18.2') { replacement ->
+                    replacement.replace(from, to)
+                }
+            }
+        }
+
+		def replaceFor120 = { String from, String to ->
+			params.replacements { replacements ->
+				replacements.string(params.current.version == '1.20.1') { replacement ->
+					replacement.replace(from, to)
+				}
+			}
+		}
+
+        replaceAfter118('net.minecraftforge.event.world.BlockEvent', 'net.minecraftforge.event.level.BlockEvent')
+        replaceAfter118('TickEvent.WorldTickEvent', 'TickEvent.LevelTickEvent')
+        replaceAfter118('event.world', 'event.level')
+        replaceAfter118('DrawSelectionEvent.HighlightBlock', 'RenderHighlightEvent.Block')
+        replaceAfter118('net.minecraftforge.client.event.DrawSelectionEvent',
+                'net.minecraftforge.client.event.RenderHighlightEvent')
+        replaceAfter118('ClientPlayerNetworkEvent.LoggedOutEvent', 'ClientPlayerNetworkEvent.LoggingOut')
+        replaceAfter118('net.minecraftforge.client.IItemRenderProperties',
+                'net.minecraftforge.client.extensions.common.IClientItemExtensions')
+        replaceAfter118('IItemRenderProperties', 'IClientItemExtensions')
+        replaceAfter118('net.minecraftforge.client.gui.ForgeIngameGui',
+                'net.minecraftforge.client.gui.overlay.ForgeGui')
+        replaceAfter118('net.minecraftforge.client.gui.IIngameOverlay',
+                'net.minecraftforge.client.gui.overlay.IGuiOverlay')
+        replaceAfter118('ForgeIngameGui', 'ForgeGui')
+        replaceAfter118('IIngameOverlay', 'IGuiOverlay')
+        replaceAfter118('blockEntityData.getData(', 'blockEntityData.get(')
+        replaceAfter118('data.getData(', 'data.get(')
+        replaceAfter118('builder.withInitial(', 'builder.with(')
+        replaceAfter118('EmptyModelData.INSTANCE', 'ModelData.EMPTY')
+        replaceAfter118('event.getPlayer()', 'event.getEntity()')
+        replaceAfter118('getItemStackRenderer()', 'getCustomRenderer()')
+
+		replaceFor120('CapabilityItemHandler.ITEM_HANDLER_CAPABILITY', 'ForgeCapabilities.ITEM_HANDLER')
+		replaceFor120('CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY', 'ForgeCapabilities.FLUID_HANDLER')
+		replaceFor120('net.minecraft.world.level.material.MaterialColor',
+				'net.minecraft.world.level.material.MapColor')
+		replaceFor120('MaterialColor', 'MapColor')
+		replaceFor120('net.minecraft.world.level.material.Material;',
+				'net.minecraft.world.level.material.MapColor;')
+		replaceFor120('BlockBehaviour.Properties.of(Material.METAL)',
+				'BlockBehaviour.Properties.of().mapColor(MapColor.METAL)')
+		replaceFor120('p.color(', 'p.mapColor(')
+		replaceFor120('.color(MapColor', '.mapColor(MapColor')
+		replaceFor120('.color(color)', '.mapColor(color)')
+		replaceFor120('net.minecraft.data.loot.BlockLoot',
+				'com.tterrag.registrate.providers.loot.RegistrateBlockLootTables')
+		replaceFor120('BlockLoot.createDoorTable(', 'loot.createDoorTable(')
+		replaceFor120('com.mojang.math.Matrix3f', 'org.joml.Matrix3f')
+		replaceFor120('com.mojang.math.Matrix4f', 'org.joml.Matrix4f')
+		replaceFor120('com.mojang.math.Vector3f', 'com.mojang.math.Axis')
+		replaceFor120('Vector3f.XP', 'Axis.XP')
+		replaceFor120('Vector3f.YP', 'Axis.YP')
+		replaceFor120('Vector3f.ZP', 'Axis.ZP')
+		replaceFor120('TransformType', 'ItemDisplayContext')
+		replaceFor120('properties.tab(Railward.RAILWARD_TAB)',
+				'ua.pp.shurgent.railward.compat.RailwardItemProperties.withoutTab(properties)')
+		replaceFor120('.getMaterial().isReplaceable()', '.canBeReplaced()')
+		['blockInfo', 'clickedInfo', 'controllerInfo', 'currentInfo', 'info', 'oldInfo', 'startInfo'].each { name ->
+			replaceFor120("${name}.state", "ua.pp.shurgent.railward.compat.RailwardStructureInfo.state(${name})")
+			replaceFor120("${name}.nbt", "ua.pp.shurgent.railward.compat.RailwardStructureInfo.nbt(${name})")
+			replaceFor120("${name}.pos", "ua.pp.shurgent.railward.compat.RailwardStructureInfo.pos(${name})")
+		}
+		replaceFor120('entry.getValue().state',
+				'ua.pp.shurgent.railward.compat.RailwardStructureInfo.state(entry.getValue())')
+
+		['adjacentEntity', 'carriageEntity', 'contraptionEntity', 'currentEntity', 'entity', 'otherEntity',
+		 'player', 'sender'].each { name ->
+			replaceFor120("${name}.level", "ua.pp.shurgent.railward.compat.RailwardEntity.level(${name})")
+		}
+		replaceFor120('(contraption.entity).level',
+				'ua.pp.shurgent.railward.compat.RailwardEntity.level(contraption.entity)')
+		replaceFor120('net.minecraft.core.Registry', 'net.minecraft.core.registries.Registries')
+		replaceFor120('Registry.ITEM_REGISTRY', 'Registries.ITEM')
+
+		replaceFor120('new BlockPos(context.position)', 'BlockPos.containing(context.position)')
+		replaceFor120('new BlockPos(entity.toGlobalVector(VecHelper.getCenterOf(localPos), 1))',
+				'BlockPos.containing(entity.toGlobalVector(VecHelper.getCenterOf(localPos), 1))')
+		replaceFor120('new BlockPos(blockScanBB.minX, blockScanBB.minY, blockScanBB.minZ)',
+				'BlockPos.containing(blockScanBB.minX, blockScanBB.minY, blockScanBB.minZ)')
+		replaceFor120('new BlockPos(blockScanBB.maxX, blockScanBB.maxY, blockScanBB.maxZ)',
+				'BlockPos.containing(blockScanBB.maxX, blockScanBB.maxY, blockScanBB.maxZ)')
+
+		replaceFor120('PoseStack gui', 'GuiGraphics gui')
+		replaceFor120('font.draw(gui,', 'gui.drawString(font,')
+		replaceFor120('fill(gui,', 'gui.fill(')
+		replaceFor120('gui.pushPose()', 'gui.pose().pushPose()')
+		replaceFor120('gui.translate(', 'gui.pose().translate(')
+		replaceFor120('gui.popPose()', 'gui.pose().popPose()')
+
+		replaceFor120('PoseStack graphics', 'GuiGraphics graphics')
+		replaceFor120('graphics.pushPose()', 'graphics.pose().pushPose()')
+		replaceFor120('graphics.translate(', 'graphics.pose().translate(')
+		replaceFor120('graphics.popPose()', 'graphics.pose().popPose()')
+
+		replaceFor120('sprite.getName()', 'sprite.contents().name()')
+		replaceFor120('NativeImage.getA(pixel)', 'net.minecraft.util.FastColor.ABGR32.alpha(pixel)')
+		replaceFor120('NativeImage.getR(pixel)', 'net.minecraft.util.FastColor.ABGR32.red(pixel)')
+		replaceFor120('NativeImage.getG(pixel)', 'net.minecraft.util.FastColor.ABGR32.green(pixel)')
+		replaceFor120('NativeImage.getB(pixel)', 'net.minecraft.util.FastColor.ABGR32.blue(pixel)')
+		replaceFor120('getInverseViewRotationMatrix().store(matrixBuffer)',
+				'getInverseViewRotationMatrix().get(matrixBuffer)')
+		replaceFor120('buffers, false, 0, LightTexture.FULL_BRIGHT)',
+				'buffers, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT)')
+		replaceFor120('event.register(RailwardParticleTypes.DIESEL_EXHAUST.get(),',
+				'event.registerSpriteSet(RailwardParticleTypes.DIESEL_EXHAUST.get(),')
+		replaceFor120('.consumer(consumer)', '.consumerMainThread(consumer)')
+		replaceFor120('new SoundEvent(Railward.asResource(name))',
+				'SoundEvent.createVariableRangeEvent(Railward.asResource(name))')
+		replaceFor120('ms, buffer, 0)', 'ms, buffer, level, 0)')
+    }
+}
+
+tasks.register('compileAll') {
+    group = 'build'
+    description = 'Compiles every supported Minecraft version.'
+    dependsOn subprojects.collect { "${it.path}:compileJava" }
+}
+
+tasks.register('compileClientTestAll') {
+    group = 'verification'
+    description = 'Compiles the isolated late-join client probe for every supported Minecraft version.'
+    dependsOn subprojects.collect { "${it.path}:compileClientTestJava" }
+}
+
+tasks.register('buildAll') {
+    group = 'build'
+    description = 'Builds every supported Minecraft version.'
+    dependsOn subprojects.collect { "${it.path}:build" }
+}
+
+tasks.register('testAll') {
+    group = 'verification'
+    description = 'Runs unit tests for every supported Minecraft version.'
+    dependsOn subprojects.collect { "${it.path}:test" }
+}
+
+tasks.register('gameTestAll') {
+    group = 'verification'
+    description = 'Runs the dedicated Forge GameTest server for every supported Minecraft version.'
+    dependsOn subprojects.collect { "${it.path}:runGameTestServer" }
+}
+
+tasks.register('buildAndCollect', Copy) {
+    group = 'build'
+    description = 'Builds every supported version and collects release jars in build/libs.'
+    dependsOn 'buildAll'
+
+	// The root project has no standard clean task, so remove previously collected
+	// release jars explicitly to prevent stale versions from being published.
+	doFirst {
+		delete rootProject.layout.buildDirectory.dir('libs')
+	}
+
+    subprojects.each { versionProject ->
+        // Copy the current jar task output, not every historical jar left in the
+        // version build directory by an earlier mod version.
+        from(versionProject.tasks.named('jar').flatMap { it.archiveFile })
+    }
+    into rootProject.layout.buildDirectory.dir('libs')
+}
+
+def versionFile = rootProject.file('mod_version.txt')
+
+def nextPatchVersion = { String currentVersion ->
+    def parts = currentVersion.split('\\.')
+    if (parts.size() != 3) {
+        throw new GradleException("Expected mod_version.txt to contain a semantic version like x.y.z, got '${currentVersion}'")
+    }
+
+    int patch = parts[2].toInteger() + 1
+    "${parts[0]}.${parts[1]}.${patch}"
+}
+
+tasks.register('incrementPatchVersion') {
+    group = 'versioning'
+    description = 'Explicitly increments the patch version stored in mod_version.txt.'
+
+    doLast {
+        def currentVersion = versionFile.text.trim()
+        def newVersion = nextPatchVersion(currentVersion)
+        versionFile.text = newVersion
+        logger.lifecycle("Updated mod_version.txt from ${currentVersion} to ${newVersion}")
+    }
+}

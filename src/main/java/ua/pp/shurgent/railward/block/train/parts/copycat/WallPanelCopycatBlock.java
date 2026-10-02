@@ -39,6 +39,7 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 		return AllBlockEntities.WALL_PANEL_COPYCAT.get();
 	}
 
+	//? if <1.19.2 {
 	@Override
 	public BlockState getConnectiveMaterial(BlockAndTintGetter reader, BlockState otherState, Direction face,
 			BlockPos fromPos, BlockPos toPos) {
@@ -53,6 +54,16 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 		BlockPos offset = fromPos.subtract(toPos);
 		return connectsAlong(otherState, offset) ? getMaterial(reader, toPos) : null;
 	}
+	//?} else {
+	/*@Override
+	public boolean canConnectTexturesToward(BlockAndTintGetter reader, BlockPos fromPos, BlockPos toPos,
+			BlockState state) {
+		BlockState targetState = reader.getBlockState(toPos);
+		if (!targetState.is(this) || !sameShapeState(state, targetState))
+			return false;
+		return connectsAlong(state, fromPos.subtract(toPos));
+	}*/
+	//?}
 
 	protected boolean connectsAlong(BlockState state, BlockPos offset) {
 		return false;
@@ -62,11 +73,13 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 		return first.setValue(WATERLOGGED, false).equals(second.setValue(WATERLOGGED, false));
 	}
 
+	//? if <1.19.2 {
 	@Override
 	public boolean isUnblockableConnectivitySide(BlockAndTintGetter reader, BlockState state, Direction face,
 			BlockPos fromPos, BlockPos toPos) {
 		return true;
 	}
+	//?}
 
 	@Override
 	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {

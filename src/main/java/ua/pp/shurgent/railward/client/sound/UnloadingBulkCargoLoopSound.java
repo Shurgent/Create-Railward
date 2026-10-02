@@ -4,6 +4,8 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.RailwardSoundEvents;
 
@@ -17,7 +19,10 @@ public class UnloadingBulkCargoLoopSound extends AbstractTickableSoundInstance {
 	private int fadeOutTicks = -1;
 
 	public UnloadingBulkCargoLoopSound(BlockPos pos) {
-		super(RailwardSoundEvents.UNLOADING_BULK_CARGO.get(), SoundSource.BLOCKS);
+		super(RailwardSoundEvents.UNLOADING_BULK_CARGO.get(), SoundSource.BLOCKS
+				//? if >=1.19.2
+				/*, RandomSource.create()*/
+		);
 		looping = true;
 		delay = 0;
 		volume = BASE_VOLUME;

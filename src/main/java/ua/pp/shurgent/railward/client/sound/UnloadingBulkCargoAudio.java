@@ -27,4 +27,9 @@ public class UnloadingBulkCargoAudio {
 		if (soundInstance != null)
 			soundInstance.stopLoop();
 	}
+
+	public static boolean isLoopActive(BlockEntity blockEntity) {
+		UnloadingBulkCargoLoopSound soundInstance = LOOPS.get(blockEntity);
+		return soundInstance != null && !soundInstance.isStopped();
+	}
 }

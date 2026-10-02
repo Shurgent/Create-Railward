@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.SlidingDoorPartialModels;
 import ua.pp.shurgent.railward.mixin.create.SlidingDoorBlockEntityAccessor;
@@ -36,8 +37,8 @@ public class RailwardSlidingDoorRenderer extends SafeBlockEntityRenderer<Sliding
 		if (visible && accessor.railward$getBridgeTicks() == 0)
 			return;
 
-		SlidingDoorPartialModels models = AllPartialModels.getSlidingDoorModels(state.getBlock()
-				.getRegistryName()
+		SlidingDoorPartialModels models = AllPartialModels.getSlidingDoorModels(ForgeRegistries.BLOCKS
+				.getKey(state.getBlock())
 				.getPath());
 		if (models == null)
 			return;

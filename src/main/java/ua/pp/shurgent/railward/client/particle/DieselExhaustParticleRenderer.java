@@ -16,6 +16,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+//? if >=1.20.1
+/*import net.minecraftforge.client.event.RenderLevelStageEvent;*/
+//? if <1.20.1
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import ua.pp.shurgent.railward.RailwardConfig;
 
@@ -37,7 +40,14 @@ public final class DieselExhaustParticleRenderer {
 	}
 
 	@SuppressWarnings("removal")
+	//? if >=1.20.1
+	/*public static void render(RenderLevelStageEvent event) {*/
+	//? if <1.20.1
 	public static void render(RenderLevelLastEvent event) {
+		//? if >=1.20.1 {
+		/*if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL)
+			return;*/
+		//?}
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientLevel level = minecraft.level;
 		if (level == null) {

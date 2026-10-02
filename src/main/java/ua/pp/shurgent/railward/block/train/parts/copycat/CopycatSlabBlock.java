@@ -233,17 +233,27 @@ public class CopycatSlabBlock extends WaterloggedCopycatBlock
 		return false;
 	}
 
+	//? if <1.19.2 {
 	@Override
 	public BlockState getConnectiveMaterial(BlockAndTintGetter reader, BlockState otherState, Direction face,
 			BlockPos fromPos, BlockPos toPos) {
 		return null;
 	}
+	//?} else {
+	/*@Override
+	public boolean canConnectTexturesToward(BlockAndTintGetter reader, BlockPos fromPos, BlockPos toPos,
+			BlockState state) {
+		return false;
+	}*/
+	//?}
 
+	//? if <1.19.2 {
 	@Override
 	public boolean isUnblockableConnectivitySide(BlockAndTintGetter reader, BlockState state, Direction face,
 			BlockPos fromPos, BlockPos toPos) {
 		return true;
 	}
+	//?}
 
 	@Override
 	public boolean supportsExternalFaceHiding(BlockState state) {

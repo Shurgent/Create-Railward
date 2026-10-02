@@ -20,8 +20,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+//? if >=1.19.2
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//? if <1.19.2 {
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+//?}
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachmentRegistry;
 
@@ -151,7 +155,7 @@ public class TrainWallPanelBlockEntity extends SmartBlockEntity implements ITran
 		super.read(tag, clientPacket);
 		attachment = readAttachment(tag);
 		secondaryPanel = tag.contains(SECONDARY_PANEL_KEY, Tag.TAG_COMPOUND)
-				? NbtUtils.readBlockState(tag.getCompound(SECONDARY_PANEL_KEY)) : null;
+				? ua.pp.shurgent.railward.compat.RailwardComponents.readBlockState(tag.getCompound(SECONDARY_PANEL_KEY)) : null;
 		if (secondaryPanel != null && !TrainWallPanelBlock.isTrainWallPanelState(secondaryPanel))
 			secondaryPanel = null;
 		if (clientPacket && previousSecondary != secondaryPanel)
@@ -172,10 +176,19 @@ public class TrainWallPanelBlockEntity extends SmartBlockEntity implements ITran
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public ModelData getModelData() {
+		ModelData.Builder builder = ModelData.builder();
+		if (secondaryPanel != null)
+			builder.with(TrainWallPanelModelData.SECONDARY_PANEL, secondaryPanel);
+		return builder.build();
+	}
+	*///?} else {
 	public IModelData getModelData() {
 		ModelDataMap.Builder builder = new ModelDataMap.Builder();
 		if (secondaryPanel != null)
 			builder.withInitial(TrainWallPanelModelData.SECONDARY_PANEL, secondaryPanel);
 		return builder.build();
 	}
+	//?}
 }

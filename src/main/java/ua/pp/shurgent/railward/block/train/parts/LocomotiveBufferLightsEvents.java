@@ -36,6 +36,8 @@ public class LocomotiveBufferLightsEvents {
 			&& event.getTarget() instanceof CarriageContraptionEntity entity) {
 			TrainDirectionState.syncCurrentControls(entity, player);
 			CabSignalTrainState.syncCurrent(entity, player);
+			BulkCargoContraptionHelper.syncAllCargo(entity);
+			CisternContraptionHelper.syncAllFluids(entity);
 		}
 	}
 

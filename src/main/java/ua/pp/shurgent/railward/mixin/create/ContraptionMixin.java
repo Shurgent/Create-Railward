@@ -8,8 +8,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.StructureTransform;
+import com.simibubi.create.content.trains.entity.CarriageContraption;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionAssembly;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionCollector;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionDisassembly;
 import ua.pp.shurgent.railward.block.train.parts.CisternContraptionDisassembly;
@@ -17,6 +20,12 @@ import ua.pp.shurgent.railward.block.train.parts.CisternContraptionFluidSync;
 
 @Mixin(value = Contraption.class, remap = false)
 public class ContraptionMixin {
+
+	@Inject(method = "removeBlocksFromWorld", at = @At("TAIL"))
+	private void railward$normalizeMountedBulkCargo(Level world, BlockPos offset, CallbackInfo ci) {
+		if ((Object) this instanceof CarriageContraption carriageContraption)
+			BulkCargoContraptionAssembly.normalize(carriageContraption);
+	}
 
 	@Inject(method = "tickStorage", at = @At("TAIL"))
 	private void railward$tickTrainPartStorage(AbstractContraptionEntity contraptionEntity, CallbackInfo ci) {

@@ -28,6 +28,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+//? if >=1.19.2
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//? if <1.19.2
 import net.minecraftforge.client.model.data.EmptyModelData;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlock;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
@@ -352,10 +355,22 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 		ResourceLocation texture = resourceLocation(spriteName.getNamespace() + ":textures/" + spriteName.getPath()
 			+ ".png");
 		try {
+			//? if >=1.19.2 {
+			/*Resource resource = Minecraft.getInstance()
+				.getResourceManager()
+				.getResource(texture)
+				.orElseThrow();*/
+			//?} else {
 			Resource resource = Minecraft.getInstance()
 				.getResourceManager()
 				.getResource(texture);
-			try (InputStream stream = resource.getInputStream(); NativeImage image = NativeImage.read(stream)) {
+			//?}
+			try (InputStream stream =
+					//? if >=1.19.2
+					/*resource.open();*/
+					//? if <1.19.2
+					resource.getInputStream();
+					NativeImage image = NativeImage.read(stream)) {
 				long r = 0;
 				long g = 0;
 				long b = 0;

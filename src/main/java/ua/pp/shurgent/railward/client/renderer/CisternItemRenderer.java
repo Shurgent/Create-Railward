@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+//? if >=1.20.1
+/*import net.minecraft.world.item.ItemDisplayContext;*/
+//? if <1.20.1
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +26,7 @@ public class CisternItemRenderer extends BlockEntityWithoutLevelRenderer {
 	}
 
 	@Override
-	public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack ms,
+	public void renderByItem(ItemStack stack, TransformType transformType, PoseStack ms,
 		MultiBufferSource buffers, int light, int overlay) {
 		float scale = scaleFor(transformType);
 		ms.pushPose();
@@ -36,7 +39,7 @@ public class CisternItemRenderer extends BlockEntityWithoutLevelRenderer {
 		ms.popPose();
 	}
 
-	private float scaleFor(ItemTransforms.TransformType transformType) {
+	private float scaleFor(TransformType transformType) {
 		return switch (transformType) {
 			case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND ->
 				HAND_SCALE;

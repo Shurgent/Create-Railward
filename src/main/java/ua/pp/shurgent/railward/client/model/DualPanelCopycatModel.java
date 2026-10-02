@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.simibubi.create.content.decoration.copycat.CopycatModel;
 import com.simibubi.create.foundation.model.BakedModelHelper;
@@ -15,14 +14,21 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//?} else {
+import java.util.Random;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap.Builder;
+//?}
 import ua.pp.shurgent.railward.block.train.parts.copycat.DualPanelCopycatBehaviour;
 import ua.pp.shurgent.railward.block.train.parts.copycat.DualPanelCopycatModelData;
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
@@ -36,34 +42,70 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*protected ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos,
+			BlockState state, ModelData blockEntityData) {*/
+	//?} else {
 	protected void gatherModelData(Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
 			IModelData blockEntityData) {
+	//?}
 		Direction facing = blockEntityData.getData(DualPanelCopycatModelData.SECONDARY_FACING);
 		BlockState material = blockEntityData.getData(DualPanelCopycatModelData.SECONDARY_MATERIAL);
 		if (facing == null || material == null)
+			//? if >=1.19.2
+			/*return builder;*/
+			//? if <1.19.2
 			return;
 		builder.withInitial(DualPanelCopycatModelData.SECONDARY_FACING, facing);
 		builder.withInitial(DualPanelCopycatModelData.SECONDARY_MATERIAL, material);
+		//? if >=1.19.2
+		/*ModelData wrapped = CopycatModel.getModelOf(material)*/
+		//? if <1.19.2
 		IModelData wrapped = CopycatModel.getModelOf(material)
 				.getModelData(world, pos, material, EmptyModelData.INSTANCE);
 		builder.withInitial(DualPanelCopycatModelData.SECONDARY_WRAPPED_DATA, wrapped);
+		//? if >=1.19.2
+		/*return builder;*/
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource random, ModelData data,
+			RenderType renderType) {*/
+	//?} else {
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random random, IModelData data) {
+	//?}
 		if (state == null)
+			//? if >=1.19.2
+			/*return originalModel.getQuads(null, side, random, data, renderType);*/
+			//? if <1.19.2
 			return originalModel.getQuads(null, side, random, data);
 		Direction facing = data.getData(DualPanelCopycatModelData.SECONDARY_FACING);
 		BlockState material = data.getData(DualPanelCopycatModelData.SECONDARY_MATERIAL);
-		List<BakedQuad> primary = facing == null
-				? originalModel.getQuads(state, side, random, data)
-				: getPrimaryQuads(state, side, random, data);
+		List<BakedQuad> primary;
+		if (facing == null)
+			//? if >=1.19.2
+			/*primary = originalModel.getQuads(state, side, random, data, renderType);*/
+			//? if <1.19.2
+			primary = originalModel.getQuads(state, side, random, data);
+		else
+			primary = getPrimaryQuads(state, side, random, data
+					//? if >=1.19.2
+					/*, renderType*/
+			);
 		if (facing == null || material == null)
 			return primary;
 
+		//? if <1.19.2
 		RenderType renderType = MinecraftForgeClient.getRenderType();
+		// Forge 1.19 passes the active layer into the material model directly.
+		//? if <1.19.2 {
 		if (renderType != null && !ItemBlockRenderTypes.canRenderInLayer(material, renderType))
 			return primary;
+		//?}
+		//? if >=1.19.2
+		/*ModelData wrapped = data.getData(DualPanelCopycatModelData.SECONDARY_WRAPPED_DATA);*/
+		//? if <1.19.2
 		IModelData wrapped = data.getData(DualPanelCopycatModelData.SECONDARY_WRAPPED_DATA);
 		if (wrapped == null)
 			wrapped = EmptyModelData.INSTANCE;
@@ -84,8 +126,15 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 			return primary;
 
 		BakedModel materialModel = CopycatModel.getModelOf(material);
+		//? if >=1.19.2
+		/*List<BakedQuad> templates = materialModel.getQuads(material, side, random, wrapped, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> templates = materialModel.getQuads(material, side, random, wrapped);
 		if (side == null) {
+			//? if >=1.19.2
+			/*List<BakedQuad> innerTemplates = materialModel
+					.getQuads(material, innerFace, random, wrapped, renderType);*/
+			//? if <1.19.2
 			List<BakedQuad> innerTemplates = materialModel.getQuads(material, innerFace, random, wrapped);
 			if (!innerTemplates.isEmpty()) {
 				templates = new ArrayList<>(templates);
@@ -111,7 +160,12 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 		return result;
 	}
 
+	//? if >=1.19.2 {
+	/*private List<BakedQuad> getPrimaryQuads(BlockState state, Direction side, RandomSource random, ModelData data,
+			RenderType renderType) {*/
+	//?} else {
 	private List<BakedQuad> getPrimaryQuads(BlockState state, Direction side, Random random, IModelData data) {
+	//?}
 		Direction facing = state.getBlock() instanceof HalfWallPanelBlock
 				? state.getValue(HalfWallPanelBlock.FACING)
 				: state.getValue(CopycatWallPanelBlock.FACING);
@@ -119,10 +173,16 @@ public class DualPanelCopycatModel extends BakedModelWrapperWithData {
 		if (side == innerFace)
 			return List.of();
 
+		//? if >=1.19.2
+		/*List<BakedQuad> quads = originalModel.getQuads(state, side, random, data, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> quads = originalModel.getQuads(state, side, random, data);
 		if (side != null)
 			return quads;
 
+		//? if >=1.19.2
+		/*List<BakedQuad> innerQuads = originalModel.getQuads(state, innerFace, random, data, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> innerQuads = originalModel.getQuads(state, innerFace, random, data);
 		if (innerQuads.isEmpty())
 			return quads;

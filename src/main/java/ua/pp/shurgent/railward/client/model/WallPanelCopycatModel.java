@@ -2,19 +2,27 @@ package ua.pp.shurgent.railward.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.simibubi.create.content.decoration.copycat.CopycatModel;
 import com.simibubi.create.foundation.model.BakedModelHelper;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
+//? if >=1.19.2
+/*import net.minecraft.client.renderer.RenderType;*/
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//?} else {
+import java.util.Random;
 import net.minecraftforge.client.model.data.IModelData;
+//?}
 import ua.pp.shurgent.railward.block.train.parts.copycat.HalfWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.WallPanelCornerBlock;
@@ -46,9 +54,18 @@ public class WallPanelCopycatModel extends CopycatModel {
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, RandomSource random,
+			BlockState material, ModelData wrappedData, RenderType renderType) {*/
+	//?} else {
 	protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, Random random, BlockState material,
 			IModelData wrappedData) {
+	//?}
 		BakedModel materialModel = getModelOf(material);
+		//? if >=1.19.2
+		/*List<BakedQuad> templateQuads = materialModel
+				.getQuads(material, side, random, wrappedData, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> templateQuads = materialModel.getQuads(material, side, random, wrappedData);
 		if (templateQuads.isEmpty())
 			return templateQuads;

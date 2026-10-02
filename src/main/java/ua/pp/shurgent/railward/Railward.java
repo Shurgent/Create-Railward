@@ -8,11 +8,9 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +20,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlock;
 import ua.pp.shurgent.railward.particle.RailwardParticleTypes;
 import ua.pp.shurgent.railward.schedule.RailwardScheduleInstructions;
@@ -32,12 +31,21 @@ public class Railward {
 	public static final String MOD_ID = "railward";
 	public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
+	//? if <1.20.1 {
 	public static final CreativeModeTab RAILWARD_TAB = new CreativeModeTab("railward") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(AllBlocks.MODERN_SIGNAL_GROUND.get());
 		}
 	};
+	//?}
+
+	//? if >=1.20.1
+	/*static {
+		REGISTRATE.defaultCreativeTab("railward",
+			builder -> builder.icon(() -> new ItemStack(AllBlocks.MODERN_SIGNAL_GROUND.get())))
+			.register();
+	}*/
 
 	// Directly reference a slf4j logger
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -73,7 +81,7 @@ public class Railward {
 		event.enqueueWork((Runnable) SurfaceMountedBlock::registerMovementChecks);
 		// some preinit code
 		LOGGER.info("HELLO FROM PREINIT");
-		LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+		LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 	}
 
 	// You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -83,17 +91,6 @@ public class Railward {
 		LOGGER.info("HELLO from server starting");
 	}
 
-	// You can use EventBusSubscriber to automatically subscribe events on the
-	// contained class (this is subscribing to the MOD
-	// Event bus for receiving Registry Events)
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class RegistryEvents {
-		@SubscribeEvent
-		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-			// Register a new block here
-			LOGGER.info("HELLO from Register Block");
-		}
-	}
 	@SuppressWarnings("removal")
 	public static ResourceLocation asResource(String resourcePath) {
 		return new ResourceLocation(MOD_ID, resourcePath);

@@ -157,6 +157,9 @@ public class ModernSignalBlock extends Block implements IBE<ModernSignalBlockEnt
                     world.destroyBlock(target, false);
         }		
 		
+		//? if >=1.19.2
+		/*state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);*/
+		//? if <1.19.2
 		state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY);
 		playRemoveSound(world, pos);
 		return InteractionResult.SUCCESS;

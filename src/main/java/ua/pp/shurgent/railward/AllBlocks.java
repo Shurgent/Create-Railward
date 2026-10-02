@@ -1002,6 +1002,10 @@ public class AllBlocks {
 							.getExistingFile(prov.modLoc("block/" + ctx.getName() + "/block_bottom"));
 					ModelFile top = prov.models()
 							.getExistingFile(prov.modLoc("block/" + ctx.getName() + "/block_top"));
+					// Forge's door datagen overload gained explicit open-state models in 1.19.
+					//? if >=1.19.2
+					/*prov.doorBlock(ctx.get(), bottom, bottom, bottom, bottom, top, top, top, top);*/
+					//? if <1.19.2
 					prov.doorBlock(ctx.get(), bottom, bottom, top, top);
 				})
 				.addLayer(() -> RenderType::cutout)

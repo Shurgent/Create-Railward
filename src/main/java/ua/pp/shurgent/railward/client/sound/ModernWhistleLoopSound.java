@@ -4,6 +4,8 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleSoundType;
 
@@ -17,7 +19,10 @@ public class ModernWhistleLoopSound extends AbstractTickableSoundInstance {
 	private int fadeOutTicks = -1;
 
 	public ModernWhistleLoopSound(ModernWhistleSoundType soundType, BlockPos pos) {
-		super(soundType.getLoopEvent(), SoundSource.BLOCKS);
+		super(soundType.getLoopEvent(), SoundSource.BLOCKS
+				//? if >=1.19.2
+				/*, RandomSource.create()*/
+		);
 		this.soundType = soundType;
 		this.looping = true;
 		this.delay = 0;

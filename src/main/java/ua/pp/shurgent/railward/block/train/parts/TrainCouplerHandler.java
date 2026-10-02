@@ -35,8 +35,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -47,10 +46,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.RailwardConfig;
 import ua.pp.shurgent.railward.RailwardPackets;
 import ua.pp.shurgent.railward.RailwardSoundEvents;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 import ua.pp.shurgent.railward.mixin.create.CarriageBogeyAccessor;
 import ua.pp.shurgent.railward.mixin.create.TrainAccessor;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
@@ -454,7 +455,7 @@ public class TrainCouplerHandler {
 		double gap = Math.max(0, Math.sqrt(distanceSq) - 1.0);
 		String distance = String.format(Locale.ROOT, "%.2f", gap);
 		Component message =
-			new TranslatableComponent("railward.train_coupler.auto.distance", distance).withStyle(ChatFormatting.YELLOW);
+			RailwardComponents.translatable("railward.train_coupler.auto.distance", distance).withStyle(ChatFormatting.YELLOW);
 		for (ServerPlayer player : players) {
 			autoDebug(debugAttempt, "auto prompt sent: player={} train={} gapMeters={}", player.getGameProfile()
 				.getName(), debugTrain(movingTrain), distance);
@@ -470,7 +471,7 @@ public class TrainCouplerHandler {
 		}
 
 		Component message =
-			new TranslatableComponent("railward.train_coupler.auto.coupled", movingTrainName, attachedTrainName)
+			RailwardComponents.translatable("railward.train_coupler.auto.coupled", movingTrainName, attachedTrainName)
 				.withStyle(ChatFormatting.GREEN);
 		for (ServerPlayer player : players) {
 			autoDebug(debugAttempt, "auto success message sent: player={} movingTrainName={} attachedTrainName={}",
@@ -557,7 +558,7 @@ public class TrainCouplerHandler {
 			debugVec(carriageEntity.toGlobalVector(VecHelper.getCenterOf(localPos), 1)));
 		debugTrainGeometry(debugAttempt, level, train);
 
-		Result commonValidation = validateTrainReady(train);
+		Result commonValidation = validateTrainGeometryReady(train);
 		if (!commonValidation.success()) {
 			debug(debugAttempt, "clicked train rejected by readiness validation: {}", commonValidation.message());
 			return commonValidation;
@@ -579,8 +580,14 @@ public class TrainCouplerHandler {
 		int splitIndex = clickedEnd == CouplerEnd.TRAILING ? carriageIndex + 1 : carriageIndex;
 		int otherCarriageIndex = clickedEnd == CouplerEnd.TRAILING ? carriageIndex + 1 : carriageIndex - 1;
 		if (otherCarriageIndex < 0 || otherCarriageIndex >= train.carriages.size()) {
+			if (train.runtime.getSchedule() != null)
+				return Result.fail("railward.train_coupler.error.scheduled");
 			debug(debugAttempt, "clicked coupler is on outer train end, trying to couple with another train");
 			return tryCouple(debugAttempt, level, train, carriageIndex, clickedEnd, clickedCoupler);
+		}
+		if (train.runtime.getSchedule() != null && !train.runtime.paused) {
+			debug(debugAttempt, "decouple rejected: active schedule must be paused first");
+			return Result.fail("railward.train_coupler.error.scheduled");
 		}
 
 		Carriage otherCarriage = train.carriages.get(otherCarriageIndex);
@@ -608,12 +615,19 @@ public class TrainCouplerHandler {
 	}
 
 	private static Result validateTrainReady(Train train) {
+		Result geometryValidation = validateTrainGeometryReady(train);
+		if (!geometryValidation.success())
+			return geometryValidation;
+		if (train.runtime.getSchedule() != null)
+			return Result.fail("railward.train_coupler.error.scheduled");
+		return Result.success("");
+	}
+
+	private static Result validateTrainGeometryReady(Train train) {
 		if (train.graph == null || train.derailed)
 			return Result.fail("railward.train_coupler.error.train_invalid");
 		if (!isStopped(train))
 			return Result.fail("railward.train_coupler.error.train_moving");
-		if (train.runtime.getSchedule() != null)
-			return Result.fail("railward.train_coupler.error.scheduled");
 		if (!train.canDisassemble())
 			return Result.fail("railward.train_coupler.error.not_aligned");
 		return Result.success("");
@@ -1128,7 +1142,7 @@ public class TrainCouplerHandler {
 
 			rebindCarriages(train);
 			rebindCarriages(newTrain);
-			assignSplitNames(train, newTrain, new TextComponent(train.name.getString()));
+			assignSplitNames(train, newTrain, RailwardComponents.literal(train.name.getString()));
 
 			train.collectInitiallyOccupiedSignalBlocks();
 			newTrain.collectInitiallyOccupiedSignalBlocks();
@@ -1161,17 +1175,17 @@ public class TrainCouplerHandler {
 		List<Integer> frontSpacingBackup = new ArrayList<>(frontTrain.carriageSpacing);
 		double[] frontStressBackup = ((TrainAccessor) frontTrain).railward$getStress();
 		boolean frontDoubleEndedBackup = frontTrain.doubleEnded;
-		TextComponent frontNameBackup = new TextComponent(frontTrain.name.getString());
+		MutableComponent frontNameBackup = RailwardComponents.literal(frontTrain.name.getString());
 
 		List<Carriage> backCarriagesBackup = new ArrayList<>(backTrain.carriages);
 		List<Integer> backSpacingBackup = new ArrayList<>(backTrain.carriageSpacing);
 		double[] backStressBackup = ((TrainAccessor) backTrain).railward$getStress();
 		boolean backDoubleEndedBackup = backTrain.doubleEnded;
-		TextComponent backNameBackup = new TextComponent(backTrain.name.getString());
+		MutableComponent backNameBackup = RailwardComponents.literal(backTrain.name.getString());
 
 		boolean removedBackTrain = false;
 		try {
-			TextComponent combinedName = forceClickedTrainName ? new TextComponent(clickedTrain.name.getString())
+			MutableComponent combinedName = forceClickedTrainName ? RailwardComponents.literal(clickedTrain.name.getString())
 				: resolveCoupledName(clickedTrain, frontTrain, backTrain);
 			double[] newStress = new double[frontStressBackup.length + backStressBackup.length + 1];
 			System.arraycopy(frontStressBackup, 0, newStress, 0, frontStressBackup.length);
@@ -1375,7 +1389,7 @@ public class TrainCouplerHandler {
 		return false;
 	}
 
-	private static void assignSplitNames(Train firstTrain, Train secondTrain, TextComponent originalName) {
+	private static void assignSplitNames(Train firstTrain, Train secondTrain, MutableComponent originalName) {
 		boolean firstHasControls = hasAnyControls(firstTrain.carriages);
 		boolean secondHasControls = hasAnyControls(secondTrain.carriages);
 		Set<String> usedNames = collectUsedTrainNames(firstTrain.id, secondTrain.id);
@@ -1400,15 +1414,15 @@ public class TrainCouplerHandler {
 		secondTrain.name = nextGeneratedName(usedNames);
 	}
 
-	private static TextComponent resolveCoupledName(Train clickedTrain, Train frontTrain, Train backTrain) {
+	private static MutableComponent resolveCoupledName(Train clickedTrain, Train frontTrain, Train backTrain) {
 		boolean frontHasControls = hasAnyControls(frontTrain.carriages);
 		boolean backHasControls = hasAnyControls(backTrain.carriages);
 
 		if (frontHasControls && !backHasControls)
-			return new TextComponent(frontTrain.name.getString());
+			return RailwardComponents.literal(frontTrain.name.getString());
 		if (!frontHasControls && backHasControls)
-			return new TextComponent(backTrain.name.getString());
-		return new TextComponent(clickedTrain.name.getString());
+			return RailwardComponents.literal(backTrain.name.getString());
+		return RailwardComponents.literal(clickedTrain.name.getString());
 	}
 
 	private static Set<String> collectUsedTrainNames(UUID... excludedTrainIds) {
@@ -1422,17 +1436,17 @@ public class TrainCouplerHandler {
 		return used;
 	}
 
-	private static TextComponent nextGeneratedName(Set<String> usedNames) {
+	private static MutableComponent nextGeneratedName(Set<String> usedNames) {
 		for (int i = 1; i < 1000; i++) {
 			String name = String.format("#%03d", i);
 			if (usedNames.add(name))
-				return new TextComponent(name);
+				return RailwardComponents.literal(name);
 		}
 
 		int i = 1000;
 		while (!usedNames.add("#" + i))
 			i++;
-		return new TextComponent("#" + i);
+		return RailwardComponents.literal("#" + i);
 	}
 
 	private static void rebindCarriages(Train train) {
@@ -1560,8 +1574,7 @@ public class TrainCouplerHandler {
 		if (state == null)
 			return "null";
 
-		Object blockName = state.getBlock()
-			.getRegistryName();
+		Object blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
 		if (!state.hasProperty(TrainCouplerBlock.FACING))
 			return String.valueOf(blockName);
 		return blockName + "[facing=" + state.getValue(TrainCouplerBlock.FACING) + "]";

@@ -38,6 +38,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+//? if >=1.20.1
+/*import net.minecraftforge.common.capabilities.ForgeCapabilities;*/
+//? if <1.20.1
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import ua.pp.shurgent.railward.AllBlockEntities;
@@ -334,9 +337,7 @@ public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWre
 		for (int y = 0; y < width; y++)
 			for (int cross = 0; cross < width; cross++) {
 				BlockPos target = getLayerPos(layerOrigin, axis, y, cross);
-				if (!level.getBlockState(target)
-					.getMaterial()
-					.isReplaceable())
+				if (!level.getBlockState(target).getMaterial().isReplaceable())
 					return InteractionResult.FAIL;
 			}
 

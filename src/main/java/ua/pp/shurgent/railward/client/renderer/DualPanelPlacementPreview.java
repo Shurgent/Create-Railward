@@ -1,7 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import java.util.List;
-import java.util.Random;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -15,6 +14,8 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,12 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.DrawSelectionEvent;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//?} else {
+import java.util.Random;
 import net.minecraftforge.client.model.data.EmptyModelData;
+//?}
 import ua.pp.shurgent.railward.block.train.parts.TrainWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatWallPanelBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.DualPanelCopycatBehaviour;
@@ -81,21 +87,36 @@ public final class DualPanelPlacementPreview {
 			DrawSelectionEvent.HighlightBlock event, BlockState state) {
 		BakedModel model = minecraft.getBlockRenderer().getBlockModel(state);
 		VertexConsumer consumer = event.getMultiBufferSource().getBuffer(RenderType.translucent());
+		//? if >=1.19.2
+		/*RandomSource random = RandomSource.create();*/
+		//? if <1.19.2
 		Random random = new Random();
 		for (Direction direction : Direction.values()) {
 			random.setSeed(42L);
 			renderQuads(pose, consumer,
+					//? if >=1.19.2
+					/*model.getQuads(state, direction, random, ModelData.EMPTY, RenderType.translucent()));*/
+					//? if <1.19.2
 					model.getQuads(state, direction, random, EmptyModelData.INSTANCE));
 		}
 		random.setSeed(42L);
+		//? if >=1.19.2
+		/*renderQuads(pose, consumer,
+				model.getQuads(state, null, random, ModelData.EMPTY, RenderType.translucent()));*/
+		//? if <1.19.2
 		renderQuads(pose, consumer, model.getQuads(state, null, random, EmptyModelData.INSTANCE));
 	}
 
 	private static void renderQuads(PoseStack.Pose pose, VertexConsumer consumer, List<BakedQuad> quads) {
 		for (BakedQuad quad : quads) {
 			float color = quad.isTinted() ? Mth.clamp(.85f, 0, 1) : 1;
+			//? if >=1.19.2 {
+			/*consumer.putBulkData(pose, quad, color, color, color, ALPHA,
+					LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, true);*/
+			//?} else {
 			consumer.putBulkData(pose, quad, color, color, color, ALPHA,
 					LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+			//?}
 		}
 	}
 

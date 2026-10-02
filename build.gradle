@@ -6,9 +6,10 @@ plugins {
 }
 
 //version = mod_version
-def versionFile = file('mod_version.txt')
+def versionFile = rootProject.file('mod_version.txt')
 def mixinRefmapFile = layout.buildDirectory.file("generated/mixin/${mod_id}.refmap.json")
-mod_version = versionFile.text.trim()
+def ccGameTest = rootProject.findProperty('railwardCcTest')?.toString()?.toBoolean() ?: false
+ext.mod_version = versionFile.text.trim()
 version = mod_version
 
 group = mod_group_id
@@ -20,8 +21,54 @@ base {
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+// Keep in-game tests out of the production source set and release jar. Forge's
+// GameTest run combines this source set with main only for runGameTestServer.
+sourceSets {
+    gameTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+    clientTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    gameTestImplementation.extendsFrom implementation
+    gameTestCompileOnly.extendsFrom compileOnly
+    gameTestRuntimeOnly.extendsFrom runtimeOnly
+    clientTestImplementation.extendsFrom implementation
+    clientTestCompileOnly.extendsFrom compileOnly
+    clientTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
+    def runDirectoryOverride = rootProject.findProperty('railwardRunDirectory')?.toString()?.trim()
+    def consoleLogLevel = rootProject.findProperty('railwardConsoleLogLevel')?.toString()?.trim() ?: 'debug'
+    def persistenceTestPhase = rootProject.findProperty('railwardPersistenceTestPhase')?.toString()?.trim()
+    if (persistenceTestPhase && !['prepare', 'verify', 'network', 'network_multi', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler_prepare', 'coupler', 'coupler_auto_prepare', 'coupler_auto', 'coupler_storage_prepare', 'coupler_storage', 'cargo_unloading'].contains(persistenceTestPhase))
+        throw new GradleException("railwardPersistenceTestPhase must be 'prepare', 'verify', 'network', 'network_multi', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler_prepare', 'coupler', 'coupler_auto_prepare', 'coupler_auto', 'coupler_storage_prepare', 'coupler_storage', or 'cargo_unloading'")
+    def clientProbe = rootProject.findProperty('railwardClientProbe')?.toString()?.toBoolean() ?: false
+    def clientProbeHost = rootProject.findProperty('railwardClientProbeHost')?.toString()?.trim() ?: '127.0.0.1'
+    def clientProbePort = rootProject.findProperty('railwardClientProbePort')?.toString()?.trim() ?: '25565'
+    def clientProbeMode = rootProject.findProperty('railwardClientProbeMode')?.toString()?.trim() ?: 'late_join'
+    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading'].contains(clientProbeMode))
+        throw new GradleException("railwardClientProbeMode must be 'late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', or 'cargo_unloading'")
+    def clientProbeName = rootProject.findProperty('railwardClientProbeName')?.toString()?.trim()
+    def mainRunDirectory = runDirectoryOverride
+            ? rootProject.file(runDirectoryOverride)
+            : minecraft_version == '1.18.2'
+            ? rootProject.file('run')
+            : rootProject.file("run/${minecraft_version}")
+    def dataRunDirectory = minecraft_version == '1.18.2'
+            ? rootProject.file('run-data')
+            : rootProject.file("run-data/${minecraft_version}")
+    def gameTestRunDirectory = runDirectoryOverride
+            ? rootProject.file(runDirectoryOverride)
+            : rootProject.file(".devdocs/tmp/gametest/${minecraft_version}")
+
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
     // official   MCVersion             Official field/method names from Mojang mapping files
@@ -65,7 +112,7 @@ minecraft {
     runs {
         // applies to all the run configs below
         configureEach {
-            workingDirectory project.file('run')
+            workingDirectory mainRunDirectory
 			property 'mixin.env.remapRefMap', 'true'
 			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             // Recommended logging data for a userdev environment
@@ -78,7 +125,7 @@ minecraft {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', consoleLogLevel
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
@@ -94,33 +141,93 @@ minecraft {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
             arg "-mixin.config=${mod_id}.mixins.json"
+            if (clientProbe) {
+                property 'railward.clientProbe', 'true'
+                property 'railward.clientProbeMode', clientProbeMode
+                args '--server', clientProbeHost, '--port', clientProbePort
+                if (clientProbeName)
+                    args '--username', clientProbeName
+                mods {
+                    "${mod_id}" {
+                        source sourceSets.clientTest
+                    }
+                }
+            }
         }
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             arg "-mixin.config=${mod_id}.mixins.json"
+            if (persistenceTestPhase) {
+                property 'railward.persistenceTestPhase', persistenceTestPhase
+                mods {
+                    "${mod_id}" {
+                        source sourceSets.gameTest
+                    }
+                }
+            }
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
         // By default, the server will crash when no gametests are provided.
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
+            workingDirectory gameTestRunDirectory
             property 'forge.enabledGameTestNamespaces', mod_id
             arg "-mixin.config=${mod_id}.mixins.json"
+            if (ccGameTest)
+                property 'railward.ccTest', 'true'
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.gameTest
+                }
+            }
         }
 
         data {
             // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
+            workingDirectory dataRunDirectory
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', rootProject.file('src/generated/resources/'),
+                    '--existing', rootProject.file('src/main/resources/')
+        }
+    }
+}
+
+// Automated clients use isolated run directories. Keep their music muted so
+// concurrent driver/observer probes remain unobtrusive without changing any
+// other sound or user option.
+if (rootProject.findProperty('railwardClientProbe')?.toString()?.toBoolean()) {
+    tasks.matching { it.name == 'runClient' }.configureEach {
+        doFirst {
+            def runDirectoryOverride = rootProject.findProperty('railwardRunDirectory')?.toString()?.trim()
+            def clientRunDirectory = runDirectoryOverride
+                    ? rootProject.file(runDirectoryOverride)
+                    : minecraft_version == '1.18.2'
+                    ? rootProject.file('run')
+                    : rootProject.file("run/${minecraft_version}")
+            clientRunDirectory.mkdirs()
+            def optionsFile = new File(clientRunDirectory, 'options.txt')
+            def options = optionsFile.exists() ? optionsFile.readLines('UTF-8') : []
+            def musicOptionFound = false
+            options = options.collect { line ->
+                if (line.startsWith('soundCategory_music:')) {
+                    musicOptionFound = true
+                    return 'soundCategory_music:0.0'
+                }
+                return line
+            }
+            if (!musicOptionFound)
+                options.add('soundCategory_music:0.0')
+            optionsFile.setText(options.join(System.lineSeparator()) + System.lineSeparator(), 'UTF-8')
         }
     }
 }
 
 // Include resources generated by data generators.
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+sourceSets.main.resources { srcDir rootProject.file('src/generated/resources') }
 
 repositories {
     // Put repositories for dependencies here
@@ -138,6 +245,10 @@ repositories {
 		url = "https://squiddev.cc/maven/"
 		content { includeGroup "org.squiddev" }
 	} // Optional CC: Tweaked integration
+	maven {
+		url = "https://maven.squiddev.cc"
+		content { includeGroup "cc.tweaked" }
+	} // CC: Tweaked 1.20+
 	
 }
 
@@ -175,7 +286,19 @@ dependencies {
 
 	// Optional CC: Tweaked integration. The API is compile-only: CC:Tweaked is
 	// neither bundled nor required at runtime by Create: Railward.
-	compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}:api")
+	if (minecraft_version == '1.20.1') {
+		compileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}"
+		if (ccGameTest)
+			gameTestRuntimeOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
+	} else {
+		compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}:api")
+		if (ccGameTest)
+			gameTestRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}")
+	}
+
+	testImplementation platform("org.junit:junit-bom:${junit_version}")
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
 }
 
@@ -188,14 +311,15 @@ tasks.named('processResources', ProcessResources).configure {
             minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
             forge_version: forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range,
+            create_version_range: create_version_range, cct_version_range: cct_version_range,
+            pack_format: pack_format, resource_pack_format: resource_pack_format,
+            data_pack_format: data_pack_format,
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
     ]
     inputs.properties replaceProperties
 
-    // Keep the dev environment on the source mods.toml version.
-    // The release jar injects the real mod_version during packaging.
-    filesMatching(['pack.mcmeta']) {
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
 }
@@ -212,21 +336,12 @@ tasks.named('jar', Jar).configure {
         into ''
     }
 
-    filesMatching('META-INF/mods.toml') {
-        filter { String line ->
-            if (line.trim() == 'version="0.0.0"') {
-                return "version=\"${mod_version}\""
-            }
-            return line
-        }
-    }
-
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,
                 'Specification-Vendor'    : mod_authors,
                 'Specification-Version'   : '1', // We are version 1 of ourselves
-                'Implementation-Title'    : project.name,
+                'Implementation-Title'    : rootProject.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
@@ -260,6 +375,10 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
 tasks.named('compileJava', JavaCompile).configure {
     inputs.property('mixin_refmap_name', "${mod_id}.refmap.json")
     outputs.file(mixinRefmapFile)
@@ -267,51 +386,5 @@ tasks.named('compileJava', JavaCompile).configure {
 
     doFirst {
         mixinRefmapFile.get().asFile.parentFile.mkdirs()
-    }
-}
-
-def nextPatchVersion = { String currentVersion ->
-    def parts = currentVersion.toString().split('\\.')
-    if (parts.size() != 3) {
-        throw new GradleException("Expected mod_version.txt to contain a semantic version like x.y.z, got '${currentVersion}'")
-    }
-
-    int patch = parts[2].toInteger() + 1
-    "${parts[0]}.${parts[1]}.$patch"
-}
-
-def applyModVersion = { String newVersion ->
-    versionFile.text = newVersion
-    mod_version = newVersion
-    version = newVersion
-    project.version = newVersion
-}
-
-task incrementPatchVersion {
-    group = 'versioning'
-    description = 'Increments the patch version stored in mod_version.txt.'
-
-    doLast {
-        applyModVersion(nextPatchVersion(project.version.toString()))
-    }
-}
-
-def autoIncrementAfterBuild = gradle.startParameter.taskNames.any { taskName ->
-    taskName == 'build' || taskName.endsWith(':build')
-}
-
-def manualIncrementRequested = gradle.startParameter.taskNames.any { taskName ->
-    taskName == 'incrementPatchVersion' || taskName.endsWith(':incrementPatchVersion')
-}
-
-def builtModVersion = project.version.toString()
-
-gradle.buildFinished { result ->
-    // Bump the version only after a successful explicit build, so the produced jar
-    // keeps the current version and the file advances for the next build.
-    if (autoIncrementAfterBuild && !manualIncrementRequested && result.failure == null) {
-        def newVersion = nextPatchVersion(builtModVersion)
-        applyModVersion(newVersion)
-        logger.lifecycle("Updated mod_version.txt to ${newVersion} after successful build")
     }
 }

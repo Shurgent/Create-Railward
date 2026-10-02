@@ -40,6 +40,12 @@ CC:Tweaked is not required and is not bundled with Railward. See the
 [station peripheral documentation](docs/create_station_peripheral.md) for the
 Lua API and examples.
 
+## Development
+
+Minecraft 1.18.2 is the primary development and compatibility target. See the
+[multi-version development guide](docs/multiversion-development.md) for the
+build commands and support policy.
+
 ## Music Credits
 
 - **Shurgent - Echoes** — written and performed by Shurgent

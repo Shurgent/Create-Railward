@@ -3,7 +3,6 @@ package ua.pp.shurgent.railward.client.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
@@ -13,12 +12,19 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//?} else {
+import java.util.Random;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap.Builder;
+//?}
 import net.minecraftforge.client.model.data.ModelProperty;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.TrainRoofPartitionBehaviour;
@@ -47,8 +53,13 @@ public class TrainRoofModel extends BakedModelWrapperWithData {
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*protected ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos,
+			BlockState state, ModelData blockEntityData) {*/
+	//?} else {
 	protected void gatherModelData(Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
 			IModelData blockEntityData) {
+	//?}
 		builder.withInitial(COPYCAT_SOURCE,
 			expandCopycatSource && world.getBlockState(pos).getBlock() instanceof CopycatBlock);
 		int ceilingNeighborMask = 0;
@@ -56,10 +67,20 @@ public class TrainRoofModel extends BakedModelWrapperWithData {
 			if (TrainRoofPartitionBehaviour.isRoof(world.getBlockState(pos.relative(direction))))
 				ceilingNeighborMask |= directionBit(direction);
 		builder.withInitial(CEILING_NEIGHBOR_MASK, ceilingNeighborMask);
+		//? if >=1.19.2
+		/*return builder;*/
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource random, ModelData data,
+			net.minecraft.client.renderer.RenderType renderType) {*/
+	//?} else {
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random random, IModelData data) {
+	//?}
+		//? if >=1.19.2
+		/*List<BakedQuad> baseQuads = super.getQuads(state, side, random, data, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> baseQuads = super.getQuads(state, side, random, data);
 		boolean copycatSource = Boolean.TRUE.equals(data.getData(COPYCAT_SOURCE));
 		if (copycatSource && !baseQuads.isEmpty()) {
@@ -83,6 +104,9 @@ public class TrainRoofModel extends BakedModelWrapperWithData {
 			BakedModel panelModel = getPartitionModel(partitionShape, interiorExterior);
 			if (panelModel == null)
 				continue;
+			//? if >=1.19.2
+			/*List<BakedQuad> panelQuads = panelModel.getQuads(null, null, random, ModelData.EMPTY, renderType);*/
+			//? if <1.19.2
 			List<BakedQuad> panelQuads = panelModel.getQuads(null, null, random, EmptyModelData.INSTANCE);
 			if (panelQuads.isEmpty())
 				continue;

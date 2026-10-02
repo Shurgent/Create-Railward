@@ -71,8 +71,7 @@ public class LocomotiveBufferLightsBlock extends HorizontalDirectionalBlock
 		Direction supportDirection = state.getValue(FACING).getOpposite();
 		BlockPos supportPos = pos.relative(supportDirection);
 		BlockState supportState = level.getBlockState(supportPos);
-		return !supportState.getMaterial()
-			.isReplaceable();
+		return !supportState.getMaterial().isReplaceable();
 	}
 
 	@Override

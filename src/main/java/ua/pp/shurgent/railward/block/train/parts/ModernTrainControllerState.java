@@ -15,13 +15,13 @@ import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.network.PacketDistributor;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 
 public final class ModernTrainControllerState {
 
@@ -88,13 +88,7 @@ public final class ModernTrainControllerState {
 			return;
 
 		boolean scheduled = TrainDirectionState.hasScheduledControls(train);
-		double speed = Math.abs(train.speed);
-		double targetSpeed = Math.abs(train.targetSpeed);
-		boolean braking = scheduled && speed > STOPPED_EPSILON
-			&& (targetSpeed <= STOPPED_EPSILON
-				|| Math.signum(train.speed) != Math.signum(train.targetSpeed)
-				|| targetSpeed + STOPPED_EPSILON < speed);
-		boolean throttle = scheduled && targetSpeed > STOPPED_EPSILON && !braking;
+		ScheduledLeverState levers = evaluateScheduledLevers(scheduled, train.speed, train.targetSpeed);
 
 		for (Carriage carriage : train.carriages) {
 			CarriageContraptionEntity entity = carriage.anyAvailableEntity();
@@ -106,9 +100,23 @@ public final class ModernTrainControllerState {
 				if (!(info.state.getBlock() instanceof ModernTrainControllerBlock))
 					continue;
 				boolean active = scheduled && hasNpcAtController(entity, contraption, info.pos);
-				setLeverState(entity, info.pos, active, active && braking, active && throttle, null);
+				setLeverState(entity, info.pos, active, active && levers.braking, active && levers.throttle, null);
 			}
 		}
+	}
+
+	static ScheduledLeverState evaluateScheduledLevers(boolean scheduled, double speed, double targetSpeed) {
+		double absoluteSpeed = Math.abs(speed);
+		double absoluteTarget = Math.abs(targetSpeed);
+		boolean braking = scheduled && absoluteSpeed > STOPPED_EPSILON
+			&& (absoluteTarget <= STOPPED_EPSILON
+				|| Math.signum(speed) != Math.signum(targetSpeed)
+				|| absoluteTarget + STOPPED_EPSILON < absoluteSpeed);
+		boolean throttle = scheduled && absoluteTarget > STOPPED_EPSILON && !braking;
+		return new ScheduledLeverState(braking, throttle);
+	}
+
+	static record ScheduledLeverState(boolean braking, boolean throttle) {
 	}
 
 	public static void toggleReverser(ServerPlayer player, int entityId, BlockPos localPos) {
@@ -127,12 +135,12 @@ public final class ModernTrainControllerState {
 			return;
 		StructureBlockInfo info = entity.getContraption().getBlocks().get(localPos);
 		BlockState state = info.state;
-		if (!state.getValue(ModernTrainControllerBlock.ACTIVE))
+		ReverserDecision decision = evaluateReverser(state.getValue(ModernTrainControllerBlock.ACTIVE),
+			carriage.train.speed, state.getValue(ModernTrainControllerBlock.THROTTLE),
+			state.getValue(ModernTrainControllerBlock.BRAKING));
+		if (decision == ReverserDecision.INACTIVE)
 			return;
-
-		if (Math.abs(carriage.train.speed) > STOPPED_EPSILON
-			|| state.getValue(ModernTrainControllerBlock.THROTTLE)
-			|| state.getValue(ModernTrainControllerBlock.BRAKING)) {
+		if (decision == ReverserDecision.MUST_STOP) {
 			playDenied(entity, localPos);
 			sendPrompt(player, "railward.modern_train_controller.reverser.must_stop");
 			return;
@@ -150,6 +158,20 @@ public final class ModernTrainControllerState {
 		AllSoundEvents.CONTROLLER_CLICK.play(entity.level, null, soundPos, 1, backwards ? .75f : 1.05f);
 		sendPrompt(player, backwards ? "railward.modern_train_controller.reverser.backward"
 			: "railward.modern_train_controller.reverser.forward");
+	}
+
+	static ReverserDecision evaluateReverser(boolean active, double speed, boolean throttle, boolean braking) {
+		if (!active)
+			return ReverserDecision.INACTIVE;
+		if (Math.abs(speed) > STOPPED_EPSILON || throttle || braking)
+			return ReverserDecision.MUST_STOP;
+		return ReverserDecision.ALLOW;
+	}
+
+	enum ReverserDecision {
+		INACTIVE,
+		MUST_STOP,
+		ALLOW
 	}
 
 	private static void clearAllControllers(Train train, Player directPlayer) {
@@ -223,6 +245,6 @@ public final class ModernTrainControllerState {
 
 	private static void sendPrompt(ServerPlayer player, String translationKey) {
 		AllPackets.getChannel().send(PacketDistributor.PLAYER.with(() -> player),
-			new TrainPromptPacket(new TranslatableComponent(translationKey), false));
+			new TrainPromptPacket(RailwardComponents.translatable(translationKey), false));
 	}
 }

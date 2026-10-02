@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.simibubi.create.content.decoration.copycat.CopycatModel;
 import com.simibubi.create.foundation.model.BakedModelHelper;
@@ -16,16 +15,24 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+//? if >=1.19.2
+/*import net.minecraft.util.RandomSource;*/
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData.Builder;*/
+//?} else {
+import java.util.Random;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap.Builder;
+//?}
 import net.minecraftforge.client.model.data.ModelProperty;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabBlock;
 import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabModelData;
@@ -33,58 +40,109 @@ import ua.pp.shurgent.railward.block.train.parts.copycat.CopycatSlabModelData;
 /** Renders the two slab halves from their independently stored materials. */
 public class CopycatSlabModel extends BakedModelWrapperWithData {
 
+	//? if >=1.19.2 {
+	/*private static final ModelProperty<ModelData> BOTTOM_WRAPPED_DATA = new ModelProperty<>();
+	private static final ModelProperty<ModelData> TOP_WRAPPED_DATA = new ModelProperty<>();*/
+	//?} else {
 	private static final ModelProperty<IModelData> BOTTOM_WRAPPED_DATA = new ModelProperty<>();
 	private static final ModelProperty<IModelData> TOP_WRAPPED_DATA = new ModelProperty<>();
+	//?}
 
 	public CopycatSlabModel(BakedModel originalModel) {
 		super(originalModel);
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*protected ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos,
+			BlockState state, ModelData blockEntityData) {*/
+	//?} else {
 	protected void gatherModelData(Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
 			IModelData blockEntityData) {
+	//?}
 		gatherHalfData(builder, world, pos, blockEntityData,
 				CopycatSlabModelData.BOTTOM_MATERIAL, BOTTOM_WRAPPED_DATA);
 		gatherHalfData(builder, world, pos, blockEntityData,
 				CopycatSlabModelData.TOP_MATERIAL, TOP_WRAPPED_DATA);
+		//? if >=1.19.2
+		/*return builder;*/
 	}
 
+	//? if >=1.19.2 {
+	/*private static void gatherHalfData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos,
+			ModelData blockEntityData, ModelProperty<BlockState> materialProperty,
+			ModelProperty<ModelData> wrappedProperty) {*/
+	//?} else {
 	private static void gatherHalfData(Builder builder, BlockAndTintGetter world, BlockPos pos,
 			IModelData blockEntityData, ModelProperty<BlockState> materialProperty,
 			ModelProperty<IModelData> wrappedProperty) {
+	//?}
 		BlockState material = blockEntityData.getData(materialProperty);
 		if (material == null)
 			material = com.simibubi.create.AllBlocks.COPYCAT_BASE.getDefaultState();
 		builder.withInitial(materialProperty, material);
+		//? if >=1.19.2
+		/*ModelData wrappedData = CopycatModel.getModelOf(material)*/
+		//? if <1.19.2
 		IModelData wrappedData = CopycatModel.getModelOf(material)
 				.getModelData(world, pos, material, EmptyModelData.INSTANCE);
 		builder.withInitial(wrappedProperty, wrappedData);
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource random, ModelData data,
+			RenderType renderType) {*/
+	//?} else {
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random random, IModelData data) {
+	//?}
 		if (state == null || !state.hasProperty(CopycatSlabBlock.TYPE))
+			//? if >=1.19.2
+			/*return super.getQuads(state, side, random, data, renderType);*/
+			//? if <1.19.2
 			return super.getQuads(state, side, random, data);
 
 		SlabType type = state.getValue(CopycatSlabBlock.TYPE);
 		List<BakedQuad> result = new ArrayList<>();
 		if (type == SlabType.BOTTOM || type == SlabType.DOUBLE)
-			addHalfQuads(result, state, side, random, data, Half.BOTTOM, type == SlabType.DOUBLE);
+			addHalfQuads(result, state, side, random, data,
+					//? if >=1.19.2
+					/*renderType,*/
+					Half.BOTTOM, type == SlabType.DOUBLE);
 		if (type == SlabType.TOP || type == SlabType.DOUBLE)
-			addHalfQuads(result, state, side, random, data, Half.TOP, type == SlabType.DOUBLE);
+			addHalfQuads(result, state, side, random, data,
+					//? if >=1.19.2
+					/*renderType,*/
+					Half.TOP, type == SlabType.DOUBLE);
 		return result;
 	}
 
+	//? if >=1.19.2 {
+	/*private static void addHalfQuads(List<BakedQuad> result, BlockState state, Direction side, RandomSource random,
+			ModelData data, RenderType renderType, Half half, boolean doubleSlab) {*/
+	//?} else {
 	private static void addHalfQuads(List<BakedQuad> result, BlockState state, Direction side, Random random,
 			IModelData data, Half half, boolean doubleSlab) {
+	//?}
 		BlockState material = getMaterial(data, half);
+		//? if <1.19.2
 		RenderType renderType = MinecraftForgeClient.getRenderType();
+		// Forge 1.19 passes the active layer into the material model directly.
+		//? if <1.19.2 {
 		if (renderType != null && !ItemBlockRenderTypes.canRenderInLayer(material, renderType))
 			return;
+		//?}
 
+		//? if >=1.19.2
+		/*ModelData wrappedData = data.getData(half == Half.TOP ? TOP_WRAPPED_DATA : BOTTOM_WRAPPED_DATA);*/
+		//? if <1.19.2
 		IModelData wrappedData = data.getData(half == Half.TOP ? TOP_WRAPPED_DATA : BOTTOM_WRAPPED_DATA);
 		if (wrappedData == null)
 			wrappedData = EmptyModelData.INSTANCE;
+		//? if >=1.19.2
+		/*List<BakedQuad> templates = CopycatModel.getModelOf(material)
+				.getQuads(material, side, random, wrappedData, renderType);*/
+		//? if <1.19.2
 		List<BakedQuad> templates = CopycatModel.getModelOf(material).getQuads(material, side, random, wrappedData);
 		if (templates.isEmpty())
 			return;
@@ -138,8 +196,14 @@ public class CopycatSlabModel extends BakedModelWrapperWithData {
 	}
 
 	@Override
+	//? if >=1.19.2
+	/*public TextureAtlasSprite getParticleIcon(ModelData data) {*/
+	//? if <1.19.2
 	public TextureAtlasSprite getParticleIcon(IModelData data) {
 		BlockState material = getMaterial(data, Half.BOTTOM);
+		//? if >=1.19.2
+		/*ModelData wrappedData = data.getData(BOTTOM_WRAPPED_DATA);*/
+		//? if <1.19.2
 		IModelData wrappedData = data.getData(BOTTOM_WRAPPED_DATA);
 		if (com.simibubi.create.AllBlocks.COPYCAT_BASE.has(material)) {
 			material = getMaterial(data, Half.TOP);
@@ -149,6 +213,9 @@ public class CopycatSlabModel extends BakedModelWrapperWithData {
 				.getParticleIcon(wrappedData == null ? EmptyModelData.INSTANCE : wrappedData);
 	}
 
+	//? if >=1.19.2
+	/*private static BlockState getMaterial(ModelData data, Half half) {*/
+	//? if <1.19.2
 	private static BlockState getMaterial(IModelData data, Half half) {
 		ModelProperty<BlockState> property = half == Half.TOP
 				? CopycatSlabModelData.TOP_MATERIAL : CopycatSlabModelData.BOTTOM_MATERIAL;

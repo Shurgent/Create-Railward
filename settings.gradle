@@ -2,6 +2,10 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
+            name = 'KikuGie Releases'
+            url = 'https://maven.kikugie.dev/releases'
+        }
+        maven {
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
         }
@@ -9,7 +13,18 @@ pluginManagement {
 }
 
 plugins {
+    id 'dev.kikugie.stonecutter' version '0.7.11'
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+}
+
+stonecutter {
+    centralScript = 'build.gradle'
+    kotlinController = false
+
+    create(rootProject) {
+        versions('1.18.2', '1.19.2', '1.20.1')
+        vcsVersion = '1.18.2'
+    }
 }
 
 rootProject.name = 'Create-Railward'
