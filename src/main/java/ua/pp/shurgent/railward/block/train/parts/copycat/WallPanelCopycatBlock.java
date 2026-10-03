@@ -58,6 +58,12 @@ public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock impl
 	/*@Override
 	public boolean canConnectTexturesToward(BlockAndTintGetter reader, BlockPos fromPos, BlockPos toPos,
 			BlockState state) {
+		// Create asks the copied material for model data through a filtered world.
+		// The source position must always remain visible to that material; otherwise
+		// wrappers such as TrainRoofModel see air here and cannot enable their
+		// copycat-specific geometry.
+		if (fromPos.equals(toPos))
+			return true;
 		BlockState targetState = reader.getBlockState(toPos);
 		if (!targetState.is(this) || !sameShapeState(state, targetState))
 			return false;

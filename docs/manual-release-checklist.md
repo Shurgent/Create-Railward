@@ -47,6 +47,11 @@ clients and a disposable world. Record the date and evidence in
 - [ ] Check metadata, recipes, representative block/item models and render
   layers. A port-specific defect blocks only that port's publication and must
   not reduce 1.18.2 behavior.
+- [x] Recheck the port regressions found on 2026-10-03: arrival sound with both
+  Create and modern whistles; train-roof material geometry on Railward slices,
+  half-panels and wall panels; full and wedge roof partitions; and, on 1.20.1,
+  colored on/off large-signal lamps plus diesel exhaust from both driver and
+  observer views, including correct depth/compositing against clouds.
 
 ## Evidence record
 

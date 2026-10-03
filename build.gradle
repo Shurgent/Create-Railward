@@ -318,9 +318,25 @@ tasks.named('processResources', ProcessResources).configure {
             mod_authors: mod_authors, mod_description: mod_description,
     ]
     inputs.properties replaceProperties
+    inputs.property('forge_obj_schema', minecraft_version == '1.20.1' ? 'forge47' : 'legacy')
 
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
+    }
+
+    // Forge 47 replaced the legacy OBJ loader option names used by Forge 40/43.
+    // Translate them only in the processed 1.20.1 resources so the canonical
+    // 1.18.2 assets and the 1.19.2 port keep using their native schema.
+    if (minecraft_version == '1.20.1') {
+        filesMatching('assets/railward/models/**/*.json') {
+            filter { line -> line
+                .replace('"detectCullableFaces"', '"automatic_culling"')
+                .replace('"diffuseLighting"', '"shade_quads"')
+                .replace('"flip-v"', '"flip_v"')
+                .replace('"ambientToFullbright"', '"emissive_ambient"')
+                .replace('"materialLibraryOverride"', '"mtl_override"')
+            }
+        }
     }
 }
 

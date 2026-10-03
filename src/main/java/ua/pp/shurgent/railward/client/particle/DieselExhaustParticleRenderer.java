@@ -45,7 +45,7 @@ public final class DieselExhaustParticleRenderer {
 	//? if <1.20.1
 	public static void render(RenderLevelLastEvent event) {
 		//? if >=1.20.1 {
-		/*if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL)
+		/*if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_WEATHER)
 			return;*/
 		//?}
 		Minecraft minecraft = Minecraft.getInstance();
@@ -78,6 +78,10 @@ public final class DieselExhaustParticleRenderer {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		PoseStack modelViewStack = RenderSystem.getModelViewStack();
 		modelViewStack.pushPose();
+		// On 1.20.1 AFTER_WEATHER runs inside LevelRenderer's world-space
+		// ModelView scope. Older RenderLevelLastEvent versions still need the
+		// event pose applied here.
+		//? if <1.20.1
 		modelViewStack.mulPoseMatrix(event.getPoseStack().last().pose());
 		RenderSystem.applyModelViewMatrix();
 
