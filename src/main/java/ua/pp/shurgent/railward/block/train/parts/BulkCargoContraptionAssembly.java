@@ -9,7 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.MountedStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 
@@ -25,8 +24,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import ua.pp.shurgent.railward.mixin.create.ContraptionAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.ItemStorage;
 
 public final class BulkCargoContraptionAssembly {
 
@@ -84,7 +83,7 @@ public final class BulkCargoContraptionAssembly {
 		Set<BlockPos> component, Bounds bounds) {
 		BlockPos controllerPos = new BlockPos(bounds.minX, bounds.minY, bounds.minZ);
 		MountedStorageManager manager = ((ContraptionAccessor) contraption).railward$getStorage();
-		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
+		Map<BlockPos, ItemStorage> storage = RailwardMountedStorage.itemStorages(manager);
 		IItemHandlerModifiable inventory = normalizeStorage(storage, component, controllerPos, bounds.volume());
 		float fillBlocks = BulkCargoStorage.getFillState(inventory) * bounds.height();
 		boolean xLong = bounds.sizeX() >= bounds.sizeZ();
@@ -113,20 +112,20 @@ public final class BulkCargoContraptionAssembly {
 					nbt.putInt("SizeZ", bounds.sizeZ());
 					nbt.putInt("Height", bounds.height());
 					nbt.remove("LastKnownPos");
-					if (localPos.equals(controllerPos) && inventory instanceof ItemStackHandler handler)
-						nbt.put("Inventory", handler.serializeNBT());
+					if (localPos.equals(controllerPos) && inventory != null)
+						nbt.put("Inventory", snapshotInventory(inventory));
 					else
 						nbt.remove("Inventory");
 					blocks.put(localPos, new StructureBlockInfo(localPos, state, nbt));
 				}
 
-		manager.createHandlers();
+		RailwardMountedStorage.commitItems(manager, storage);
 	}
 
-	private static IItemHandlerModifiable normalizeStorage(Map<BlockPos, MountedStorage> storage, Set<BlockPos> component,
+	private static IItemHandlerModifiable normalizeStorage(Map<BlockPos, ItemStorage> storage, Set<BlockPos> component,
 		BlockPos controllerPos, int blocks) {
 		int expectedSlots = blocks * BulkCargoContainerBlockEntity.STACKS_PER_BLOCK;
-		MountedStorage controllerStorage = storage.get(controllerPos);
+		ItemStorage controllerStorage = storage.get(controllerPos);
 		if (controllerStorage == null)
 			for (BlockPos pos : component) {
 				controllerStorage = storage.get(pos);
@@ -138,7 +137,13 @@ public final class BulkCargoContraptionAssembly {
 		if (controllerStorage == null)
 			return null;
 
-		ItemStackHandler controllerHandler = ((MountedStorageAccessor) controllerStorage).railward$getHandler();
+		IItemHandlerModifiable controllerHandler = controllerStorage.handler();
+		if (controllerHandler != null && controllerHandler.getSlots() == expectedSlots) {
+			for (BlockPos pos : component)
+				if (!pos.equals(controllerPos))
+					storage.remove(pos);
+			return controllerHandler;
+		}
 		boolean needsMerge = controllerHandler == null || controllerHandler.getSlots() != expectedSlots;
 		for (BlockPos pos : component)
 			if (!pos.equals(controllerPos) && storage.containsKey(pos)) {
@@ -150,10 +155,10 @@ public final class BulkCargoContraptionAssembly {
 
 		List<ItemStack> contents = new ArrayList<>();
 		for (BlockPos pos : component) {
-			MountedStorage mountedStorage = storage.remove(pos);
+			ItemStorage mountedStorage = storage.remove(pos);
 			if (mountedStorage == null)
 				continue;
-			ItemStackHandler handler = ((MountedStorageAccessor) mountedStorage).railward$getHandler();
+			IItemHandlerModifiable handler = mountedStorage.handler();
 			if (handler != null)
 				contents.addAll(BulkCargoStorage.extractAll(handler));
 		}
@@ -161,9 +166,15 @@ public final class BulkCargoContraptionAssembly {
 		BulkCargoStorage.CargoItemHandler merged = new BulkCargoStorage.CargoItemHandler(expectedSlots);
 		for (ItemStack stack : contents)
 			BulkCargoStorage.insertExisting(merged, stack, false);
-		((MountedStorageAccessor) controllerStorage).railward$setHandler(merged);
-		storage.put(controllerPos, controllerStorage);
+		storage.put(controllerPos, controllerStorage.withHandler(merged));
 		return merged;
+	}
+
+	private static CompoundTag snapshotInventory(IItemHandlerModifiable inventory) {
+		ItemStackHandler snapshot = new ItemStackHandler(inventory.getSlots());
+		for (int slot = 0; slot < inventory.getSlots(); slot++)
+			snapshot.setStackInSlot(slot, inventory.getStackInSlot(slot).copy());
+		return snapshot.serializeNBT();
 	}
 
 	private record Bounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {

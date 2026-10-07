@@ -65,7 +65,7 @@ public class UnloadingBunkerBlockEntity extends SmartBlockEntity {
 	}
 
 	public void startUnloadingFrom(Contraption contraption, BlockPos hatchPos) {
-		IItemHandlerModifiable inventory = contraption.getSharedInventory();
+		IItemHandlerModifiable inventory = ua.pp.shurgent.railward.compat.RailwardMountedStorage.items(contraption);
 		if (connectedEntity == contraption.entity && connectedInventory == inventory) {
 			updateSource(hatchPos);
 			return;

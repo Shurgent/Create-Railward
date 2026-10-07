@@ -33,6 +33,15 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final String COMPUTERCRAFT_MOD_ID = "computercraft";
 	private static final String EMBEDDIUM_MIXIN_PACKAGE = ".compat.embeddium.";
 	private static final String EMBEDDIUM_MOD_ID = "embeddium";
+	private static final String[] LEGACY_RENDER_MIXINS = {
+		".create.client.SBBContraptionManagerMixin",
+		".flywheel.InstancingTemplateDataMixin",
+		".flywheel.OneShotTemplateDataMixin"
+	};
+	//? if create6
+	/*private static final boolean CREATE_6 = true;
+	*///? if !create6
+	private static final boolean CREATE_6 = false;
 	private static final boolean DEFAULT_FIX_CREATE_FLUID_NETWORK = true;
 
 	private boolean fixCreateFluidNetwork = DEFAULT_FIX_CREATE_FLUID_NETWORK;
@@ -49,8 +58,13 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+		if (CREATE_6) {
+			for (String legacyMixin : LEGACY_RENDER_MIXINS)
+				if (mixinClassName.contains(legacyMixin))
+					return false;
+		}
 		if (mixinClassName.endsWith(FLUID_NETWORK_MIXIN) || mixinClassName.endsWith(PIPE_CONNECTION_ACCESSOR))
-			return fixCreateFluidNetwork;
+			return !CREATE_6 && fixCreateFluidNetwork;
 		if (mixinClassName.endsWith(STATION_PERIPHERAL_MIXIN)
 			|| mixinClassName.endsWith(SCHEDULE_RUNTIME_ACCESSOR)) {
 			boolean computerCraftLoaded = isModLoaded(COMPUTERCRAFT_MOD_ID);
@@ -115,9 +129,11 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 			# Fixes a Create 0.5.1 fluid network bug where pulling fluid from a contraption
 			# or train with multiple mounted fluid tanks can drain several source tanks in one
 			# tick, but transfer only the last drained portion, deleting the rest.
-			# Keep this true unless another mod also modifies Create's FluidNetwork.tick and
-			# the game crashes or reports a mixin conflict. Set to false to disable only
-			# Railward's fluid network fix.
+			# Keep this true on the supported Create 0.5.1 builds unless another mod also
+			# modifies Create's FluidNetwork.tick and the game crashes or reports a mixin
+			# conflict. Create 6 fixes the defect upstream, so Railward ignores this switch
+			# and does not apply the workaround there. Set to false to disable only
+			# Railward's fluid network fix on Create 0.5.1.
 			fixCreateFluidNetwork=true
 			""";
 		Files.writeString(configPath, content, StandardCharsets.UTF_8);

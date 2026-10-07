@@ -221,7 +221,7 @@ public final class LocomotiveSpotlightForwardRenderer {
 	@Nullable
 	private static TrainPanelAttachment getPanelAttachment(Contraption contraption, BlockPos pos,
 		StructureBlockInfo info) {
-		BlockEntity blockEntity = contraption.presentBlockEntities.get(pos);
+		BlockEntity blockEntity = ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities.get(contraption, pos);
 		if (blockEntity instanceof TrainWallPanelBlockEntity panel && panel.getAttachment() != null)
 			return panel.getAttachment();
 		if (info.nbt != null && info.nbt.contains(PANEL_ATTACHMENT_KEY, Tag.TAG_COMPOUND))

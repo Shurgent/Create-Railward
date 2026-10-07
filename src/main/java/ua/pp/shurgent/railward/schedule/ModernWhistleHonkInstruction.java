@@ -3,8 +3,12 @@ package ua.pp.shurgent.railward.schedule;
 import java.util.List;
 
 import com.simibubi.create.content.trains.schedule.destination.ScheduleInstruction;
+//? if create6 {
+/*import com.simibubi.create.content.trains.graph.DiscoveredPath;
+import com.simibubi.create.content.trains.schedule.ScheduleRuntime;
+import net.minecraft.world.level.Level;
+*///?}
 import com.simibubi.create.foundation.gui.ModularGuiLineBuilder;
-import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Pair;
 
 import net.minecraft.network.chat.Component;
@@ -12,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import ua.pp.shurgent.railward.AllBlocks;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 
 public class ModernWhistleHonkInstruction extends ScheduleInstruction {
 
@@ -36,7 +41,7 @@ public class ModernWhistleHonkInstruction extends ScheduleInstruction {
 
 	@Override
 	public Pair<ItemStack, Component> getSummary() {
-		return Pair.of(icon(), Components.translatable(translationKey() + ".summary", getDurationTicks()));
+		return Pair.of(icon(), RailwardComponents.translatable(translationKey() + ".summary", getDurationTicks()));
 	}
 
 	@Override
@@ -55,19 +60,26 @@ public class ModernWhistleHonkInstruction extends ScheduleInstruction {
 		return false;
 	}
 
+	//? if create6 {
+	/*@Override
+	public DiscoveredPath start(ScheduleRuntime runtime, Level level) {
+		return null;
+	}
+	*///?}
+
 	@Override
 	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
 		builder.addScrollInput(0, 70, (input, label) -> {
 			input.withRange(1, MAX_DURATION_TICKS + 1)
 				.withShiftStep(20)
-				.titled(Components.translatable("railward.schedule.instruction.honk.duration"));
+				.titled(RailwardComponents.translatable("railward.schedule.instruction.honk.duration"));
 			label.withSuffix(" t");
 		}, DURATION_KEY);
 	}
 
 	@Override
 	public List<Component> getSecondLineTooltip(int slot) {
-		return List.of(Components.translatable("railward.schedule.instruction.honk.duration.tooltip"));
+		return List.of(RailwardComponents.translatable("railward.schedule.instruction.honk.duration.tooltip"));
 	}
 
 	private ItemStack icon() {

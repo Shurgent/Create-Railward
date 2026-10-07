@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward.block.train.parts;
 
 import java.util.List;
 
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -14,8 +13,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlockEntity;
 
-public class RailingBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
+public class RailingBlockEntity extends SmartBlockEntity implements RailwardTransformableBlockEntity {
 
 	public static final String PARTS_KEY = "Parts";
 

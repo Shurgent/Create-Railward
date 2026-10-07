@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.ContraptionWorld;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 import ua.pp.shurgent.railward.mixin.create.ContraptionWorldAccessor;
 
-public class RailingBlock extends HorizontalDirectionalBlock implements IBE<RailingBlockEntity>, IWrenchable {
+public class RailingBlock extends HorizontalDirectionalBlock implements IBE<RailingBlockEntity>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 

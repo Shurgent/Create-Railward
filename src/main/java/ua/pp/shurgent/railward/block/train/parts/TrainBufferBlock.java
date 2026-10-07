@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.utility.VoxelShaper;
 
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TrainBufferBlock extends HorizontalDirectionalBlock implements IWrenchable {
+public class TrainBufferBlock extends HorizontalDirectionalBlock implements RailwardWrenchable {
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE_NORTH = Shapes.or(

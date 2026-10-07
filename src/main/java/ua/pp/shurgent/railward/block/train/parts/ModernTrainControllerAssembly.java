@@ -4,13 +4,13 @@ import com.simibubi.create.content.contraptions.AssemblyException;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Iterate;
-import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
+import ua.pp.shurgent.railward.compat.RailwardLang;
 
 public final class ModernTrainControllerAssembly {
 
@@ -26,7 +26,7 @@ public final class ModernTrainControllerAssembly {
 				continue;
 			Direction physicalFacing = ModernTrainControllerBlock.getPhysicalFacing(info.state);
 			if (physicalFacing.getAxis() != assemblyDirection.getAxis())
-				throw new AssemblyException(Lang.translateDirect("train_assembly.sideways_controls"));
+				throw new AssemblyException(RailwardLang.translateDirect("train_assembly.sideways_controls"));
 			found = true;
 		}
 

@@ -148,7 +148,7 @@ public final class BulkCargoContraptionCollector {
 	private static void tickClientCargoViews(Contraption contraption) {
 		if (contraption == null)
 			return;
-		for (net.minecraft.world.level.block.entity.BlockEntity blockEntity : contraption.presentBlockEntities.values())
+		for (net.minecraft.world.level.block.entity.BlockEntity blockEntity : ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities.values(contraption))
 			if (blockEntity instanceof BulkCargoContainerBlockEntity be && be.hasClientCargoView()
 				&& be.getCargoLevel() != null)
 				be.getCargoLevel()

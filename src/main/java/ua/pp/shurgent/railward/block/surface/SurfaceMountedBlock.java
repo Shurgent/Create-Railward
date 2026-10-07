@@ -3,7 +3,7 @@ package ua.pp.shurgent.railward.block.surface;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.content.contraptions.BlockMovementChecks;
 import com.simibubi.create.content.contraptions.BlockMovementChecks.CheckResult;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class SurfaceMountedBlock<T extends SurfaceMountedBlockEntity> extends Block
-	implements IBE<T>, IWrenchable {
+	implements IBE<T>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
 	private static boolean movementChecksRegistered;

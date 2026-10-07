@@ -2,7 +2,7 @@ package ua.pp.shurgent.railward.block.train.parts;
 
 import java.util.List;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Shared block implementation for the visual variants of diesel exhausts.
  * Each variant only needs its model and model-space emission points.
  */
-public class DieselExhaustBlock extends HorizontalDirectionalBlock implements IWrenchable {
+public class DieselExhaustBlock extends HorizontalDirectionalBlock implements RailwardWrenchable {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 

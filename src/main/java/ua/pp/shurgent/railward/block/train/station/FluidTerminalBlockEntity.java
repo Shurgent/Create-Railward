@@ -35,7 +35,8 @@ public class FluidTerminalBlockEntity extends PortableStorageInterfaceBlockEntit
 			return;
 
 		LazyOptional<IFluidHandler> oldCapability = capability;
-		capability = LazyOptional.of(() -> new TerminalFluidHandler(contraption.getSharedFluidTanks()));
+		capability = LazyOptional.of(() -> new TerminalFluidHandler(
+			ua.pp.shurgent.railward.compat.RailwardMountedStorage.fluids(contraption)));
 		oldCapability.invalidate();
 		super.startTransferringTo(contraption, Mth.clamp(distance, 1, MAX_TRANSFER_DISTANCE));
 	}

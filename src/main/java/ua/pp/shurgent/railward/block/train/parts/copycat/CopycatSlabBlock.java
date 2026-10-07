@@ -1,10 +1,8 @@
 package ua.pp.shurgent.railward.block.train.parts.copycat;
 
-import com.simibubi.create.content.contraptions.ITransformableBlock;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.decoration.copycat.WaterloggedCopycatBlock;
-import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement.ItemUseType;
 
@@ -40,9 +38,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
+import ua.pp.shurgent.railward.compat.RailwardSpecialBlockItemRequirement;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlock;
 
 public class CopycatSlabBlock extends WaterloggedCopycatBlock
-		implements ITransformableBlock, ISpecialBlockItemRequirement {
+		implements RailwardTransformableBlock, RailwardSpecialBlockItemRequirement {
 
 	public static final EnumProperty<SlabType> TYPE = BlockStateProperties.SLAB_TYPE;
 	private static final VoxelShape BOTTOM_SHAPE = Block.box(0, 0, 0, 16, 8, 16);

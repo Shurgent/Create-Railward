@@ -15,6 +15,7 @@ import ua.pp.shurgent.railward.block.train.parts.PilotBlock;
 import ua.pp.shurgent.railward.block.train.parts.PilotBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.PilotSide;
 import ua.pp.shurgent.railward.block.train.parts.PilotType;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class PilotRenderer extends SmartBlockEntityRenderer<PilotBlockEntity> {
 
@@ -32,11 +33,12 @@ public class PilotRenderer extends SmartBlockEntityRenderer<PilotBlockEntity> {
 		PilotSide side = state.getValue(PilotBlock.SIDE);
 		PartialModel model = getModel(block.getPilotType(), side);
 
-		CachedBufferer.partial(model, state)
+		var buffer = CachedBufferer.partial(model, state);
+		RailwardSuperByteBufferTransform.of(buffer)
 			.centre()
 			.rotateY(getFacingRotation(facing))
-			.unCentre()
-			.light(light)
+			.unCentre();
+		buffer.light(light)
 			.renderInto(ms, buffers.getBuffer(RenderType.solid()));
 	}
 

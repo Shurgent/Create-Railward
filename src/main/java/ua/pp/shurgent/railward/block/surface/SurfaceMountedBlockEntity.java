@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
 
 import net.minecraft.core.BlockPos;
@@ -15,8 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlockEntity;
 
-public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
+public abstract class SurfaceMountedBlockEntity extends SmartBlockEntity implements RailwardTransformableBlockEntity {
 
 	private static final String ANCHOR_X = "SurfaceAnchorX";
 	private static final String ANCHOR_Y = "SurfaceAnchorY";

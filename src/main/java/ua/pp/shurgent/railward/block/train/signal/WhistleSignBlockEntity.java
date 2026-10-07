@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward.block.train.signal;
 
 import java.util.List;
 
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.trains.track.TrackTargetingBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -13,8 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import ua.pp.shurgent.railward.AllEdgePointTypes;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlockEntity;
 
-public class WhistleSignBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
+public class WhistleSignBlockEntity extends SmartBlockEntity implements RailwardTransformableBlockEntity {
 
 	public TrackTargetingBehaviour<WhistleSignEdgePoint> edgePoint;
 
@@ -34,6 +34,9 @@ public class WhistleSignBlockEntity extends SmartBlockEntity implements ITransfo
 
 	@Override
 	public void transform(StructureTransform transform) {
+		//? if create6
+		/*edgePoint.transform(this, transform);
+		*///? if !create6
 		edgePoint.transform(transform);
 	}
 }

@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.mixin.create.SlidingDoorBlockEntityAccessor;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class RailwardHingedDoorRenderer extends SafeBlockEntityRenderer<SlidingDoorBlockEntity> {
 
@@ -50,7 +51,7 @@ public class RailwardHingedDoorRenderer extends SafeBlockEntityRenderer<SlidingD
 					.setValue(DoorBlock.HALF, half));
 
 			ContraptionDiffuseLighting.apply(door, partialTicks);
-			door
+			RailwardSuperByteBufferTransform.of(door)
 					.centre()
 					.rotateY(blockStateRotation(facing))
 					.unCentre()

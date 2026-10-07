@@ -22,6 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.CabCornerDoorPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.door.CabCornerDoorBlockEntity;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 import ua.pp.shurgent.railward.mixin.create.SlidingDoorBlockEntityAccessor;
 
 public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoorBlockEntity> {
@@ -61,12 +62,13 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 	private static void renderPanel(PartialModel model, BlockState state, Direction facing, boolean panelOnRight,
 			DoubleBlockHalf half, float partialTicks, PoseStack ms, VertexConsumer vb, int light) {
 		int panelRotation = blockStateRotation(facing) + (panelOnRight ? 270 : 90);
-		ContraptionDiffuseLighting.apply(CachedBufferer.partial(model, state), partialTicks)
+		SuperByteBuffer panel = ContraptionDiffuseLighting.apply(CachedBufferer.partial(model, state), partialTicks);
+		RailwardSuperByteBufferTransform.of(panel)
 			.centre()
 			.rotateY(panelRotation)
 			.unCentre()
-			.translate(0, half == DoubleBlockHalf.UPPER ? 1 - 1 / 512f : 0, 0)
-			.light(light)
+			.translate(0, half == DoubleBlockHalf.UPPER ? 1 - 1 / 512f : 0, 0);
+		panel.light(light)
 			.renderInto(ms, vb);
 	}
 
@@ -80,7 +82,7 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 
 		SuperByteBuffer door = CachedBufferer.partial(model, state);
 		ContraptionDiffuseLighting.apply(door, partialTicks);
-		door
+		RailwardSuperByteBufferTransform.of(door)
 			.centre()
 			.rotateY(blockStateRotation(facing))
 			.unCentre()
@@ -90,8 +92,8 @@ public class CabCornerDoorRenderer extends SafeBlockEntityRenderer<CabCornerDoor
 			.translate(scalePivot)
 			.scale(DOOR_WIDTH_SCALE, 1, 1)
 			.translateBack(scalePivot)
-			.translate(0, half == DoubleBlockHalf.UPPER ? 1 - 1 / 512f : 0, 0)
-			.light(light)
+			.translate(0, half == DoubleBlockHalf.UPPER ? 1 - 1 / 512f : 0, 0);
+		door.light(light)
 			.renderInto(ms, vb);
 	}
 

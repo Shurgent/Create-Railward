@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.RadiatorFanBlock;
 import ua.pp.shurgent.railward.block.train.parts.RadiatorFanBlockEntity;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class RadiatorFanRenderer extends SmartBlockEntityRenderer<RadiatorFanBlockEntity> {
 
@@ -39,12 +40,13 @@ public class RadiatorFanRenderer extends SmartBlockEntityRenderer<RadiatorFanBlo
 
 	private void render(PartialModel model, BlockState state, PoseStack ms,
 			MultiBufferSource buffers, int light, double yOffset, float rotation) {
-		CachedBufferer.partial(model, state)
+		var buffer = CachedBufferer.partial(model, state);
+		RailwardSuperByteBufferTransform.of(buffer)
 			.translate(0, yOffset, 0)
 			.centre()
 			.rotateY(rotation)
-			.unCentre()
-			.light(light)
+			.unCentre();
+		buffer.light(light)
 			.renderInto(ms, buffers.getBuffer(RenderType.cutoutMipped()));
 	}
 

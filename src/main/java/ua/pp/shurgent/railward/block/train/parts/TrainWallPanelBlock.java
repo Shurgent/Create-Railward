@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
@@ -49,7 +49,7 @@ import ua.pp.shurgent.railward.block.train.parts.panel.LocomotiveSpotlightAttach
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
 
 public class TrainWallPanelBlock extends HorizontalDirectionalBlock
-	implements IBE<TrainWallPanelBlockEntity>, IWrenchable {
+	implements IBE<TrainWallPanelBlockEntity>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -247,7 +247,7 @@ public class TrainWallPanelBlock extends HorizontalDirectionalBlock
 		}
 
 		if (!(level.getBlockEntity(pos) instanceof TrainWallPanelBlockEntity panel) || !panel.hasAttachment())
-			return IWrenchable.super.onSneakWrenched(state, context);
+			return RailwardWrenchable.super.onSneakWrenched(state, context);
 
 		if (level.isClientSide)
 			return InteractionResult.SUCCESS;

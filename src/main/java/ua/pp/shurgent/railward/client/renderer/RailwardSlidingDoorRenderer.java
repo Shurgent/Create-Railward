@@ -22,6 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.AllPartialModels.SlidingDoorPartialModels;
 import ua.pp.shurgent.railward.mixin.create.SlidingDoorBlockEntityAccessor;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class RailwardSlidingDoorRenderer extends SafeBlockEntityRenderer<SlidingDoorBlockEntity> {
 
@@ -64,7 +65,7 @@ public class RailwardSlidingDoorRenderer extends SafeBlockEntityRenderer<Sliding
 			int light) {
 		SuperByteBuffer door = CachedBufferer.partial(models.get(half, left), state);
 		ContraptionDiffuseLighting.apply(door, partialTicks);
-		door
+		RailwardSuperByteBufferTransform.of(door)
 				.centre()
 				.rotateY(blockStateRotation(facing))
 				.unCentre()

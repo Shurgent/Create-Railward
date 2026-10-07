@@ -1,5 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
+//? if !create6 {
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.core.Materials;
 import com.jozufozu.flywheel.core.materials.model.ModelData;
@@ -61,3 +62,4 @@ public class CisternHatchActorInstance extends ActorInstance {
 		};
 	}
 }
+//?}

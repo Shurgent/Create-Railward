@@ -1,7 +1,7 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -32,7 +32,7 @@ public class WagonFrameRenderer extends SmartBlockEntityRenderer<WagonFrameBlock
 		BlockState state = be.getBlockState();
 
 		ms.pushPose();
-		TransformStack.cast(ms).centre()
+		RailwardTransformStack.cast(ms).centre()
 			.rotateY(getFacingRotation(state.getValue(WagonFrameBlock.FACING)))
 			.unCentre();
 
@@ -58,7 +58,7 @@ public class WagonFrameRenderer extends SmartBlockEntityRenderer<WagonFrameBlock
 			return;
 
 		ms.pushPose();
-		TransformStack.cast(ms).translate(0.5, 0, 0.5)
+		RailwardTransformStack.cast(ms).translate(0.5, 0, 0.5)
 			.rotateY(getSideRotation(side))
 			.translate(-0.5, 0, -0.5);
 		render(model, state, ms, buffers, light);
@@ -86,7 +86,7 @@ public class WagonFrameRenderer extends SmartBlockEntityRenderer<WagonFrameBlock
 
 		ms.pushPose();
 		if (side == WagonFrameHandBrakeValveSide.RIGHT) {
-			TransformStack.cast(ms).translate(0.5, 0, 0.5)
+			RailwardTransformStack.cast(ms).translate(0.5, 0, 0.5)
 				.rotateY(180)
 				.translate(-0.5, 0, -0.5);
 		}

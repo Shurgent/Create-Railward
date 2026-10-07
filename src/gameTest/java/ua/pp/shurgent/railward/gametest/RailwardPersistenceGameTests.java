@@ -108,6 +108,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainCouplerHandler;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignEdgePoint;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlockEntity;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignEdgePoint;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
@@ -1404,12 +1405,12 @@ public final class RailwardPersistenceGameTests {
 		int couplers = 0;
 		for (Train train : trains)
 			for (com.simibubi.create.content.trains.entity.Carriage carriage : train.carriages) {
-				IItemHandler items = carriage.storage.getItems();
+				IItemHandler items = RailwardMountedStorage.items(carriage.storage);
 				for (int slot = 0; slot < items.getSlots(); slot++)
 					if (!items.getStackInSlot(slot).isEmpty() && !items.getStackInSlot(slot).is(Items.IRON_INGOT))
 						throw new IllegalStateException("COUPLE-03 found an unexpected cargo item "
 							+ items.getStackInSlot(slot));
-				IFluidHandler fluids = carriage.storage.getFluids();
+				IFluidHandler fluids = RailwardMountedStorage.fluids(carriage.storage);
 				int fluidAmount = 0;
 				for (int tank = 0; tank < fluids.getTanks(); tank++) {
 					FluidStack fluid = fluids.getFluidInTank(tank);
@@ -2258,9 +2259,9 @@ public final class RailwardPersistenceGameTests {
 
 					require(helper, train.currentStation != null,
 						"assembled train was not associated with its station");
-					require(helper, countItems(train.carriages.get(0).storage.getItems()) == 96,
+					require(helper, countItems(RailwardMountedStorage.items(train.carriages.get(0).storage)) == 96,
 						"prepared Train storage did not contain 96 items");
-					require(helper, train.carriages.get(0).storage.getFluids().getFluidInTank(0).getAmount() == 1500,
+					require(helper, RailwardMountedStorage.fluids(train.carriages.get(0).storage).getFluidInTank(0).getAmount() == 1500,
 						"prepared Train storage did not contain 1500 mB");
 					succeedAndStop(helper);
 				});
@@ -2295,9 +2296,9 @@ public final class RailwardPersistenceGameTests {
 				"persisted train did not restore its active schedule");
 			require(helper, TrainDirectionState.resolveServer(train) == DirectionState.BACKWARD,
 				"persisted train did not restore its server-authoritative backward direction");
-			require(helper, countItems(train.carriages.get(0).storage.getItems()) == 96,
+			require(helper, countItems(RailwardMountedStorage.items(train.carriages.get(0).storage)) == 96,
 				"persisted train did not restore 96 cargo items");
-			IFluidHandler fluids = train.carriages.get(0).storage.getFluids();
+			IFluidHandler fluids = RailwardMountedStorage.fluids(train.carriages.get(0).storage);
 			require(helper, fluids.getFluidInTank(0).getFluid() == Fluids.WATER
 				&& fluids.getFluidInTank(0).getAmount() == 1500,
 				"persisted train did not restore 1500 mB of water");

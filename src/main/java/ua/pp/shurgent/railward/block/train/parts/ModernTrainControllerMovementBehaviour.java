@@ -5,7 +5,6 @@ import com.jozufozu.flywheel.core.virtual.VirtualRenderWorld;
 import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
-import com.simibubi.create.content.contraptions.render.ContraptionRenderDispatcher;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -25,6 +24,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.block.train.parts.TrainDirectionState.DirectionState;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionLighting;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class ModernTrainControllerMovementBehaviour implements MovementBehaviour {
 
@@ -94,27 +95,28 @@ public class ModernTrainControllerMovementBehaviour implements MovementBehaviour
 			.3f, Chaser.EXP);
 
 		float partialTicks = AnimationTickHolder.getPartialTicks(context.world);
-		int light = ContraptionRenderDispatcher.getContraptionWorldLight(context, renderWorld);
 		render(AllPartialModels.MODERN_TRAIN_CONTROLLER_REVERSER, state, physicalFacing, REVERSER_PIVOT,
-			45 * animations.reverser.getValue(partialTicks), light, matrices, buffer);
+			45 * animations.reverser.getValue(partialTicks), context, renderWorld, matrices, buffer);
 		render(AllPartialModels.MODERN_TRAIN_CONTROLLER_BRAKE, state, physicalFacing, BRAKE_PIVOT,
-			90 * animations.brake.getValue(partialTicks), light, matrices, buffer);
+			90 * animations.brake.getValue(partialTicks), context, renderWorld, matrices, buffer);
 		render(AllPartialModels.MODERN_TRAIN_CONTROLLER_THROTTLE, state, physicalFacing, THROTTLE_PIVOT,
-			-90 * animations.throttle.getValue(partialTicks), light, matrices, buffer);
+			-90 * animations.throttle.getValue(partialTicks), context, renderWorld, matrices, buffer);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private static void render(PartialModel partial, BlockState state, Direction physicalFacing, Vec3 pivot,
-		float angle, int light, ContraptionMatrices matrices, MultiBufferSource buffer) {
+		float angle, MovementContext context, VirtualRenderWorld renderWorld, ContraptionMatrices matrices,
+		MultiBufferSource buffer) {
 		SuperByteBuffer model = CachedBufferer.partial(partial, state);
-		model.transform(matrices.getModel())
+		model.transform(matrices.getModel());
+		RailwardSuperByteBufferTransform.of(model)
 			.centre()
 			.rotateY(blockStateRotation(physicalFacing))
 			.unCentre()
 			.translate(pivot)
 			.rotateY(angle)
-			.translateBack(pivot)
-			.light(matrices.getWorld(), light)
+			.translateBack(pivot);
+		RailwardContraptionLighting.apply(model, context, renderWorld, matrices)
 			.renderInto(matrices.getViewProjection(), buffer.getBuffer(RenderType.solid()));
 	}
 

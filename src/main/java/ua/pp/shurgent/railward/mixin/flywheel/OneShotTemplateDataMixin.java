@@ -1,5 +1,13 @@
 package ua.pp.shurgent.railward.mixin.flywheel;
 
+//? if create6 {
+/*import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Object.class)
+public class OneShotTemplateDataMixin {
+}
+*///?}
+//? if !create6 {
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,3 +28,4 @@ public class OneShotTemplateDataMixin {
 		cir.setReturnValue(LocomotiveSpotlightForwardShaderPatcher.patchFlywheelVertexFooter(cir.getReturnValue()));
 	}
 }
+//?}

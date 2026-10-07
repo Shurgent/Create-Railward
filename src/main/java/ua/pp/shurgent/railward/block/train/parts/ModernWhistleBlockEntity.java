@@ -2,15 +2,14 @@ package ua.pp.shurgent.railward.block.train.parts;
 
 import java.util.List;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardValueBoxTransform;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock.WhistleSize;
 import com.simibubi.create.content.decoration.steamWhistle.WhistleBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
@@ -25,10 +24,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import ua.pp.shurgent.railward.client.gui.ModernWhistleConfigurationScreen;
 import ua.pp.shurgent.railward.client.sound.ModernWhistleBlockEntityAudio;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 
 public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 
@@ -194,7 +195,7 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 		private int secondaryValue = ModernWhistleSoundType.WHISTLE.ordinal();
 
 		private WhistleSoundConfigurationBehaviour(ModernWhistleBlockEntity whistle) {
-			super(Components.translatable("railward.modern_whistle.configuration"), whistle,
+			super(RailwardComponents.translatable("railward.modern_whistle.configuration"), whistle,
 				new ModernWhistleValueBoxTransform(8));
 			this.whistle = whistle;
 			withFormatter(value -> "...");
@@ -206,6 +207,9 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 		}
 
 		@Override
+		//? if create6
+		/*public void onShortInteract(Player player, InteractionHand hand, Direction side, BlockHitResult hit) {
+		*///? if !create6
 		public void onShortInteract(Player player, InteractionHand hand, Direction side) {
 			if (!player.level.isClientSide)
 				return;
@@ -238,7 +242,7 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 		}
 	}
 
-	private static class ModernWhistleValueBoxTransform extends ValueBoxTransform {
+	private static class ModernWhistleValueBoxTransform extends RailwardValueBoxTransform {
 
 		private static final double X = 8;
 		private static final double Y = 7;
@@ -269,7 +273,7 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 
 		@Override
 		public void rotate(BlockState state, PoseStack ms) {
-			TransformStack transform = TransformStack.cast(ms);
+			RailwardTransformStack transform = RailwardTransformStack.cast(ms);
 			applyAttachmentRotation(transform, state.getValue(ModernWhistleBlock.ATTACHED_FACE));
 			transform.rotateY(-state.getValue(ModernWhistleBlock.ROTATION) * 90d)
 				.rotateX(90);
@@ -292,7 +296,7 @@ public class ModernWhistleBlockEntity extends WhistleBlockEntity {
 			};
 		}
 
-		private static void applyAttachmentRotation(TransformStack transform, Direction attachedFace) {
+		private static void applyAttachmentRotation(RailwardTransformStack transform, Direction attachedFace) {
 			switch (attachedFace) {
 			case DOWN -> {
 			}

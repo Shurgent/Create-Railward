@@ -9,7 +9,6 @@ import java.util.Set;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.MountedStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.contraptions.minecart.TrainCargoManager;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
@@ -33,7 +32,8 @@ import net.minecraftforge.network.PacketDistributor;
 import ua.pp.shurgent.railward.RailwardPackets;
 import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
 import ua.pp.shurgent.railward.mixin.create.ContraptionAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.ItemStorage;
 import ua.pp.shurgent.railward.mixin.create.TrainCargoManagerAccessor;
 import ua.pp.shurgent.railward.network.BulkCargoSyncPacket;
 
@@ -142,24 +142,24 @@ public final class BulkCargoContraptionHelper {
 	private static IItemHandlerModifiable getItemHandler(MountedStorageManager manager, BlockPos controllerPos) {
 		if (manager == null)
 			return null;
-		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
-		MountedStorage mountedStorage = storage.get(controllerPos);
-		return mountedStorage == null ? null : mountedStorage.getItemHandler();
+		Map<BlockPos, ItemStorage> storage = RailwardMountedStorage.itemStorages(manager);
+		ItemStorage mountedStorage = storage.get(controllerPos);
+		return mountedStorage == null ? null : mountedStorage.handler();
 	}
 
 	private static IItemHandlerModifiable findComponentItemHandler(MountedStorageManager manager, ControllerData data) {
 		if (manager == null)
 			return null;
-		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
+		Map<BlockPos, ItemStorage> storage = RailwardMountedStorage.itemStorages(manager);
 		BlockPos origin = data.controllerPos();
 		IItemHandlerModifiable fallback = null;
 		for (int x = 0; x < data.sizeX(); x++)
 			for (int y = 0; y < data.height(); y++)
 				for (int z = 0; z < data.sizeZ(); z++) {
-					MountedStorage mountedStorage = storage.get(origin.offset(x, y, z));
+					ItemStorage mountedStorage = storage.get(origin.offset(x, y, z));
 					if (mountedStorage == null)
 						continue;
-					IItemHandlerModifiable handler = mountedStorage.getItemHandler();
+					IItemHandlerModifiable handler = mountedStorage.handler();
 					if (handler == null)
 						continue;
 					if (BulkCargoStorage.getStoredAmount(handler) > 0)
@@ -335,7 +335,7 @@ public final class BulkCargoContraptionHelper {
 
 		boolean applied = false;
 		ControllerData controllerData = resolveController(contraption, controllerPos);
-		for (Map.Entry<BlockPos, BlockEntity> entry : contraption.presentBlockEntities.entrySet()) {
+		for (Map.Entry<BlockPos, BlockEntity> entry : ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities.entries(contraption)) {
 			if (!(entry.getValue() instanceof BulkCargoContainerBlockEntity be))
 				continue;
 			ControllerData data = resolveController(contraption, entry.getKey());

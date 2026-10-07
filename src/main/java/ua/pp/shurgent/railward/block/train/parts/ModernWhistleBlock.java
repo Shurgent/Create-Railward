@@ -213,6 +213,7 @@ public class ModernWhistleBlock extends WhistleBlock {
 		return syncCompatibilityState(state.setValue(SOUND_TYPE, soundType));
 	}
 
+	//? if !create6
 	@Override
 	public void playRotateSound(Level level, BlockPos pos) {
 		float pitch = level.getRandom().nextFloat() + 0.5f;

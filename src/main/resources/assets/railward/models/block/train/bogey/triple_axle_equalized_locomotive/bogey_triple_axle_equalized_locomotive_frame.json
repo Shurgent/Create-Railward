@@ -2,6 +2,7 @@
     "parent":  "block/block",
     "loader":  "forge:obj",
     "flip-v":  true,
+    "emissive_ambient":  false,
     "model":  "railward:models/block/train/bogey/triple_axle_equalized_locomotive/bogey_triple_axle_equalized_locomotive_frame.obj",
     "textures":  {
                      "particle":  "railward:block/train/bogey/bogey_triple_axle_equalized_locomotive",

@@ -1,7 +1,7 @@
 package ua.pp.shurgent.railward.block.train.signal;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class WhistleSignBlock extends Block implements IBE<WhistleSignBlockEntity>, IWrenchable {
+public class WhistleSignBlock extends Block implements IBE<WhistleSignBlockEntity>, RailwardWrenchable {
 
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
 

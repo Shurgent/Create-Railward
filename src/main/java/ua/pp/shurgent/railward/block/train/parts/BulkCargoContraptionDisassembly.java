@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.MountedStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.contraptions.StructureTransform;
 
@@ -18,9 +17,10 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.ItemStorage;
 
 public final class BulkCargoContraptionDisassembly {
 
@@ -32,7 +32,7 @@ public final class BulkCargoContraptionDisassembly {
 		if (manager == null)
 			return;
 
-		Map<BlockPos, MountedStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getStorage();
+		Map<BlockPos, ItemStorage> storage = RailwardMountedStorage.itemStorages(manager);
 		if (storage.isEmpty())
 			return;
 
@@ -59,7 +59,7 @@ public final class BulkCargoContraptionDisassembly {
 		}
 
 		if (changed)
-			manager.createHandlers();
+			RailwardMountedStorage.commitItems(manager, storage);
 	}
 
 	private static BlockPos getControllerLocalPos(Contraption contraption, StructureTransform transform,
@@ -82,10 +82,10 @@ public final class BulkCargoContraptionDisassembly {
 		return info != null && info.state.getBlock() instanceof BulkCargoContainerBlock;
 	}
 
-	private static StorageNormalization normalizeStorage(Map<BlockPos, MountedStorage> storage, BlockPos controllerPos,
+	private static StorageNormalization normalizeStorage(Map<BlockPos, ItemStorage> storage, BlockPos controllerPos,
 		Set<BlockPos> component) {
 		int expectedSlots = component.size() * BulkCargoContainerBlockEntity.STACKS_PER_BLOCK;
-		MountedStorage controllerStorage = storage.get(controllerPos);
+		ItemStorage controllerStorage = storage.get(controllerPos);
 		BlockPos controllerStoragePos = controllerPos;
 
 		if (controllerStorage == null)
@@ -99,7 +99,7 @@ public final class BulkCargoContraptionDisassembly {
 		if (controllerStorage == null)
 			return new StorageNormalization(false, null);
 
-		ItemStackHandler controllerHandler = ((MountedStorageAccessor) controllerStorage).railward$getHandler();
+		IItemHandlerModifiable controllerHandler = controllerStorage.handler();
 		boolean needsMerge = !controllerStoragePos.equals(controllerPos)
 			|| controllerHandler == null
 			|| controllerHandler.getSlots() != expectedSlots;
@@ -113,10 +113,10 @@ public final class BulkCargoContraptionDisassembly {
 
 		List<ItemStack> contents = new ArrayList<>();
 		for (BlockPos pos : component) {
-			MountedStorage mountedStorage = storage.remove(pos);
+			ItemStorage mountedStorage = storage.remove(pos);
 			if (mountedStorage == null)
 				continue;
-			ItemStackHandler handler = ((MountedStorageAccessor) mountedStorage).railward$getHandler();
+			IItemHandlerModifiable handler = mountedStorage.handler();
 			if (handler != null)
 				contents.addAll(BulkCargoStorage.extractAll(handler));
 		}
@@ -124,13 +124,12 @@ public final class BulkCargoContraptionDisassembly {
 		BulkCargoStorage.CargoItemHandler merged = new BulkCargoStorage.CargoItemHandler(expectedSlots);
 		for (ItemStack stack : contents)
 			BulkCargoStorage.insertExisting(merged, stack, false);
-		((MountedStorageAccessor) controllerStorage).railward$setHandler(merged);
-		storage.put(controllerPos, controllerStorage);
+		storage.put(controllerPos, controllerStorage.withHandler(merged));
 		return new StorageNormalization(true, merged);
 	}
 
 	private static void writeDisassemblyNbt(Contraption contraption, Set<BlockPos> component, Bounds bounds,
-		ItemStackHandler handler) {
+		IItemHandlerModifiable handler) {
 		for (BlockPos localPos : component) {
 			StructureBlockInfo info = contraption.getBlocks()
 				.get(localPos);
@@ -166,7 +165,7 @@ public final class BulkCargoContraptionDisassembly {
 		return snapshot.serializeNBT();
 	}
 
-	private record StorageNormalization(boolean changed, ItemStackHandler handler) {
+	private record StorageNormalization(boolean changed, IItemHandlerModifiable handler) {
 	}
 
 	private record Bounds(BlockPos controllerGlobalPos, BlockPos controllerLocalPos, int sizeX, int sizeZ, int height) {

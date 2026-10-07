@@ -8,7 +8,6 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.LangBuilder;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
@@ -35,6 +34,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import ua.pp.shurgent.railward.Railward;
+import ua.pp.shurgent.railward.compat.RailwardLang;
 
 public class BulkCargoContainerBlockEntity extends SmartBlockEntity
 	implements IHaveGoggleInformation, IMultiBlockEntityContainer.Inventory {
@@ -257,22 +257,22 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity
 		ItemStack displayStack = tooltipSource.getDisplayStack();
 		railwardLang("gui.goggles.bulk_cargo_container").forGoggles(tooltip);
 
-		LangBuilder cargoLine = Lang.builder()
+		LangBuilder cargoLine = RailwardLang.builder()
 			.add(railwardLang("gui.goggles.bulk_cargo_container.cargo").style(ChatFormatting.GRAY))
 			.space();
 		if (displayStack.isEmpty())
 			cargoLine.add(railwardLang("gui.goggles.bulk_cargo_container.empty").style(ChatFormatting.DARK_GRAY));
 		else
-			cargoLine.add(Lang.itemName(displayStack).style(ChatFormatting.GRAY));
+			cargoLine.add(RailwardLang.itemName(displayStack).style(ChatFormatting.GRAY));
 		cargoLine.forGoggles(tooltip, 1);
 
-		Lang.builder()
+		RailwardLang.builder()
 			.add(railwardLang("gui.goggles.bulk_cargo_container.amount").style(ChatFormatting.GRAY))
 			.space()
-			.add(Lang.number(tooltipSource.getStoredAmount())
+			.add(RailwardLang.number(tooltipSource.getStoredAmount())
 				.style(ChatFormatting.GOLD))
 			.text(ChatFormatting.GRAY, " / ")
-			.add(Lang.number(tooltipSource.getCapacityItems())
+			.add(RailwardLang.number(tooltipSource.getCapacityItems())
 				.style(ChatFormatting.DARK_GRAY))
 			.space()
 			.add(railwardLang("gui.goggles.bulk_cargo_container.items").style(ChatFormatting.GRAY))
@@ -282,7 +282,7 @@ public class BulkCargoContainerBlockEntity extends SmartBlockEntity
 	}
 
 	private static LangBuilder railwardLang(String key) {
-		return Lang.builder(Railward.MOD_ID)
+		return RailwardLang.builder(Railward.MOD_ID)
 			.translate(key);
 	}
 

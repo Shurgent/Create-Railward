@@ -1,7 +1,7 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
@@ -51,7 +51,7 @@ public class LocomotiveSpotlightRenderHelper {
 		LocomotiveSpotlightPartialModels models = resolveModels(variant);
 
 		ms.pushPose();
-		TransformStack.cast(ms).centre()
+		RailwardTransformStack.cast(ms).centre()
 			.rotateY(rotation)
 			.unCentre();
 		ms.translate(0, 0, normalOffset);

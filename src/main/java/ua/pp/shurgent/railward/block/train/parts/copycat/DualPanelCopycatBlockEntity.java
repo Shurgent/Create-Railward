@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -128,7 +129,13 @@ public class DualPanelCopycatBlockEntity extends CopycatBlockEntity
 	}
 
 	@Override
+	//? if create6
+	/*public void transform(BlockEntity blockEntity, StructureTransform transform) {
+	*///? if !create6
 	public void transform(StructureTransform transform) {
+		//? if create6
+		/*super.transform(blockEntity, transform);
+		*///? if !create6
 		super.transform(transform);
 		if (secondaryFacing == null)
 			return;

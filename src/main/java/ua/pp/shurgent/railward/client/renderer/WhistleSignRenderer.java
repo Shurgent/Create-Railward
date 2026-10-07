@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.simibubi.create.content.trains.track.ITrackBlock;
@@ -42,7 +42,7 @@ public class WhistleSignRenderer extends SmartBlockEntityRenderer<WhistleSignBlo
 		float angle = rot16 * 360f / 16f;
 
 		ms.pushPose();
-		TransformStack.cast(ms)
+		RailwardTransformStack.cast(ms)
 			.centre()
 			.rotateY(-angle)
 			.unCentre();
@@ -85,7 +85,7 @@ public class WhistleSignRenderer extends SmartBlockEntityRenderer<WhistleSignBlo
 			return;
 
 		ms.pushPose();
-		TransformStack.cast(ms)
+		RailwardTransformStack.cast(ms)
 			.translate(targetPosition.subtract(pos));
 		WhistleSignEdgePoint edgePoint = target.getEdgePoint();
 		RenderedTrackOverlayType type = edgePoint != null && edgePoint.hasSignsOnBothSides()

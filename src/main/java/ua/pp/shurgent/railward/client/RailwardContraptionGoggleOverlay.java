@@ -46,6 +46,7 @@ import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionHelper;
 import ua.pp.shurgent.railward.block.train.parts.CisternBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.CisternContraptionHelper;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities;
 
 public final class RailwardContraptionGoggleOverlay {
 
@@ -136,7 +137,7 @@ public final class RailwardContraptionGoggleOverlay {
 		if (contraption == null)
 			return null;
 
-		BlockEntity blockEntity = contraption.presentBlockEntities.get(localPos);
+		BlockEntity blockEntity = RailwardContraptionBlockEntities.get(contraption, localPos);
 		if (blockEntity instanceof BulkCargoContainerBlockEntity bulk)
 			return resolveBulkTarget(entity, contraption, localPos, bulk);
 		if (blockEntity instanceof CisternBlockEntity)
@@ -154,8 +155,8 @@ public final class RailwardContraptionGoggleOverlay {
 			return new TooltipTarget(entity.getId(), localPos, fallback);
 
 		BulkCargoContainerBlockEntity source = getBulkClientView(contraption, data.controllerPos());
-		if (source == null && contraption.presentBlockEntities
-			.get(data.controllerPos()) instanceof BulkCargoContainerBlockEntity controller)
+		if (source == null && RailwardContraptionBlockEntities.get(contraption,
+			data.controllerPos()) instanceof BulkCargoContainerBlockEntity controller)
 			source = controller;
 		if (source == null)
 			source = fallback;
@@ -163,7 +164,7 @@ public final class RailwardContraptionGoggleOverlay {
 	}
 
 	private static BulkCargoContainerBlockEntity getBulkClientView(Contraption contraption, BlockPos controllerPos) {
-		for (BlockEntity blockEntity : contraption.presentBlockEntities.values())
+		for (BlockEntity blockEntity : RailwardContraptionBlockEntities.values(contraption))
 			if (blockEntity instanceof BulkCargoContainerBlockEntity container
 				&& container.isClientCargoViewFor(controllerPos))
 				return container;
@@ -174,10 +175,10 @@ public final class RailwardContraptionGoggleOverlay {
 		BlockPos localPos) {
 		CisternContraptionHelper.ControllerData data = CisternContraptionHelper.resolveController(contraption, localPos);
 		BlockPos sourcePos = data == null ? localPos : data.controllerPos();
-		BlockEntity source = contraption.presentBlockEntities.get(sourcePos);
+		BlockEntity source = RailwardContraptionBlockEntities.get(contraption, sourcePos);
 		if (source instanceof IHaveGoggleInformation goggleInformation)
 			return new TooltipTarget(entity.getId(), sourcePos, goggleInformation);
-		BlockEntity fallback = contraption.presentBlockEntities.get(localPos);
+		BlockEntity fallback = RailwardContraptionBlockEntities.get(contraption, localPos);
 		return fallback instanceof IHaveGoggleInformation goggleInformation
 			? new TooltipTarget(entity.getId(), localPos, goggleInformation) : null;
 	}

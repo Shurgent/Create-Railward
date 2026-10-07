@@ -2,14 +2,18 @@ package ua.pp.shurgent.railward.block.train.station;
 
 import java.util.Optional;
 
+//? if !create6
 import javax.annotation.Nullable;
 
+//? if !create6
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.core.virtual.VirtualRenderWorld;
 import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
+//? if !create6
 import com.simibubi.create.content.contraptions.render.ActorInstance;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
+//? if !create6
 import com.simibubi.create.content.contraptions.render.ContraptionRenderDispatcher;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.foundation.utility.VecHelper;
@@ -25,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+//? if !create6
 import ua.pp.shurgent.railward.client.renderer.CisternHatchActorInstance;
 import ua.pp.shurgent.railward.client.renderer.CisternHatchRenderer;
 
@@ -42,6 +47,7 @@ public class CisternHatchMovement implements MovementBehaviour {
 		return new ItemStack(context.state.getBlock());
 	}
 
+	//? if !create6 {
 	@Override
 	public boolean hasSpecialInstancedRendering() {
 		return true;
@@ -54,13 +60,16 @@ public class CisternHatchMovement implements MovementBehaviour {
 		MovementContext context) {
 		return new CisternHatchActorInstance(materialManager, simulationWorld, context);
 	}
+	//?}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,
 		ContraptionMatrices matrices, MultiBufferSource buffer) {
+		//? if !create6 {
 		if (ContraptionRenderDispatcher.canInstance())
 			return;
+		//?}
 		CisternHatchRenderer.renderInContraption(context, renderWorld, matrices, buffer);
 	}
 

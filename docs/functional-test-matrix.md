@@ -2,8 +2,8 @@
 
 This matrix is the runtime acceptance checklist for Create: Railward. Minecraft
 1.18.2 is the primary platform: every priority P0 row must pass there before a
-feature is considered complete. Minecraft 1.19.2 and 1.20.1 are ports and use
-the reduced gate described below.
+feature is considered complete. Minecraft 1.19.2, 1.20.1/Create 5 and
+1.20.1/Create 6 are ports and use the reduced gate described below.
 
 ## Result notation
 
@@ -18,24 +18,45 @@ Store disposable worlds and logs below `.devdocs/tmp/`. Do not use the primary
 
 ## Automated baseline
 
-| Check | 1.18.2 | 1.19.2 | 1.20.1 |
-| --- | --- | --- | --- |
-| Clean compile, unit tests, reobfuscation and JAR collection | PASS (2026-09-30, `clean buildAndCollect`) | PASS (2026-09-30, `clean buildAndCollect`) | PASS (2026-09-30, `clean buildAndCollect`) |
-| Dedicated GameTests: cargo/cistern persistence, limits, rules, capabilities, multiblock conservation, unloading, train assembly/movement/NBT and arrival-time selection/projection | PASS (2026-09-29, 25/25) | PASS (2026-09-29, 25/25) | PASS (2026-09-29, 25/25) |
-| Optional CC:Tweaked station peripheral: station identity, assigned arrivals, argument validation and schedule/runtime data | PASS (2026-09-30, opt-in 26/26; ordinary no-CC 25/25) | PASS (2026-09-30, opt-in 26/26) | PASS (2026-09-30, opt-in 26/26) |
-| Two-JVM dedicated-server persistence: Create SavedData, carriage entity, station/direction/throttle/schedule, mounted controller/fill, 96 items and 1500 mB fluid | PASS (2026-09-27, prepare/save/stop/restart/verify) | NOT RUN | NOT RUN |
-| Dedicated late join and reconnect: two sequential clients receive restored direction, controller/lights, mounted cargo controller/fill and cistern state | PASS (2026-09-27, both clients and server exited successfully) | NOT RUN | NOT RUN |
-| Two simultaneous dedicated clients receive one live server update, mounted cargo fill change and bounded train movement | PASS (2026-09-27, driver, observer and server exited successfully) | NOT RUN | NOT RUN |
-| Dedicated controller: two clients observe forward/coast/brake/backward/release; driver packets test reverser guards and prompts | PASS (2026-09-21, `ctrl-20260921-h`: server, driver and observer passed without crash) | NOT RUN | NOT RUN |
-| Autonomous scheduled route with seated NPC: two clients observe departure, movement, braking, arrival delay and idle | PASS (2026-09-26, `ctrl03-route-20260926-c`: 32-block Create navigation; server, driver and observer passed without crash) | NOT RUN | NOT RUN |
-| Dedicated coupling topology: two clients observe two one-carriage trains merge and split with valid identities/order/bindings | PASS (2026-09-26, `couple01-20260926-b`: server, driver and observer passed without crash) | NOT RUN | NOT RUN |
-| Dedicated automatic coupling: disabled and over-speed pairs remain separate; permitted approaches from both directions merge for two clients | PASS (2026-09-26, `couple02-20260926-d`: server, driver and observer passed without crash) | NOT RUN | NOT RUN |
-| Dedicated cargo unloading: exact direct and bunker transfers, redstone rejection, synchronized falling-item state and active audio on two clients | PASS (2026-09-27, `cargo03-20260927-c`: server, driver and observer passed without crash) | NOT RUN | NOT RUN |
-| Dedicated server reaches `Done` and Railward server-start handler runs | PASS (2026-09-19) | PASS (2026-09-19) | PASS (2026-09-19) |
-| Separate client completes Forge handshake and joins dedicated server | PASS (2026-09-19, `railward:main` accepted) | NOT RUN | NOT RUN |
+| Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
+| --- | --- | --- | --- | --- |
+| Clean compile, unit tests, reobfuscation and JAR collection | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) |
+| Dedicated GameTests: cargo/cistern persistence, limits, rules, capabilities, multiblock conservation, unloading, train assembly/movement/NBT and arrival-time selection/projection | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25; mounted-storage codec and station disassembly included) |
+| Optional CC:Tweaked station peripheral: station identity, assigned arrivals, argument validation and schedule/runtime data | PASS (2026-09-30, opt-in 26/26; ordinary no-CC 25/25) | PASS (2026-09-30, opt-in 26/26) | PASS (2026-09-30, opt-in 26/26) | NOT RUN |
+| Two-JVM dedicated-server persistence: Create SavedData, carriage entity, station/direction/throttle/schedule, mounted controller/fill, 96 items and 1500 mB fluid | PASS (2026-09-27, prepare/save/stop/restart/verify) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated late join and reconnect: two sequential clients receive restored direction, controller/lights, mounted cargo controller/fill and cistern state | PASS (2026-09-27, both clients and server exited successfully) | NOT RUN | NOT RUN | NOT RUN |
+| Two simultaneous dedicated clients receive one live server update, mounted cargo fill change and bounded train movement | PASS (2026-09-27, driver, observer and server exited successfully) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated controller: two clients observe forward/coast/brake/backward/release; driver packets test reverser guards and prompts | PASS (2026-09-21, `ctrl-20260921-h`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
+| Autonomous scheduled route with seated NPC: two clients observe departure, movement, braking, arrival delay and idle | PASS (2026-09-26, `ctrl03-route-20260926-c`: 32-block Create navigation; server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated coupling topology: two clients observe two one-carriage trains merge and split with valid identities/order/bindings | PASS (2026-09-26, `couple01-20260926-b`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated automatic coupling: disabled and over-speed pairs remain separate; permitted approaches from both directions merge for two clients | PASS (2026-09-26, `couple02-20260926-d`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated cargo unloading: exact direct and bunker transfers, redstone rejection, synchronized falling-item state and active audio on two clients | PASS (2026-09-27, `cargo03-20260927-c`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
+| Dedicated server reaches `Done` and Railward server-start handler runs | PASS (2026-09-19) | PASS (2026-09-19) | PASS (2026-09-19) | PASS (2026-10-04, isolated startup smoke) |
+| Separate client completes Forge handshake and joins dedicated server | PASS (2026-09-19, `railward:main` accepted) | NOT RUN | NOT RUN | PASS (2026-10-04, isolated client joined the isolated dedicated server twice while exercising both Flywheel backends) |
 
 The unit suite covers physical-station selection, malformed schedule filters,
 world-time projection (including B3M modes), and wagon-frame serialized values.
+The Create 6 client smoke on 2026-10-04 forced both `flywheel:instancing` and
+`flywheel:indirect` against nearby kinetic blocks. Flywheel generated and
+compiled a backend-specific fragment pipeline in each run; both dumped sources
+contained Railward's projected-light uniforms and call site, and neither client
+reported shader compilation or mixin errors. This validates integration with
+both Flywheel 1 pipelines; the spotlight's in-game appearance was subsequently
+verified by the manual checks recorded under `VISUAL-01`.
+On the same date, a client initially crashed while Create 6 constructed the
+virtual render world for an assembled migrated train containing a Railward wall
+panel. After preventing client-side `BlockEntity#setChanged()` from querying a
+real chunk in that virtual world, an isolated client joined a dedicated copy of
+the reported world at the saved position beside the same train and remained
+connected without the former `UnsupportedOperationException` or a crash report.
+The subsequent Create 6 visual-compatibility smoke restored the current
+contraption entity around `ContraptionEntityRenderer.render`, allowing mounted
+buffer lights and the cab signal to consume their already-synchronized train
+state again. It also aligned animated-controller lighting with Create 6 by
+combining the virtual block's local light value with the real client level's
+transformed light. An isolated client joined beside the migrated train and
+rendered it without a mixin, renderer or client crash. Subsequent human checks
+confirmed the buffer/cab lights and controller appearance and animation.
 The dedicated GameTests add registry-backed server coverage for bulk-cargo
 insertion/extraction and filtering, routed item capabilities, cargo/cistern
 block-entity NBT persistence, both bulk-cargo horizontal orientations, exact
@@ -144,13 +165,14 @@ Evidence is in
 | FLUID-02 | P0 | Mounted fluid transfer | Assemble a partially filled cistern and transfer through hatch/terminal before and after movement. Fluid must remain server-authoritative and resync after reconnect and disassembly. | PASS (2026-09-27: all three versions assembled a real station train, filled its mounted cistern 1000 -> 1500 mB through the connected hatch/terminal, disconnected during movement, reconnected after returning, drained 250 mB through the terminal and disassembled with exactly 1250 mB; SAVE-01 and two NET-01 late joins independently verified fresh-JVM persistence and reconnect synchronization; the multi-tank FluidNetwork regression passed with the workaround enabled) |
 | SIGNAL-01 | P0 | Signals and signs | Pass speed signs, whistle signs and each relevant Create signal aspect in both directions. Speed behavior, honk event and cab-signal aspect must change once per authoritative event and match on observing clients. | PARTIAL (2026-09-29: a real seated NPC completed the outbound and return Create schedules through two-sided 20/60 km/h speed signs, whistle signs and a fixed signal; the dedicated server plus Driver and Observer independently observed WHITE/GREEN/YELLOW/YELLOW_RED aspects, both synchronized throttle limits, both movement directions, exactly two honk events and the complete round trip; all three processes exited successfully with no crash report; cab-signal/sign rendering and spatial whistle audio inspection pending) |
 | TIME-01 | P1 | Arrival forecast | Use exact and wildcard station names, duplicate platform names, renamed stations, frozen daylight and altered time rates. Only the selected physical station may receive an assigned arrival and projected time must follow the world clock. | PASS (2026-09-29: production selection matched exact/wildcard names, kept duplicate-name physical UUIDs distinct through rename, froze projections with daylight disabled and followed a measured 2x world-clock rate; dedicated GameTests passed 25/25 on all three versions) |
-| VISUAL-01 | P1 | Contraption rendering | Inspect panels, roofs, doors, railings, lights, spotlight, cistern and cargo from all block facings while orbiting the camera. World-facing diffuse light must remain stable and animated parts must rotate around the correct local axes. | PASS (2026-10-03 manual recheck confirmed the fixed train-roof material geometry on Railward copycat slices, half-panels and wall panels in 1.19.2/1.20.1, corrected colored on/off large-signal lamps in 1.20.1, and correctly rendered full and both wedge roof-partition variants in 1.20.1.) |
+| VISUAL-01 | P1 | Contraption rendering | Inspect panels, roofs, doors, railings, lights, spotlight, cistern and cargo from all block facings while orbiting the camera. World-facing diffuse light must remain stable and animated parts must rotate around the correct local axes. | PARTIAL (2026-10-03 manual recheck confirmed the fixed train-roof material geometry on Railward copycat slices, half-panels and wall panels in 1.19.2/1.20.1, corrected colored/on-off large-signal lamps in 1.20.1, and correctly rendered full and both wedge roof-partition variants in 1.20.1. On 2026-10-04 Create 6 compiled the Railward spotlight patch successfully with both Flywheel backends; a later isolated client smoke loaded the migrated train after restoring Create 6 contraption render context for buffer/cab lights and matching animated-controller lighting to Create 6. Manual Create 6 checks then confirmed those lights and controller visuals. On 2026-10-07 a further manual orbit check confirmed that the spotlight still illuminates geometry in front of it without projecting a reverse cone onto JSON/SuperByteBuffer locomotive parts, and that Railward's custom bogeys use normal world lighting instead of rendering full-bright in darkness, both as placed blocks and on an assembled train. The remaining complete all-model/all-facing visual pass is pending.) |
 | AUDIO-01 | P1 | Audio/effects | Verify primary/secondary whistle, arrival sound, unloading loop and diesel exhaust from driver, observer and reconnecting-client perspectives. Sounds must start/stop once and particles must not be emitted by server-only code on the client. | PASS (2026-10-03 manual recheck: after lengthening the test route, station-approach arrival whistles worked on 1.19.2 and 1.20.1, confirming the original report was a fixture issue; diesel exhaust is visible and composites correctly against clouds on 1.20.1; bulk-unloading sounds and particles work on all three versions. Earlier dedicated multi-client probes cover synchronized driver/observer delivery and reconnect behavior.) |
 | CC-01 | P2 | ComputerCraft | With CC:Tweaked installed, call the documented station peripheral methods and validate schedule/arrival results. Without CC:Tweaked, Railward must still load normally. | PASS (2026-09-30: all three versions passed the opt-in 26/26 GameTest suite against their pinned full CC:Tweaked runtime; the real Create station peripheral exposed and returned valid `getStationId`, `getArrivals` and `getTrainSchedule` data, rejected a zero arrival limit, and the ordinary 1.18.2 no-CC suite independently passed 25/25) |
 
 ## Port release gate
 
-After all 1.18.2 P0 rows pass, verify the following on both 1.19.2 and 1.20.1:
+After all 1.18.2 P0 rows pass, verify the following on 1.19.2,
+1.20.1/Create 5 and 1.20.1/Create 6:
 
 1. Dedicated server startup and a separate client connection.
 2. Assemble, drive, save and reload one train containing a modern controller,

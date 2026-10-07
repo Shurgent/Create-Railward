@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
-import com.simibubi.create.content.contraptions.render.ContraptionRenderDispatcher;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
@@ -21,6 +20,8 @@ import ua.pp.shurgent.railward.AllPartialModels;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlock;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.CisternHatchMovement;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionLighting;
+import ua.pp.shurgent.railward.client.compat.RailwardSuperByteBufferTransform;
 
 public class CisternHatchRenderer extends SafeBlockEntityRenderer<CisternHatchBlockEntity> {
 
@@ -36,8 +37,8 @@ public class CisternHatchRenderer extends SafeBlockEntityRenderer<CisternHatchBl
 		BlockState state = be.getBlockState();
 		VertexConsumer vb = buffer.getBuffer(RenderType.solid());
 		SuperByteBuffer lid = CachedBufferer.partial(AllPartialModels.CISTERN_HATCH_LID, state);
-		transformLid(lid, state, be.getLidProgress(partialTicks))
-			.light(light)
+		transformLid(lid, state, be.getLidProgress(partialTicks));
+		lid.light(light)
 			.renderInto(ms, vb);
 	}
 
@@ -50,16 +51,16 @@ public class CisternHatchRenderer extends SafeBlockEntityRenderer<CisternHatchBl
 			.getValue(partialTicks);
 
 		SuperByteBuffer lid = CachedBufferer.partial(AllPartialModels.CISTERN_HATCH_LID, state);
-		transformLid(lid, state, progress)
-			.light(matrices.getWorld(), ContraptionRenderDispatcher.getContraptionWorldLight(context, renderWorld))
+		transformLid(lid, state, progress);
+		RailwardContraptionLighting.apply(lid, context, renderWorld, matrices)
 			.renderInto(matrices.getViewProjection(), vb);
 	}
 
-	private static SuperByteBuffer transformLid(SuperByteBuffer lid, BlockState state, float progress) {
+	private static void transformLid(SuperByteBuffer lid, BlockState state, float progress) {
 		Direction facing = state.hasProperty(CisternHatchBlock.FACING) ? state.getValue(CisternHatchBlock.FACING)
 			: Direction.NORTH;
 		float eased = progress * progress;
-		return lid
+		RailwardSuperByteBufferTransform.of(lid)
 			.centre()
 			.rotateY(blockStateRotation(facing))
 			.unCentre()

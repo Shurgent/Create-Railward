@@ -23,10 +23,14 @@ public class LocomotiveSpotlightMovementBehaviour implements MovementBehaviour {
 		return attachment instanceof LocomotiveSpotlightAttachment ? AllBlocks.LOCOMOTIVE_SPOTLIGHT.asStack() : null;
 	}
 
+	// Create 6 removed this opt-in method; its replacement is the inverse
+	// disableBlockEntityRendering(), whose default already keeps BE rendering.
+	//? if !create6 {
 	@Override
 	public boolean renderAsNormalBlockEntity() {
 		return true;
 	}
+	//?}
 
 	public static boolean isDisabled(Contraption contraption) {
 		return contraption.getDisabledActors()

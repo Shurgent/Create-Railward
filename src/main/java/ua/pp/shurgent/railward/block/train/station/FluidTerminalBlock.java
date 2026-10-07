@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.block.train.station;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class FluidTerminalBlock extends HorizontalDirectionalBlock implements IBE<FluidTerminalBlockEntity>, IWrenchable {
+public class FluidTerminalBlock extends HorizontalDirectionalBlock implements IBE<FluidTerminalBlockEntity>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 

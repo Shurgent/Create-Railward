@@ -32,7 +32,7 @@ clients and a disposable world. Record the date and evidence in
   falling-item stream and loop, and diesel exhaust as driver and observer. Each
   effect looks correct, starts/stops once and remains spatially consistent.
 
-## Port gate: repeat for 1.19.2 and 1.20.1
+## Port gate: repeat for 1.19.2, 1.20.1/Create 5 and 1.20.1/Create 6
 
 - [ ] Confirm the recorded `create.FluidNetworkMixin` audit still matches the
   exact packaged Create version. Re-run the disabled/enabled multi-tank

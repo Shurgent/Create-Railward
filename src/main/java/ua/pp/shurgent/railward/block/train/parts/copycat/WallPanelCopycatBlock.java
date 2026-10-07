@@ -2,7 +2,6 @@ package ua.pp.shurgent.railward.block.train.parts.copycat;
 
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.decoration.copycat.WaterloggedCopycatBlock;
-import com.simibubi.create.content.contraptions.ITransformableBlock;
 import com.simibubi.create.content.contraptions.StructureTransform;
 
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.AllBlockEntities;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlock;
 
 /**
  * Common Create copycat integration for the fixed-size wall panel pieces.
@@ -28,7 +28,7 @@ import ua.pp.shurgent.railward.AllBlockEntities;
  * assembly while retaining Create's material transform and item requirement
  * handling.</p>
  */
-public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock implements ITransformableBlock {
+public abstract class WallPanelCopycatBlock extends WaterloggedCopycatBlock implements RailwardTransformableBlock {
 
 	protected WallPanelCopycatBlock(Properties properties) {
 		super(properties);

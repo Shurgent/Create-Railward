@@ -9,8 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+//? if create6 {
+/*import dev.engine_room.flywheel.api.visualization.VisualizationManager;
+*///?} else {
 import com.jozufozu.flywheel.backend.Backend;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderDispatcher;
+//?}
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.Carriage.DimensionalCarriageEntity;
@@ -257,6 +261,13 @@ public class TrainCouplerSyncPacket extends SimplePacketBase {
 
 	@OnlyIn(Dist.CLIENT)
 	private static void refreshCarriageInstance(CarriageContraptionEntity carriageEntity) {
+		//? if create6 {
+		/*if (!VisualizationManager.supportsVisualization(carriageEntity.level))
+			return;
+		var entities = VisualizationManager.getOrThrow(carriageEntity.level).entities();
+		entities.queueRemove(carriageEntity);
+		entities.queueAdd(carriageEntity);
+		*///?} else {
 		if (!Backend.isOn())
 			return;
 
@@ -264,6 +275,7 @@ public class TrainCouplerSyncPacket extends SimplePacketBase {
 			.remove(carriageEntity);
 		InstancedRenderDispatcher.getEntities(carriageEntity.level)
 			.queueAdd(carriageEntity);
+		//?}
 	}
 
 	@OnlyIn(Dist.CLIENT)

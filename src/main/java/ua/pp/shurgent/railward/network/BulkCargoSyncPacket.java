@@ -14,6 +14,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent.Context;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContraptionHelper;
 import ua.pp.shurgent.railward.block.train.parts.BulkCargoContainerBlockEntity;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities;
 
 public class BulkCargoSyncPacket extends SimplePacketBase {
 
@@ -68,8 +69,8 @@ public class BulkCargoSyncPacket extends SimplePacketBase {
 		if (BulkCargoContraptionHelper.applyClientCargo(contraptionEntity, controllerPos, displayStack, amount,
 			capacity))
 			return;
-		if (!(contraptionEntity.getContraption().presentBlockEntities
-			.get(controllerPos) instanceof BulkCargoContainerBlockEntity be))
+		if (!(RailwardContraptionBlockEntities.get(contraptionEntity.getContraption(),
+			controllerPos) instanceof BulkCargoContainerBlockEntity be))
 			return;
 		be.applyClientCargo(displayStack, amount, capacity);
 	}

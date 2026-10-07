@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.MountedFluidStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.contraptions.StructureTransform;
 
@@ -15,7 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.FluidStorage;
 
 public final class CisternContraptionDisassembly {
 
@@ -27,8 +27,7 @@ public final class CisternContraptionDisassembly {
 		if (manager == null)
 			return;
 
-		Map<BlockPos, MountedFluidStorage> fluidStorage =
-			((MountedStorageManagerAccessor) manager).railward$getFluidStorage();
+		Map<BlockPos, FluidStorage> fluidStorage = RailwardMountedStorage.fluidStorages(manager);
 		if (fluidStorage.isEmpty())
 			return;
 
@@ -56,7 +55,7 @@ public final class CisternContraptionDisassembly {
 		}
 
 		if (changed)
-			manager.createHandlers();
+			RailwardMountedStorage.commitFluids(manager, fluidStorage);
 	}
 
 	private static BlockPos getControllerLocalPos(Contraption contraption, StructureTransform transform,
@@ -79,9 +78,9 @@ public final class CisternContraptionDisassembly {
 		return info != null && info.state.getBlock() instanceof CisternBlock;
 	}
 
-	private static StorageNormalization normalizeFluidStorage(Map<BlockPos, MountedFluidStorage> storage,
+	private static StorageNormalization normalizeFluidStorage(Map<BlockPos, FluidStorage> storage,
 		BlockPos controllerPos, Set<BlockPos> component) {
-		MountedFluidStorage controllerStorage = storage.get(controllerPos);
+		FluidStorage controllerStorage = storage.get(controllerPos);
 		BlockPos controllerStoragePos = controllerPos;
 
 		if (controllerStorage == null)
@@ -104,7 +103,7 @@ public final class CisternContraptionDisassembly {
 			storage.remove(controllerStoragePos);
 			storage.put(controllerPos, controllerStorage);
 		}
-		return new StorageNormalization(changed, controllerStorage.getFluidHandler());
+		return new StorageNormalization(changed, controllerStorage.handler());
 	}
 
 	private static void writeDisassemblyNbt(Contraption contraption, Set<BlockPos> component, Bounds bounds,

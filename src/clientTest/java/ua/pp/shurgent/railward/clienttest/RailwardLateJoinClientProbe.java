@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.CreateClient;
@@ -48,6 +49,7 @@ import ua.pp.shurgent.railward.block.train.parts.TrainCouplerBlock;
 import ua.pp.shurgent.railward.block.train.parts.door.TrainDoorBlock;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities;
 import ua.pp.shurgent.railward.client.sound.UnloadingBulkCargoAudio;
 import ua.pp.shurgent.railward.compat.RailwardStructureInfo;
 import ua.pp.shurgent.railward.compat.RailwardComponents;
@@ -205,7 +207,8 @@ public final class RailwardLateJoinClientProbe {
 			return;
 		}
 
-		BulkCargoContainerBlockEntity cargoView = contraption.presentBlockEntities.values().stream()
+		BulkCargoContainerBlockEntity cargoView = StreamSupport.stream(
+			RailwardContraptionBlockEntities.values(contraption).spliterator(), false)
 			.filter(BulkCargoContainerBlockEntity.class::isInstance)
 			.map(BulkCargoContainerBlockEntity.class::cast)
 			.filter(BulkCargoContainerBlockEntity::hasClientCargoView)
@@ -565,7 +568,8 @@ public final class RailwardLateJoinClientProbe {
 					|| entity.carriageIndex != i)
 					return null;
 				Contraption contraption = entity.getContraption();
-				BulkCargoContainerBlockEntity cargoView = contraption.presentBlockEntities.values().stream()
+				BulkCargoContainerBlockEntity cargoView = StreamSupport.stream(
+					RailwardContraptionBlockEntities.values(contraption).spliterator(), false)
 					.filter(BulkCargoContainerBlockEntity.class::isInstance)
 					.map(BulkCargoContainerBlockEntity.class::cast)
 					.filter(BulkCargoContainerBlockEntity::hasClientCargoView)

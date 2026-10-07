@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -32,7 +32,7 @@ public class ModernWhistleRenderer extends SmartBlockEntityRenderer<ModernWhistl
 
 		ms.pushPose();
 
-		TransformStack transform = TransformStack.cast(ms).centre();
+		RailwardTransformStack transform = RailwardTransformStack.cast(ms).centre();
 		applyAttachmentRotation(transform, attachedFace);
 		transform.unCentre();
 		applyLocalRotation(transform, rotation);
@@ -47,13 +47,13 @@ public class ModernWhistleRenderer extends SmartBlockEntityRenderer<ModernWhistl
 		ms.popPose();
 	}
 
-	private void applyLocalRotation(TransformStack transform, int rotation) {
+	private void applyLocalRotation(RailwardTransformStack transform, int rotation) {
 		transform.translate(0.5, 0, 0.5)
 			.rotateY(-rotation * 90d)
 			.translate(-0.5, 0, -0.5);
 	}
 
-	private void applyAttachmentRotation(TransformStack transform, Direction attachedFace) {
+	private void applyAttachmentRotation(RailwardTransformStack transform, Direction attachedFace) {
 		switch (attachedFace) {
 		case DOWN -> {
 		}

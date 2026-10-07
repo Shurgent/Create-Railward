@@ -9,13 +9,16 @@ plugins {
 def versionFile = rootProject.file('mod_version.txt')
 def mixinRefmapFile = layout.buildDirectory.file("generated/mixin/${mod_id}.refmap.json")
 def ccGameTest = rootProject.findProperty('railwardCcTest')?.toString()?.toBoolean() ?: false
+def createGeneration = findProperty('create_generation')?.toString() ?: '5'
 ext.mod_version = versionFile.text.trim()
 version = mod_version
 
 group = mod_group_id
 
 base {
-    archivesName = "${mod_base}-${minecraft_version}"
+    // Project names distinguish dependency variants that share one Minecraft
+    // version (for example 1.20.1/Create 5 and 1.20.1/Create 6).
+    archivesName = "${mod_base}-${project.name}"
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -61,13 +64,13 @@ minecraft {
             ? rootProject.file(runDirectoryOverride)
             : minecraft_version == '1.18.2'
             ? rootProject.file('run')
-            : rootProject.file("run/${minecraft_version}")
+            : rootProject.file("run/${project.name}")
     def dataRunDirectory = minecraft_version == '1.18.2'
             ? rootProject.file('run-data')
-            : rootProject.file("run-data/${minecraft_version}")
+            : rootProject.file("run-data/${project.name}")
     def gameTestRunDirectory = runDirectoryOverride
             ? rootProject.file(runDirectoryOverride)
-            : rootProject.file(".devdocs/tmp/gametest/${minecraft_version}")
+            : rootProject.file(".devdocs/tmp/gametest/${project.name}")
 
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
@@ -207,7 +210,7 @@ if (rootProject.findProperty('railwardClientProbe')?.toString()?.toBoolean()) {
                     ? rootProject.file(runDirectoryOverride)
                     : minecraft_version == '1.18.2'
                     ? rootProject.file('run')
-                    : rootProject.file("run/${minecraft_version}")
+                    : rootProject.file("run/${project.name}")
             clientRunDirectory.mkdirs()
             def optionsFile = new File(clientRunDirectory, 'options.txt')
             def options = optionsFile.exists() ? optionsFile.readLines('UTF-8') : []
@@ -240,6 +243,7 @@ repositories {
 	maven { url = "https://api.modrinth.com/maven" } // JEI ???
 	maven { url = 'https://maven.blamejared.com' }  // JEI
 	maven { url = "https://maven.creeperhost.net" } // Create
+	maven { url = "https://maven.createmod.net" }  // Create 6, Ponder, Flywheel 1.x
 	maven { url = "https://maven.tterrag.com" }     // Registrate
 	maven {
 		url = "https://squiddev.cc/maven/"
@@ -280,7 +284,15 @@ dependencies {
 
 	// Create
     implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    if (createGeneration == '6') {
+        implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+        compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+        runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+        compileOnly annotationProcessor('io.github.llamalad7:mixinextras-common:0.4.1')
+        implementation 'io.github.llamalad7:mixinextras-forge:0.4.1'
+    } else {
+        implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    }
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 

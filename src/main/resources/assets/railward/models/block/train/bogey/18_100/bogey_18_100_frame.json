@@ -2,6 +2,7 @@
     "parent":  "block/block",
     "loader":  "forge:obj",
     "flip-v":  true,
+    "emissive_ambient":  false,
     "model":  "railward:models/block/train/bogey/18_100/bogey_18_100_frame.obj",
     "textures":  {
                      "particle":  "railward:block/train/bogey/bogey_18_100",

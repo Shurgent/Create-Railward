@@ -1,5 +1,71 @@
 package ua.pp.shurgent.railward.mixin.create.client;
 
+//? if create6 {
+/*import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Group;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import com.simibubi.create.content.contraptions.render.ContraptionEntityRenderer;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightForwardRenderer;
+import ua.pp.shurgent.railward.client.renderer.TrainCouplerContraptionRenderContext;
+
+@Mixin(value = ContraptionEntityRenderer.class, remap = false)
+public class ContraptionRenderDispatcherMixin {
+
+	@Group(name = "railward$setCurrentContraptionEntity", min = 1, max = 2)
+	@Inject(method = "render", at = @At("HEAD"), remap = false, require = 0)
+	private void railward$setCurrentContraptionEntityDev(AbstractContraptionEntity entity, float yaw,
+		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
+		railward$beginContraptionRender(entity, buffers);
+	}
+
+	@Group(name = "railward$setCurrentContraptionEntity", min = 1, max = 2)
+	@Inject(method = "m_7392_", at = @At("HEAD"), remap = false, require = 0)
+	private void railward$setCurrentContraptionEntitySrg(AbstractContraptionEntity entity, float yaw,
+		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
+		railward$beginContraptionRender(entity, buffers);
+	}
+
+	@Group(name = "railward$clearCurrentContraptionEntity", min = 1, max = 2)
+	@Inject(method = "render", at = @At("RETURN"), remap = false, require = 0)
+	private void railward$clearCurrentContraptionEntityDev(AbstractContraptionEntity entity, float yaw,
+		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
+		railward$endContraptionRender(buffers);
+	}
+
+	@Group(name = "railward$clearCurrentContraptionEntity", min = 1, max = 2)
+	@Inject(method = "m_7392_", at = @At("RETURN"), remap = false, require = 0)
+	private void railward$clearCurrentContraptionEntitySrg(AbstractContraptionEntity entity, float yaw,
+		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
+		railward$endContraptionRender(buffers);
+	}
+
+	private void railward$beginContraptionRender(AbstractContraptionEntity entity, MultiBufferSource buffers) {
+		if (buffers instanceof BufferSource bufferSource)
+			bufferSource.endBatch();
+		TrainCouplerContraptionRenderContext.set(entity);
+		LocomotiveSpotlightForwardRenderer.setContraptionFallbackPass(true);
+	}
+
+	private void railward$endContraptionRender(MultiBufferSource buffers) {
+		try {
+			if (buffers instanceof BufferSource bufferSource)
+				bufferSource.endBatch();
+		} finally {
+			TrainCouplerContraptionRenderContext.clear();
+			LocomotiveSpotlightForwardRenderer.setContraptionFallbackPass(false);
+		}
+	}
+}
+*///?}
+//? if !create6 {
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Group;
@@ -64,3 +130,4 @@ public class ContraptionRenderDispatcherMixin {
 		}
 	}
 }
+//?}

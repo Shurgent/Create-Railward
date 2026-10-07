@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.client.renderer;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.trains.signal.SignalBlockEntity.SignalState;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
@@ -33,7 +33,7 @@ public class ModernSignalGroundRenderer extends SmartBlockEntityRenderer<ModernS
 
 		ms.pushPose();
 		// Rotate around block center
-		TransformStack.cast(ms).centre().rotateY(-angle).unCentre();
+		RailwardTransformStack.cast(ms).centre().rotateY(-angle).unCentre();
 		
 		// Always render the base model
 		CachedBufferer.partial(AllPartialModels.SIGNAL_GROUND_BASE, state)

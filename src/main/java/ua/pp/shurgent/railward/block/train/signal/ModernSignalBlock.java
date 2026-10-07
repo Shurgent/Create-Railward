@@ -3,7 +3,7 @@ package ua.pp.shurgent.railward.block.train.signal;
 import javax.annotation.Nullable;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +35,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class ModernSignalBlock extends Block implements IBE<ModernSignalBlockEntity>, IWrenchable {
+public class ModernSignalBlock extends Block implements IBE<ModernSignalBlockEntity>, RailwardWrenchable {
 
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
 	private static final ThreadLocal<Boolean> REMOVING_CLUSTER = ThreadLocal.withInitial(() -> false);

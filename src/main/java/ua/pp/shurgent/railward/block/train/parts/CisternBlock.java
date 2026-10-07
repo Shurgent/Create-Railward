@@ -3,7 +3,7 @@ package ua.pp.shurgent.railward.block.train.parts;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.content.fluids.transfer.GenericItemEmptying;
 import com.simibubi.create.content.fluids.transfer.GenericItemFilling;
 import com.simibubi.create.foundation.block.IBE;
@@ -45,7 +45,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class CisternBlock extends Block implements IBE<CisternBlockEntity>, IWrenchable {
+public class CisternBlock extends Block implements IBE<CisternBlockEntity>, RailwardWrenchable {
 
 	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 	private static final int COLLISION_STEPS = 4;

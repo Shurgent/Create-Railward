@@ -280,6 +280,20 @@ public final class LocomotiveSpotlightForwardShaderPatcher {
 		return prefix + source.replace(originalReturn, replacement);
 	}
 
+	public static String patchFlywheel6Source(String source) {
+		String lightAnchor = "color *= lightColor;";
+		if (!source.contains("void _flw_main()")
+			|| !source.contains("lightColor = texture(flw_lightTex")
+			|| !source.contains(lightAnchor))
+			return source;
+
+		String replacement = "vec3 railwardLighting = railwardApplySpotlight(lightColor.rgb,\n"
+			+ "            flw_vertexPos.xyz - flw_cameraPos, normalize(flw_vertexNormal));\n"
+			+ "        color.rgb *= railwardLighting;\n"
+			+ "        color.a *= lightColor.a;";
+		return LIGHT_UNIFORMS + "\n" + source.replace(lightAnchor, replacement);
+	}
+
 	public static String patchFlywheelVertexFooter(String source) {
 		String declarations = "out float v2f_diffuse;";
 		String normalized = "v.normal = normalize(v.normal);";

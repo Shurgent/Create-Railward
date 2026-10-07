@@ -1,14 +1,13 @@
 package ua.pp.shurgent.railward;
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
-import static com.simibubi.create.AllInteractionBehaviours.interactionBehaviour;
-import static com.simibubi.create.AllMovementBehaviours.movementBehaviour;
 import static ua.pp.shurgent.railward.Railward.REGISTRATE;
+import static ua.pp.shurgent.railward.compat.RailwardMovementBehaviours.interactionBehaviour;
+import static ua.pp.shurgent.railward.compat.RailwardMovementBehaviours.movementBehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.behaviour.DoorMovingInteraction;
@@ -88,6 +87,7 @@ import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
 import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlockItem;
 import ua.pp.shurgent.railward.client.model.TrainRoofModelRegistration;
 import ua.pp.shurgent.railward.client.model.WallPanelCopycatModelRegistration;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
 
 public class AllBlocks {
 
@@ -902,8 +902,6 @@ public class AllBlocks {
 			.transform(customItemModel()).register();
 
 	public static void register() {
-		AllMovementBehaviours.registerBehaviourProvider(state ->
-			isAttachableTrainWallPanelState(state) ? LOCOMOTIVE_SPOTLIGHT_MOVEMENT : null);
 	}
 
 	public static boolean isTrainWallPanelVariantItem(ItemStack stack) {
@@ -1078,6 +1076,8 @@ public class AllBlocks {
 
 		if (cutout)
 			builder = builder.addLayer(() -> RenderType::cutout);
+		else
+			builder = builder.onRegister(movementBehaviour(LOCOMOTIVE_SPOTLIGHT_MOVEMENT));
 
 		BlockEntry<TrainWallPanelBlock> entry = builder
 				.properties(p -> cutout ? p.noOcclusion().requiresCorrectToolForDrops()
@@ -1100,6 +1100,7 @@ public class AllBlocks {
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.properties(p -> p.requiresCorrectToolForDrops())
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.CLIMBABLE)
+				.onRegister(movementBehaviour(LOCOMOTIVE_SPOTLIGHT_MOVEMENT))
 				.item((block, properties) -> new DualPanelBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.model((ctx, prov) -> prov.withExistingParent(ctx.getName(), prov.modLoc(PATH_TRAINPARTS + ctx.getName())))
 				.build()
@@ -1145,6 +1146,7 @@ public class AllBlocks {
 					.isViewBlocking((state, level, pos) -> false))
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 				.onRegister(interactionBehaviour(new BulkCargoContainerInteractionBehaviour()))
+				.transform(RailwardMountedStorage.simpleItemStorage())
 				.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.transform(customItemModel()).register();
 	}
@@ -1158,6 +1160,7 @@ public class AllBlocks {
 					.isSuffocating((state, level, pos) -> false)
 					.isViewBlocking((state, level, pos) -> false))
 				.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+				.transform(RailwardMountedStorage.fluidTankStorage())
 				.item((block, properties) -> new CisternBlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 				.transform(customItemModel()).register();
 	}

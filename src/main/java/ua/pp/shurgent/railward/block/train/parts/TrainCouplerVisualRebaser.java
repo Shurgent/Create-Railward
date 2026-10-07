@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.simibubi.create.content.contraptions.MountedFluidStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.trains.entity.ArrivalSoundQueue;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
@@ -21,7 +20,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.FluidStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.ItemStorage;
 
 public class TrainCouplerVisualRebaser {
 
@@ -32,11 +34,15 @@ public class TrainCouplerVisualRebaser {
 		CompoundTag tag = contraption.writeNBT(false);
 		rebaseContraptionTag(tag, offset, newAssemblyDirection);
 
+		//? if create6 {
+		/*contraption.resetClientContraption();
+		*///?} else {
 		contraption.modelData.clear();
 		contraption.presentBlockEntities.clear();
 		contraption.maybeInstancedBlockEntities.clear();
 		contraption.specialRenderedBlockEntities.clear();
 		contraption.soundQueue = new ArrivalSoundQueue();
+		//?}
 		contraption.readNBT(entity.level, tag, false);
 		contraption.entity = entity;
 		entity.setInitialOrientation(newAssemblyDirection.getClockWise());
@@ -44,6 +50,10 @@ public class TrainCouplerVisualRebaser {
 
 		rebuildBounds(contraption);
 		contraption.invalidateColliders();
+		//? if create6 {
+		/*contraption.invalidateClientContraptionStructure();
+		contraption.invalidateClientContraptionChildren();
+		*///?} else
 		contraption.deferInvalidate = true;
 	}
 
@@ -140,20 +150,20 @@ public class TrainCouplerVisualRebaser {
 		if (storageProxy == null)
 			return;
 
-		MountedStorageManagerAccessor accessor = (MountedStorageManagerAccessor) storageProxy;
-		rebaseMapKeys(accessor.railward$getStorage(), offset);
-		Map<BlockPos, MountedFluidStorage> fluidStorage = accessor.railward$getFluidStorage();
+		Map<BlockPos, ItemStorage> itemStorage = RailwardMountedStorage.itemStorages(storageProxy);
+		Map<BlockPos, FluidStorage> fluidStorage = RailwardMountedStorage.fluidStorages(storageProxy);
+		rebaseMapKeys(itemStorage, offset);
 		rebaseMapKeys(fluidStorage, offset);
 		rebindFluidStorage(contraption, fluidStorage);
-		storageProxy.createHandlers();
+		RailwardMountedStorage.commit(storageProxy, itemStorage, fluidStorage);
 	}
 
-	private static void rebindFluidStorage(CarriageContraption contraption, Map<BlockPos, MountedFluidStorage> fluidStorage) {
-		for (Map.Entry<BlockPos, MountedFluidStorage> entry : fluidStorage.entrySet()) {
-			BlockEntity blockEntity = contraption.presentBlockEntities.get(entry.getKey());
+	private static void rebindFluidStorage(CarriageContraption contraption, Map<BlockPos, FluidStorage> fluidStorage) {
+		for (Map.Entry<BlockPos, FluidStorage> entry : fluidStorage.entrySet()) {
+			BlockEntity blockEntity = RailwardContraptionBlockEntities.get(contraption, entry.getKey());
 			if (blockEntity != null)
 				entry.getValue()
-					.assignBlockEntity(blockEntity);
+					.rebind(blockEntity);
 		}
 	}
 

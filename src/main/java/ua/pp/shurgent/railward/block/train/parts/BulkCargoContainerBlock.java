@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -32,7 +32,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.ItemHandlerHelper;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoContainerBlockEntity>, IWrenchable {
+public class BulkCargoContainerBlock extends Block implements IBE<BulkCargoContainerBlockEntity>, RailwardWrenchable {
 
 	public static final BooleanProperty NORTH = BooleanProperty.create("north");
 	public static final BooleanProperty SOUTH = BooleanProperty.create("south");

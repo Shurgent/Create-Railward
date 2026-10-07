@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.utility.VoxelShaper;
 
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
-public class WagonFrameBlock extends HorizontalDirectionalBlock implements IBE<WagonFrameBlockEntity>, IWrenchable {
+public class WagonFrameBlock extends HorizontalDirectionalBlock implements IBE<WagonFrameBlockEntity>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.utility.Components;
 
 import net.minecraft.client.Minecraft;
 //? if >=1.20.1
@@ -16,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import ua.pp.shurgent.railward.RailwardPackets;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleSoundType;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 import ua.pp.shurgent.railward.network.ModernWhistleConfigurationPacket;
 
 @OnlyIn(Dist.CLIENT)
@@ -39,7 +39,7 @@ public class ModernWhistleConfigurationScreen extends AbstractSimiScreen {
 
 	private ModernWhistleConfigurationScreen(BlockPos blockPos, ModernWhistleSoundType primary,
 		ModernWhistleSoundType secondary) {
-		super(Components.translatable("railward.modern_whistle.configuration"));
+		super(RailwardComponents.translatable("railward.modern_whistle.configuration"));
 		this.blockPos = blockPos.immutable();
 		this.primary = primary;
 		this.secondary = secondary;
@@ -59,11 +59,11 @@ public class ModernWhistleConfigurationScreen extends AbstractSimiScreen {
 		int buttonY = guiTop + WINDOW_HEIGHT - 28;
 		IconButton cancelButton = new IconButton(guiLeft + WINDOW_WIDTH / 2 - 20, buttonY,
 			AllIcons.I_DISABLE);
-		cancelButton.setToolTip(Components.translatable("railward.modern_whistle.cancel"));
+		cancelButton.setToolTip(RailwardComponents.translatable("railward.modern_whistle.cancel"));
 		cancelButton.withCallback(this::onClose);
 
 		IconButton applyButton = new IconButton(guiLeft + WINDOW_WIDTH / 2 + 2, buttonY, AllIcons.I_CONFIRM);
-		applyButton.setToolTip(Components.translatable("railward.modern_whistle.apply"));
+		applyButton.setToolTip(RailwardComponents.translatable("railward.modern_whistle.apply"));
 		applyButton.withCallback(this::applyAndClose);
 		addRenderableWidgets(cancelButton, applyButton);
 	}
@@ -74,9 +74,9 @@ public class ModernWhistleConfigurationScreen extends AbstractSimiScreen {
 
 		int titleX = guiLeft + (WINDOW_WIDTH - font.width(title)) / 2;
 		font.draw(gui, title, titleX, guiTop + 16, 0xF3E7CA);
-		font.draw(gui, Components.translatable("railward.modern_whistle.primary"), guiLeft + 20,
+		font.draw(gui, RailwardComponents.translatable("railward.modern_whistle.primary"), guiLeft + 20,
 			guiTop + PRIMARY_FIELD_Y + 7, 0xE8E8E8);
-		font.draw(gui, Components.translatable("railward.modern_whistle.secondary"), guiLeft + 20,
+		font.draw(gui, RailwardComponents.translatable("railward.modern_whistle.secondary"), guiLeft + 20,
 			guiTop + SECONDARY_FIELD_Y + 7, 0xE8E8E8);
 
 		drawDropdownField(gui, mouseX, mouseY, PRIMARY_DROPDOWN, PRIMARY_FIELD_Y, primary);
@@ -107,7 +107,7 @@ public class ModernWhistleConfigurationScreen extends AbstractSimiScreen {
 
 		fill(gui, x, y, x + FIELD_WIDTH, y + FIELD_HEIGHT, open ? 0xFFD29B4C : 0xFF865D2C);
 		fill(gui, x + 1, y + 1, x + FIELD_WIDTH - 1, y + FIELD_HEIGHT - 1, background);
-		Component name = Components.translatable(value.getTranslationKey());
+		Component name = RailwardComponents.translatable(value.getTranslationKey());
 		font.draw(gui, name, x + 8, y + 7, 0xF2F2F2);
 		drawDownArrow(gui, x + FIELD_WIDTH - 16, y + 9, open ? 0xFFF7C66B : 0xFFC7CDD0);
 	}
@@ -127,7 +127,7 @@ public class ModernWhistleConfigurationScreen extends AbstractSimiScreen {
 			ModernWhistleSoundType selected = dropdown == PRIMARY_DROPDOWN ? primary : secondary;
 			int background = hovered ? 0xFF3D515B : values[i] == selected ? 0xFF303D44 : 0xFF1B2226;
 			fill(gui, x + 1, optionY, x + FIELD_WIDTH - 1, optionY + OPTION_HEIGHT, background);
-			font.draw(gui, Components.translatable(values[i].getTranslationKey()), x + 8, optionY + 6, 0xF2F2F2);
+			font.draw(gui, RailwardComponents.translatable(values[i].getTranslationKey()), x + 8, optionY + 6, 0xF2F2F2);
 		}
 		gui.popPose();
 	}

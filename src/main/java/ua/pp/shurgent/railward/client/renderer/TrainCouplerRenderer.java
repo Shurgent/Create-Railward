@@ -1,7 +1,7 @@
 package ua.pp.shurgent.railward.client.renderer;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
@@ -58,7 +58,7 @@ public class TrainCouplerRenderer extends SmartBlockEntityRenderer<TrainCouplerB
 		DynamicPose dynamicPose = resolveDynamicPose(be, state, partialTicks, facingRotation);
 
 		ms.pushPose();
-		TransformStack.cast(ms).centre()
+		RailwardTransformStack.cast(ms).centre()
 			.rotateY(facingRotation)
 			.unCentre();
 
@@ -180,7 +180,7 @@ public class TrainCouplerRenderer extends SmartBlockEntityRenderer<TrainCouplerB
 	private void renderDynamicPart(BlockState state, DynamicPose pose, int light, PoseStack ms, VertexConsumer buffer) {
 		ms.pushPose();
 		translate(ms, MODEL_PIVOT);
-		TransformStack.cast(ms)
+		RailwardTransformStack.cast(ms)
 			.rotateY(pose.yawDegrees());
 		translate(ms, MODEL_PIVOT.scale(-1));
 

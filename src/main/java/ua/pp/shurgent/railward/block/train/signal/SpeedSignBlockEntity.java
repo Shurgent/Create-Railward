@@ -2,10 +2,10 @@ package ua.pp.shurgent.railward.block.train.signal;
 
 import java.util.List;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardTransformStack;
+import ua.pp.shurgent.railward.client.compat.RailwardValueBoxTransform;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.Create;
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.trains.track.TrackTargetingBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -14,7 +14,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
@@ -32,8 +31,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import ua.pp.shurgent.railward.AllEdgePointTypes;
 import ua.pp.shurgent.railward.RailwardConfig;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlockEntity;
 
-public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
+public class SpeedSignBlockEntity extends SmartBlockEntity implements RailwardTransformableBlockEntity {
 
 	public static final int DEFAULT_SPEED_KMH = 50;
 
@@ -48,7 +49,7 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		behaviours.add(edgePoint = new TrackTargetingBehaviour<>(this, AllEdgePointTypes.SPEED_SIGN));
 
-		speedLimit = new SpeedSignScrollValueBehaviour(Components.translatable("railward.speed_sign.speed_limit"), this,
+		speedLimit = new SpeedSignScrollValueBehaviour(RailwardComponents.translatable("railward.speed_sign.speed_limit"), this,
 			new SpeedSignValueBoxTransform());
 		speedLimit.between(getConfiguredSpeedStepKmh(), getConfiguredMaxSpeedKmh());
 		speedLimit.value = getDefaultSpeedKmh();
@@ -116,6 +117,9 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 
 	@Override
 	public void transform(StructureTransform transform) {
+		//? if create6
+		/*edgePoint.transform(this, transform);
+		*///? if !create6
 		edgePoint.transform(transform);
 	}
 
@@ -139,7 +143,7 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 		@Override
 		public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
 			return new ValueSettingsBoard(label, getMaxSpeedIndex(), getMilestoneInterval(),
-				List.of(Components.literal("km/h")), new ValueSettingsFormatter(this::formatSettings));
+				List.of(RailwardComponents.literal("km/h")), new ValueSettingsFormatter(this::formatSettings));
 		}
 
 		@Override
@@ -161,7 +165,7 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 		}
 
 		public MutableComponent formatSettings(ValueSettings settings) {
-			return Components.literal(formatSpeed(speedForIndex(settings.value())));
+			return RailwardComponents.literal(formatSpeed(speedForIndex(settings.value())));
 		}
 
 		@Override
@@ -178,7 +182,7 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 		}
 	}
 
-	private static class SpeedSignValueBoxTransform extends ValueBoxTransform {
+	private static class SpeedSignValueBoxTransform extends RailwardValueBoxTransform {
 
 		private static final Vec3 LOCATION = VecHelper.voxelSpace(8, 13.5, 5);
 		private static final double HIT_HALF_SIZE = 2.5 / 16d;
@@ -210,7 +214,7 @@ public class SpeedSignBlockEntity extends SmartBlockEntity implements ITransform
 			float angle = state.hasProperty(SpeedSignBlock.ROTATION)
 				? state.getValue(SpeedSignBlock.ROTATION) * 360f / 16f
 				: 0;
-			TransformStack.cast(ms)
+			RailwardTransformStack.cast(ms)
 				.rotateY(-angle);
 		}
 

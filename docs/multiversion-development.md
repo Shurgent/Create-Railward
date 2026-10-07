@@ -3,7 +3,8 @@
 Minecraft 1.18.2 is Create: Railward's canonical development target. New
 features are designed, implemented, and fully verified there first. The
 Minecraft 1.19.2 and 1.20.1 builds are additional ports and must not reduce or
-delay the functionality of the 1.18.2 build.
+delay the functionality of the 1.18.2 build. Minecraft 1.20.1 is built twice:
+once against Create 0.5.1 and once against Create 6.
 
 ## Build layout
 
@@ -58,7 +59,7 @@ Run the primary platform first:
 .\gradlew.bat :1.18.2:runGameTestServer -PrailwardConsoleLogLevel=info
 ```
 
-After it passes, run all three versions with `gameTestAll`. The CI workflow
+After it passes, run all four targets with `gameTestAll`. The CI workflow
 prepares disposable directories and runs this full set automatically.
 
 CC-01 is an opt-in extension of that suite. The property below adds the pinned
@@ -410,12 +411,53 @@ negative/positive regression whenever a version changes its Create dependency;
 gate the mixin out if upstream gains the equivalent accumulation fix, because
 double-applying an upstream correction is itself a compatibility risk.
 
+The separate Minecraft 1.20.1 / Create `6.0.8-289` port does contain the
+upstream correction: its `FluidNetwork.tick()` stops after draining the first
+matching tank instead of continuing through every tank and overwriting the
+transfer. Source inspection was repeated on 2026-10-04 against the published
+Create 6.0.8 sources under
+`.devdocs/tmp/create-sources/1.20.1-create6`. Consequently
+`RailwardMixinPlugin` excludes both `create.FluidNetworkMixin` and
+`create.PipeConnectionAccessor` from Create 6 regardless of the legacy
+`fixCreateFluidNetwork` switch. The three Create 0.5.1 targets retain the
+existing positive and negative GameTest evidence above.
+
+On 2026-10-04, the ordinary dedicated GameTest suite passed 25/25 on all four
+targets after the Create 6 mounted-storage port. The Create 6 coverage includes
+bulk-cargo normalization without duplicate contents, item/fluid storage codec
+roundtrips, cistern fill preservation, and real station assembly/disassembly.
+Create 6 persists a carriage's server-side mounted storage through
+`TrainCargoManager`, separately from the contraption's ordinary non-spawn NBT;
+the shared roundtrip fixture follows that target-specific persistence path.
+
+Create 6 uses Flywheel 1 rather than the Create 0.5.1 Flywheel API. Railward
+therefore keeps the shared spotlight GLSL implementation, but patches
+Flywheel 1's parsed common fragment source and uploads uniforms after
+`GlProgram.bind()`. The older constructor/program mixins remain selected for
+the three Create 0.5.1 targets, while renderer hooks tied to the removed
+`InstancingTemplateData` and `OneShotTemplateData` APIs are excluded only from
+Create 6. The Flywheel 1 shader receives an absolute world position by adding
+`flw_renderOrigin` to `flw_vertexPos`, matching the coordinate space of the
+shared spotlight data.
+
+On 2026-10-04, isolated Create 6 clients joined a dedicated server and compiled
+the patched fragment pipeline with both `flywheel:instancing` and
+`flywheel:indirect`. Dumped backend-specific shader sources contained the
+Railward uniforms and projected-light call site, with no shader or mixin
+errors. A subsequent manual in-game orbit check on 2026-10-07 confirmed that
+the spotlight retained the intended forward illumination without projecting a
+reverse cone onto JSON/SuperByteBuffer locomotive parts. The same check
+confirmed normal world lighting on Railward's custom bogeys in placed-block and
+assembled-train contexts.
+
 ## Support policy
 
 - Minecraft 1.18.2: primary platform, complete feature set and full runtime
   verification.
 - Minecraft 1.19.2: additional port on the Create 0.5.1 compatibility family.
-- Minecraft 1.20.1: additional port on the Create 0.5.1.j compatibility family.
+- Minecraft 1.20.1: additional ports for both the Create 0.5.1.j compatibility
+  family and Create 6; the Create 6 port remains separately versioned and
+  verified because it crosses a major Create/Flywheel API boundary.
 
 All configured versions must continue to compile on the main branch. Runtime
 publication of an additional port may lag behind the primary 1.18.2 release.
@@ -423,4 +465,4 @@ publication of an additional port may lag behind the primary 1.18.2 release.
 Feature-level verification is tracked in
 [`functional-test-matrix.md`](functional-test-matrix.md). Complete the 1.18.2
 primary-platform rows before treating a feature as ready; use the reduced port
-gate there for 1.19.2 and 1.20.1.
+gate there for 1.19.2, 1.20.1/Create 5 and 1.20.1/Create 6.

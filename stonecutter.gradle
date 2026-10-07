@@ -7,6 +7,8 @@ stonecutter {
     active '1.18.2'
 
     parameters { params ->
+        params.constants['create6'] = params.node.metadata.project == '1.20.1-create6'
+
         def replaceAfter118 = { String from, String to ->
             params.replacements { replacements ->
                 replacements.string(params.current.version != '1.18.2') { replacement ->
@@ -18,6 +20,14 @@ stonecutter {
 		def replaceFor120 = { String from, String to ->
 			params.replacements { replacements ->
 				replacements.string(params.current.version == '1.20.1') { replacement ->
+					replacement.replace(from, to)
+				}
+			}
+		}
+
+		def replaceForCreate6 = { String from, String to ->
+			params.replacements { replacements ->
+				replacements.string(params.node.metadata.project == '1.20.1-create6') { replacement ->
 					replacement.replace(from, to)
 				}
 			}
@@ -123,6 +133,79 @@ stonecutter {
 		replaceFor120('new SoundEvent(Railward.asResource(name))',
 				'SoundEvent.createVariableRangeEvent(Railward.asResource(name))')
 		replaceFor120('ms, buffer, 0)', 'ms, buffer, level, 0)')
+
+		// Create 6 promoted several extension points into public API packages and
+		// moved its reusable utility/rendering classes into Catnip/Flywheel 1.x.
+		// Keep these mechanical package moves centralized instead of scattering
+		// Create-major conditionals across otherwise shared source files.
+		replaceForCreate6('com.simibubi.create.content.contraptions.BlockMovementChecks',
+				'com.simibubi.create.api.contraption.BlockMovementChecks')
+		replaceForCreate6('com.simibubi.create.content.contraptions.behaviour.MovementBehaviour',
+				'com.simibubi.create.api.behaviour.movement.MovementBehaviour')
+		replaceForCreate6('com.simibubi.create.content.contraptions.behaviour.MovingInteractionBehaviour',
+				'com.simibubi.create.api.behaviour.interaction.MovingInteractionBehaviour')
+		replaceForCreate6('com.simibubi.create.content.contraptions.render.ActorInstance',
+				'com.simibubi.create.content.contraptions.actors.ActorInstance')
+		replaceForCreate6('com.simibubi.create.content.contraptions.MountedFluidStorage',
+				'com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorage')
+		replaceForCreate6('.createHandlers()', '.initialize()')
+		replaceForCreate6('com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation',
+				'com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation')
+
+		replaceForCreate6('com.simibubi.create.foundation.placement.IPlacementHelper',
+				'net.createmod.catnip.placement.IPlacementHelper')
+		replaceForCreate6('com.simibubi.create.foundation.placement.PlacementHelpers',
+				'net.createmod.catnip.placement.PlacementHelpers')
+		replaceForCreate6('com.simibubi.create.foundation.placement.PlacementOffset',
+				'net.createmod.catnip.placement.PlacementOffset')
+		replaceForCreate6('com.simibubi.create.foundation.utility.animation.',
+				'net.createmod.catnip.animation.')
+		replaceForCreate6('com.simibubi.create.foundation.utility.AnimationTickHolder',
+				'net.createmod.catnip.animation.AnimationTickHolder')
+		replaceForCreate6('com.simibubi.create.foundation.utility.BlockFace',
+				'net.createmod.catnip.math.BlockFace')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Color',
+				'net.createmod.catnip.theme.Color')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Couple',
+				'net.createmod.catnip.data.Couple')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Iterate',
+				'net.createmod.catnip.data.Iterate')
+		replaceForCreate6('com.simibubi.create.foundation.utility.LangBuilder',
+				'net.createmod.catnip.lang.LangBuilder')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Lang',
+				'net.createmod.catnip.lang.Lang')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Pair',
+				'net.createmod.catnip.data.Pair')
+		replaceForCreate6('com.simibubi.create.foundation.utility.VecHelper',
+				'net.createmod.catnip.math.VecHelper')
+		replaceForCreate6('com.simibubi.create.foundation.utility.VoxelShaper',
+				'net.createmod.catnip.math.VoxelShaper')
+		replaceForCreate6('com.simibubi.create.foundation.gui.AbstractSimiScreen',
+				'net.createmod.catnip.gui.AbstractSimiScreen')
+		replaceForCreate6('com.simibubi.create.foundation.gui.element.GuiGameElement',
+				'net.createmod.catnip.gui.element.GuiGameElement')
+		replaceForCreate6('com.simibubi.create.foundation.gui.Theme',
+				'net.createmod.catnip.gui.element.BoxElement')
+		replaceForCreate6('Theme.c(Theme.Key.VANILLA_TOOLTIP_BACKGROUND)',
+				'BoxElement.COLOR_VANILLA_BACKGROUND.copy()')
+		replaceForCreate6('Theme.c(Theme.Key.VANILLA_TOOLTIP_BORDER, true)',
+				'BoxElement.COLOR_VANILLA_BORDER.getFirst()')
+		replaceForCreate6('Theme.c(Theme.Key.VANILLA_TOOLTIP_BORDER, false)',
+				'BoxElement.COLOR_VANILLA_BORDER.getSecond()')
+		replaceForCreate6('com.simibubi.create.foundation.render.CachedBufferer',
+				'net.createmod.catnip.render.CachedBuffers')
+		replaceForCreate6('CachedBufferer.', 'CachedBuffers.')
+		replaceForCreate6('com.simibubi.create.foundation.render.SuperByteBuffer',
+				'net.createmod.catnip.render.SuperByteBuffer')
+		replaceForCreate6('RenderTypes.getAdditive()', 'RenderTypes.additive()')
+
+		replaceForCreate6('com.jozufozu.flywheel.core.PartialModel',
+				'dev.engine_room.flywheel.lib.model.baked.PartialModel')
+		replaceForCreate6('new PartialModel(', 'PartialModel.of(')
+		replaceForCreate6('com.jozufozu.flywheel.core.virtual.VirtualRenderWorld',
+				'com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld')
+		replaceForCreate6('com.jozufozu.flywheel.util.transform.TransformStack',
+				'dev.engine_room.flywheel.lib.transform.TransformStack')
     }
 }
 

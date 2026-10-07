@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -160,6 +161,9 @@ public class CopycatSlabBlockEntity extends CopycatBlockEntity {
 	}
 
 	@Override
+	//? if create6
+	/*public void transform(BlockEntity blockEntity, StructureTransform transform) {
+	*///? if !create6
 	public void transform(StructureTransform transform) {
 		bottomMaterial = transform.apply(bottomMaterial);
 		topMaterial = transform.apply(topMaterial);

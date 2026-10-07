@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement.ItemUseType;
@@ -28,8 +27,9 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 //?}
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachment;
 import ua.pp.shurgent.railward.block.train.parts.panel.TrainPanelAttachmentRegistry;
+import ua.pp.shurgent.railward.compat.RailwardTransformableBlockEntity;
 
-public class TrainWallPanelBlockEntity extends SmartBlockEntity implements ITransformableBlockEntity {
+public class TrainWallPanelBlockEntity extends SmartBlockEntity implements RailwardTransformableBlockEntity {
 
 	private static final String ATTACHMENT_KEY = "PanelAttachment";
 	private static final String SECONDARY_PANEL_KEY = "SecondaryPanel";
@@ -112,14 +112,18 @@ public class TrainWallPanelBlockEntity extends SmartBlockEntity implements ITran
 	}
 
 	private void configurationChanged() {
-		setChanged();
 		if (level == null)
 			return;
 		if (!level.isClientSide) {
+			setChanged();
 			notifyUpdate();
 			return;
 		}
-		requestModelDataUpdate();
+		// Create 6 reads contraption block entities inside a VirtualRenderWorld.
+		// BlockEntity#setChanged() asks the level for a real chunk, which that
+		// render-only world deliberately does not provide.
+		if (!isVirtual())
+			requestModelDataUpdate();
 		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 16);
 	}
 

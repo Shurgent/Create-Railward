@@ -74,6 +74,7 @@ import ua.pp.shurgent.railward.block.train.parts.CisternContraptionHelper;
 import ua.pp.shurgent.railward.block.train.station.FluidTerminalBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingBunkerBlockEntity;
 import ua.pp.shurgent.railward.block.train.station.UnloadingHatchBlockEntity;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
 import ua.pp.shurgent.railward.compat.StationArrivalSelection;
 import ua.pp.shurgent.railward.compat.WorldTimeProjection;
 
@@ -622,7 +623,7 @@ public final class RailwardServerGameTests {
 			assertMountedBulkCargo(helper, captured, BlockPos.ZERO,
 				BlockPos.ZERO.relative(Direction.EAST), 224, 2);
 
-			Contraption restored = Contraption.fromNBT(helper.getLevel(), captured.writeNBT(false), false);
+			Contraption restored = Contraption.fromNBT(helper.getLevel(), captured.writeMountedStorageRoundTrip(), false);
 			assertMountedBulkCargo(helper, restored, BlockPos.ZERO,
 				BlockPos.ZERO.relative(Direction.EAST), 224, 2);
 
@@ -819,11 +820,13 @@ public final class RailwardServerGameTests {
 			int movingFill = mounted.fill(new FluidStack(Fluids.WATER, 500), IFluidHandler.FluidAction.EXECUTE);
 			require(helper, movingFill == 500, "fluid could not be inserted while mounted");
 
-			Contraption restored = Contraption.fromNBT(helper.getLevel(), captured.writeNBT(false), false);
+			Contraption restored = Contraption.fromNBT(helper.getLevel(), captured.writeMountedStorageRoundTrip(), false);
 			IFluidHandler restoredHandler = CisternContraptionHelper.getFluidHandler(restored, BlockPos.ZERO);
-			require(helper, restoredHandler != null && restoredHandler.getFluidInTank(0).getFluid() == Fluids.WATER
-				&& restoredHandler.getFluidInTank(0).getAmount() == 1500,
-				"mounted fluid did not survive contraption NBT");
+			FluidStack restoredFluid = restoredHandler == null || restoredHandler.getTanks() == 0
+				? FluidStack.EMPTY
+				: restoredHandler.getFluidInTank(0);
+			require(helper, restoredFluid.getFluid() == Fluids.WATER && restoredFluid.getAmount() == 1500,
+				"mounted fluid did not survive contraption NBT: " + restoredFluid);
 
 			restored.addBlocksToWorld(helper.getLevel(),
 				new StructureTransform(absoluteOrigin, Direction.Axis.Y, Rotation.NONE, Mirror.NONE));
@@ -950,9 +953,9 @@ public final class RailwardServerGameTests {
 						Create.RAILWAYS.sided(helper.getLevel()).trackNetworks, dimensions);
 					require(helper, restoredTrain.id.equals(train.id) && restoredTrain.carriages.size() == 1,
 						"train identity or carriage count did not survive NBT");
-					require(helper, countItems(restoredTrain.carriages.get(0).storage.getItems()) == 96,
+					require(helper, countItems(RailwardMountedStorage.items(restoredTrain.carriages.get(0).storage)) == 96,
 						"mounted cargo did not survive Train NBT");
-					IFluidHandler persistedFluid = restoredTrain.carriages.get(0).storage.getFluids();
+					IFluidHandler persistedFluid = RailwardMountedStorage.fluids(restoredTrain.carriages.get(0).storage);
 					require(helper, persistedFluid.getFluidInTank(0).getFluid() == Fluids.WATER
 						&& persistedFluid.getFluidInTank(0).getAmount() == 1500,
 						"mounted cistern fluid did not survive Train NBT");
@@ -1154,8 +1157,11 @@ public final class RailwardServerGameTests {
 			&& partData.sizeX() == 2 && partData.sizeZ() == 1 && partData.height() == 1,
 			"mounted bulk cargo did not preserve its controller selection or dimensions");
 		IItemHandlerModifiable handler = BulkCargoContraptionHelper.getItemHandler(contraption, controllerPos);
-		require(helper, handler != null && handler.getSlots() == 54 && countItems(handler) == expectedAmount,
-			"mounted bulk cargo exposed the wrong handler, capacity or amount");
+		int slots = handler == null ? 0 : handler.getSlots();
+		int amount = handler == null ? 0 : countItems(handler);
+		require(helper, slots == 54 && amount == expectedAmount,
+			"mounted bulk cargo exposed slots=" + slots + ", amount=" + amount
+				+ "; expected slots=54, amount=" + expectedAmount);
 		for (BlockPos pos : List.of(controllerPos, partPos)) {
 			StructureBlockInfo info = contraption.getBlocks().get(pos);
 			require(helper, info != null
@@ -1389,13 +1395,25 @@ public final class RailwardServerGameTests {
 		private void captureBlocks(Level level, BlockPos anchorPos, List<BlockPos> positions) {
 			anchor = anchorPos;
 			bounds = new AABB(BlockPos.ZERO);
-			for (BlockPos pos : positions)
+			for (BlockPos pos : positions) {
+				//? if create6
+				/*addBlock(level, pos, capture(level, pos));
+				*///? if !create6
 				addBlock(pos, capture(level, pos));
+			}
 		}
 
 		private void beginMovement(Level level) {
 			removeBlocksFromWorld(level, BlockPos.ZERO);
 			storage.createHandlers();
+		}
+
+		private CompoundTag writeMountedStorageRoundTrip() {
+			CompoundTag nbt = writeNBT(false);
+			//? if create6
+			/*storage.write(nbt, false);
+			*/
+			return nbt;
 		}
 	}
 }

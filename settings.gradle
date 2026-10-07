@@ -23,6 +23,10 @@ stonecutter {
 
     create(rootProject) {
         versions('1.18.2', '1.19.2', '1.20.1')
+        // Keep the existing 1.20.1/Create 5 port and build Create 6 as a
+        // separate project with the same logical Minecraft version. This
+        // preserves all existing `>=1.20.1` Stonecutter conditions.
+        version('1.20.1-create6', '1.20.1')
         vcsVersion = '1.18.2'
     }
 }

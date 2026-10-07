@@ -1,6 +1,6 @@
 package ua.pp.shurgent.railward.block.train.parts;
 
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import ua.pp.shurgent.railward.compat.RailwardWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import ua.pp.shurgent.railward.AllBlockEntities;
 
 public class RadiatorFanBlock extends HorizontalDirectionalBlock
-	implements IBE<RadiatorFanBlockEntity>, IWrenchable {
+	implements IBE<RadiatorFanBlockEntity>, RailwardWrenchable {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;

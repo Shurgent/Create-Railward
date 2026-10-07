@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
-import com.simibubi.create.content.contraptions.MountedFluidStorage;
 import com.simibubi.create.content.contraptions.MountedStorageManager;
 import com.simibubi.create.content.trains.entity.CarriageContraption;
 
@@ -20,9 +19,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.network.PacketDistributor;
 import ua.pp.shurgent.railward.RailwardPackets;
+import ua.pp.shurgent.railward.client.compat.RailwardContraptionBlockEntities;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
+import ua.pp.shurgent.railward.compat.RailwardMountedStorage.FluidStorage;
 import ua.pp.shurgent.railward.mixin.create.CarriageContraptionAccessor;
 import ua.pp.shurgent.railward.mixin.create.ContraptionAccessor;
-import ua.pp.shurgent.railward.mixin.create.MountedStorageManagerAccessor;
 import ua.pp.shurgent.railward.network.CisternFluidSyncPacket;
 
 public final class CisternContraptionHelper {
@@ -122,9 +123,9 @@ public final class CisternContraptionHelper {
 	private static IFluidHandler getFluidHandler(MountedStorageManager manager, BlockPos controllerPos) {
 		if (manager == null)
 			return null;
-		Map<BlockPos, MountedFluidStorage> storage = ((MountedStorageManagerAccessor) manager).railward$getFluidStorage();
-		MountedFluidStorage mountedStorage = storage.get(controllerPos);
-		return mountedStorage == null ? null : mountedStorage.getFluidHandler();
+		Map<BlockPos, FluidStorage> storage = RailwardMountedStorage.fluidStorages(manager);
+		FluidStorage mountedStorage = storage.get(controllerPos);
+		return mountedStorage == null ? null : mountedStorage.handler();
 	}
 
 	private static boolean isBetterFluidView(IFluidHandler candidate, IFluidHandler current) {
@@ -141,15 +142,19 @@ public final class CisternContraptionHelper {
 	private static boolean updateContainedFluid(MountedStorageManager manager, BlockPos controllerPos, FluidStack fluid) {
 		if (manager == null)
 			return false;
-		manager.updateContainedFluid(controllerPos, fluid.copy());
-		return getFluidHandler(manager, controllerPos) != null;
+		return RailwardMountedStorage.updateFluid(manager, controllerPos, fluid);
 	}
 
 	private static boolean updateClientTank(Contraption contraption, BlockPos controllerPos, FluidStack fluid) {
-		BlockEntity blockEntity = contraption.presentBlockEntities.get(controllerPos);
-		if (!(blockEntity instanceof CisternBlockEntity cistern) || !(cistern.getTankInventory() instanceof FluidTank tank))
+		BlockEntity blockEntity = RailwardContraptionBlockEntities.get(contraption, controllerPos);
+		if (!(blockEntity instanceof CisternBlockEntity cistern))
 			return false;
-
+		//? if create6 {
+		/*FluidTank tank = cistern.getTankInventory();
+		*///?} else {
+		if (!(cistern.getTankInventory() instanceof FluidTank tank))
+			return false;
+		//?}
 		tank.setFluid(fluid.copy());
 		return true;
 	}

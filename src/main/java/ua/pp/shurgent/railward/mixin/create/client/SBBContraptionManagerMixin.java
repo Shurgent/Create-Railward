@@ -1,5 +1,13 @@
 package ua.pp.shurgent.railward.mixin.create.client;
 
+//? if create6 {
+/*import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Object.class)
+public class SBBContraptionManagerMixin {
+}
+*///?}
+//? if !create6 {
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Group;
@@ -39,3 +47,4 @@ public class SBBContraptionManagerMixin {
 		}
 	}
 }
+//?}

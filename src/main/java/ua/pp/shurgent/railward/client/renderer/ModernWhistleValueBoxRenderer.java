@@ -5,12 +5,12 @@ import java.util.List;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.BlockHitResult;
 import ua.pp.shurgent.railward.block.train.parts.ModernWhistleBlockEntity;
+import ua.pp.shurgent.railward.compat.RailwardComponents;
 
 public class ModernWhistleValueBoxRenderer {
 
@@ -30,8 +30,8 @@ public class ModernWhistleValueBoxRenderer {
 			return;
 
 		List<MutableComponent> tooltip = List.of(
-			Components.translatable("railward.modern_whistle.configuration"),
-			Components.translatable("railward.modern_whistle.right_click_to_configure"));
+			RailwardComponents.translatable("railward.modern_whistle.configuration"),
+			RailwardComponents.translatable("railward.modern_whistle.right_click_to_configure"));
 		CreateClient.VALUE_SETTINGS_HANDLER.showHoverTip(tooltip);
 	}
 }
