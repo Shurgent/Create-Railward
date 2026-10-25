@@ -16,9 +16,15 @@ import com.jozufozu.flywheel.backend.Backend;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderDispatcher;
 //?}
 import com.simibubi.create.CreateClient;
+//? if create6 {
+/*import com.simibubi.create.content.contraptions.minecart.TrainCargoManager;
+*///?}
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.Carriage.DimensionalCarriageEntity;
 import com.simibubi.create.content.trains.entity.CarriageBogey;
+//? if create6 {
+/*import com.simibubi.create.content.trains.entity.CarriageContraption;
+*///?}
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import com.simibubi.create.content.trains.entity.CarriageSyncData;
 import com.simibubi.create.content.trains.entity.Train;
@@ -229,6 +235,13 @@ public class TrainCouplerSyncPacket extends SimplePacketBase {
 				continue;
 
 			Carriage carriage = train.carriages.get(binding.carriageIndex());
+			//? if create6 {
+			/*if (carriageEntity.getContraption() instanceof CarriageContraption contraption
+				&& contraption.getStorage() instanceof TrainCargoManager activeStorage)
+				carriage.storage = activeStorage;
+			else
+				carriage.storage.initialize();
+			*///?}
 			carriageEntity.trainId = binding.trainId();
 			carriageEntity.carriageIndex = binding.carriageIndex();
 			carriageEntity.setCarriage(carriage);

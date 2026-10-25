@@ -422,6 +422,18 @@ Create 6.0.8 sources under
 `fixCreateFluidNetwork` switch. The three Create 0.5.1 targets retain the
 existing positive and negative GameTest evidence above.
 
+Create `6.0.8-289` also relights both `SignalVisual` instances at the signal
+block position, even though the track overlay can be in a different light
+section. Create 0.5.1's immediate renderer instead samples the overlay at its
+target track position. `create.client.SignalVisualMixin` restores that behavior
+for Create 6 and tracks both relevant light sections, deduplicating them when
+the signal and target share a section. The workaround is enabled by default
+only on the `1.20.1-create6` target and can be disabled before mixin application
+with `fixCreate6SignalOverlayLighting=false` in
+`config/railward-mixins.properties` if another mod also modifies
+`SignalVisual`. Disabling it affects only client-side marker lighting and does
+not alter world data.
+
 On 2026-10-04, the ordinary dedicated GameTest suite passed 25/25 on all four
 targets after the Create 6 mounted-storage port. The Create 6 coverage includes
 bulk-cargo normalization without duplicate contents, item/fluid storage codec
@@ -449,6 +461,35 @@ the spotlight retained the intended forward illumination without projecting a
 reverse cone onto JSON/SuperByteBuffer locomotive parts. The same check
 confirmed normal world lighting on Railward's custom bogeys in placed-block and
 assembled-train contexts.
+
+## Triple-axle bogey model/renderer probe
+
+The opt-in `bogey_models` client mode runs against a separate dedicated server
+in a disposable world. It checks the actual Forge-baked frame/wheelset quads,
+outward normals, UV bounds, shading and non-emissive light data. It then calls
+the production buffer renderer at 0/90 degrees and dark/full light, checking
+that the frame stays fixed and all three wheelsets rotate about their own
+centers with their normals. Create 6 also constructs both `SpecialModels.smoothLit`
+meshes used by the Flywheel visual. This does not verify a GPU backend, camera
+appearance, on-track height or an assembled train visually.
+
+Example on Windows (use two terminals; accept the EULA in the disposable
+server directory and set `online-mode=false` only there):
+
+```powershell
+.\gradlew.bat :1.18.2:runServer "-PrailwardRunDirectory=.devdocs\tmp\bogey-model\1.18.2\server" -PrailwardConsoleLogLevel=info
+.\gradlew.bat :1.18.2:runClient "-PrailwardRunDirectory=.devdocs\tmp\bogey-model\1.18.2\client" -PrailwardConsoleLogLevel=info -PrailwardClientProbe=true -PrailwardClientProbeMode=bogey_models -PrailwardClientProbeName=BogeyProbe
+```
+
+Require `Railward BOGEY-MODEL client probe passed`, a successful client exit
+and no crash report. Stop the server normally afterward. Repeat with task and
+directory target names `1.19.2`, `1.20.1` and `1.20.1-create6`. A non-default
+server port must also be supplied through `-PrailwardClientProbePort=<port>`.
+The run configuration uses legacy `--server`/`--port` on 1.18.2/1.19.2 and
+`--quickPlayMultiplayer` on both 1.20.1 targets; old options are ignored there.
+Probe code remains in `src/clientTest/`; ordinary clients and release JARs do
+not include it. See the bogey item in `manual-release-checklist.md` for the
+remaining human rendering pass.
 
 ## Support policy
 

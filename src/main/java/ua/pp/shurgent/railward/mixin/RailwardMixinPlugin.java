@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -16,7 +17,9 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import com.mojang.logging.LogUtils;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.LoadingModList;
 
 public class RailwardMixinPlugin implements IMixinConfigPlugin {
@@ -24,6 +27,7 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final String CONFIG_FILE_NAME = "railward-mixins.properties";
 	private static final String FIX_CREATE_FLUID_NETWORK = "fixCreateFluidNetwork";
+	private static final String FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING = "fixCreate6SignalOverlayLighting";
 	private static final String FLUID_NETWORK_MIXIN = ".create.FluidNetworkMixin";
 	private static final String PIPE_CONNECTION_ACCESSOR = ".create.PipeConnectionAccessor";
 	private static final String STATION_PERIPHERAL_MIXIN =
@@ -33,6 +37,7 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	private static final String COMPUTERCRAFT_MOD_ID = "computercraft";
 	private static final String EMBEDDIUM_MIXIN_PACKAGE = ".compat.embeddium.";
 	private static final String EMBEDDIUM_MOD_ID = "embeddium";
+	private static final String CREATE_6_SIGNAL_VISUAL_MIXIN = "create.client.SignalVisualMixin";
 	private static final String[] LEGACY_RENDER_MIXINS = {
 		".create.client.SBBContraptionManagerMixin",
 		".flywheel.InstancingTemplateDataMixin",
@@ -43,8 +48,10 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 	*///? if !create6
 	private static final boolean CREATE_6 = false;
 	private static final boolean DEFAULT_FIX_CREATE_FLUID_NETWORK = true;
+	private static final boolean DEFAULT_FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING = true;
 
 	private boolean fixCreateFluidNetwork = DEFAULT_FIX_CREATE_FLUID_NETWORK;
+	private boolean fixCreate6SignalOverlayLighting = DEFAULT_FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING;
 
 	@Override
 	public void onLoad(String mixinPackage) {
@@ -83,7 +90,12 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
-		return null;
+		if (!CREATE_6 || FMLEnvironment.dist != Dist.CLIENT)
+			return null;
+
+		LOGGER.info("{} Create 6 signal-overlay lighting workaround.",
+			fixCreate6SignalOverlayLighting ? "Enabling" : "Skipping");
+		return fixCreate6SignalOverlayLighting ? List.of(CREATE_6_SIGNAL_VISUAL_MIXIN) : null;
 	}
 
 	@Override
@@ -103,13 +115,16 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 			try (InputStream input = Files.newInputStream(configPath)) {
 				properties.load(input);
 			}
+			appendMissingDefaults(configPath, properties);
 
 			fixCreateFluidNetwork = readBoolean(properties, FIX_CREATE_FLUID_NETWORK,
 				DEFAULT_FIX_CREATE_FLUID_NETWORK);
+			fixCreate6SignalOverlayLighting = readBoolean(properties, FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING,
+				DEFAULT_FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING);
 		} catch (IOException e) {
 			fixCreateFluidNetwork = DEFAULT_FIX_CREATE_FLUID_NETWORK;
-			LOGGER.warn("Failed to read {}. Using default {}={}.", configPath, FIX_CREATE_FLUID_NETWORK,
-				fixCreateFluidNetwork, e);
+			fixCreate6SignalOverlayLighting = DEFAULT_FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING;
+			LOGGER.warn("Failed to read {}. Using default mixin switches.", configPath, e);
 		}
 	}
 
@@ -135,8 +150,38 @@ public class RailwardMixinPlugin implements IMixinConfigPlugin {
 			# and does not apply the workaround there. Set to false to disable only
 			# Railward's fluid network fix on Create 0.5.1.
 			fixCreateFluidNetwork=true
+			#
+			# fixCreate6SignalOverlayLighting
+			# Fixes Create 6 sampling the remote track signal overlay's light at the
+			# signal block instead of at the targeted track. Keep this true unless
+			# another mod also modifies Create's SignalVisual and reports a mixin
+			# conflict. This switch is ignored on Create 0.5.1 targets. Disabling it
+			# affects only the client-side marker lighting and does not change worlds.
+			fixCreate6SignalOverlayLighting=true
 			""";
 		Files.writeString(configPath, content, StandardCharsets.UTF_8);
+	}
+
+	private void appendMissingDefaults(Path configPath, Properties properties) {
+		if (properties.containsKey(FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING))
+			return;
+
+		String addition = """
+
+			# fixCreate6SignalOverlayLighting
+			# Fixes Create 6 sampling the remote track signal overlay's light at the
+			# signal block instead of at the targeted track. Keep this true unless
+			# another mod also modifies Create's SignalVisual and reports a mixin
+			# conflict. This switch is ignored on Create 0.5.1 targets. Disabling it
+			# affects only the client-side marker lighting and does not change worlds.
+			fixCreate6SignalOverlayLighting=true
+			""";
+		try {
+			Files.writeString(configPath, addition, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			LOGGER.warn("Failed to append {}={} to {}. The default still applies for this launch.",
+				FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING, DEFAULT_FIX_CREATE_6_SIGNAL_OVERLAY_LIGHTING, configPath, e);
+		}
 	}
 
 	private boolean readBoolean(Properties properties, String key, boolean fallback) {

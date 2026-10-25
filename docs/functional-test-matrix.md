@@ -5,6 +5,38 @@ This matrix is the runtime acceptance checklist for Create: Railward. Minecraft
 feature is considered complete. Minecraft 1.19.2, 1.20.1/Create 5 and
 1.20.1/Create 6 are ports and use the reduced gate described below.
 
+## Triple-axle locomotive bogey v2 — 2026-10-09
+
+The approved v2 OBJ frame, centered wheelset and 256×256 atlas replace the
+placeholder in shared `src/main/resources` under the original resource IDs.
+Wheel radius, axle spacing, renderer offsets, connector anchors, bogey style
+registration and train stopping/navigation logic are unchanged. Forge 40/43
+use explicit legacy OBJ lighting/UV keys; resource processing translates those
+keys to Forge 47's native schema for both 1.20.1 targets.
+
+| Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
+| --- | --- | --- | --- | --- |
+| Clean `buildAndCollect`, 19/19 unit tests, and separate `compileClientTestAll` | PASS | PASS | PASS | PASS |
+| Collected JAR contains current OBJ/MTL/PNG, target-native OBJ schema, no test classes | PASS | PASS | PASS | PASS |
+| Isolated dedicated server startup and separate-client Forge join | PASS | PASS | PASS (fresh client retry) | PASS |
+| Actual baked OBJ counts: 3788 frame quads, 200 wheelset quads; outward normals, sprite UV bounds, shaded/non-emissive surfaces | PASS | PASS | PASS | PASS |
+| Production buffer renderer: fixed frame, three centered 0/90-degree wheel rotations, matching rotated normals, dark/full packed light | PASS | PASS | PASS | PASS |
+| Separate Flywheel 1 `SpecialModels.smoothLit` frame/wheelset mesh construction | N/A | N/A | N/A | PASS |
+| Human placed/moving bogey appearance, rail height, all facings and Flywheel GPU on/off comparison | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
+
+Evidence: `.devdocs/tmp/bogey-v2-install-20261009/<target>/server/logs/`
+and `client/logs/` (`client-retry/logs/` for 1.20.1/Create 5). Each successful
+client logged `Railward BOGEY-MODEL client probe passed` and exited with code
+zero; none of those successful client directories contains a crash report.
+`clean buildAndCollect compileClientTestAll` exited successfully with all
+63 tasks executed. `.devdocs/tmp/bogey-v2-install-20261009/verify_jars.py`
+compared the collected OBJ/MTL/PNG bytes to the source assets and checked
+the per-target JSON flags and absence of test classes in all four release JARs.
+The initial 1.20.1/Create 5 client timed out during login, before any model
+assertion; a fresh client completed the handshake and all checks. The probe
+does not claim GPU backend or assembled-train visual verification. Repeat
+the bogey item in `manual-release-checklist.md` before visual acceptance.
+
 ## Result notation
 
 - `PASS` — performed successfully, with a date and short evidence note.
@@ -20,7 +52,7 @@ Store disposable worlds and logs below `.devdocs/tmp/`. Do not use the primary
 
 | Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
 | --- | --- | --- | --- | --- |
-| Clean compile, unit tests, reobfuscation and JAR collection | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) | PASS (2026-10-04, `clean buildAndCollect`) |
+| Clean compile, unit tests, reobfuscation and JAR collection | PASS (2026-10-09, `clean buildAndCollect`) | PASS (2026-10-09, `clean buildAndCollect`) | PASS (2026-10-09, `clean buildAndCollect`) | PASS (2026-10-09, `clean buildAndCollect`) |
 | Dedicated GameTests: cargo/cistern persistence, limits, rules, capabilities, multiblock conservation, unloading, train assembly/movement/NBT and arrival-time selection/projection | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25) | PASS (2026-10-04, 25/25; mounted-storage codec and station disassembly included) |
 | Optional CC:Tweaked station peripheral: station identity, assigned arrivals, argument validation and schedule/runtime data | PASS (2026-10-07, opt-in 26/26; ordinary no-CC 25/25 retained) | PASS (2026-10-07, opt-in 26/26) | PASS (2026-10-07, opt-in 26/26) | PASS (2026-10-07, opt-in 26/26 against Create 6.0.8) |
 | Two-JVM dedicated-server persistence: Create SavedData, carriage entity, station/direction/throttle/schedule, mounted controller/fill, 96 items and 1500 mB fluid | PASS (2026-09-27, prepare/save/stop/restart/verify) | NOT RUN | NOT RUN | NOT RUN |
@@ -31,8 +63,8 @@ Store disposable worlds and logs below `.devdocs/tmp/`. Do not use the primary
 | Dedicated coupling topology: two clients observe two one-carriage trains merge and split with valid identities/order/bindings | PASS (2026-09-26, `couple01-20260926-b`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
 | Dedicated automatic coupling: disabled and over-speed pairs remain separate; permitted approaches from both directions merge for two clients | PASS (2026-09-26, `couple02-20260926-d`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
 | Dedicated cargo unloading: exact direct and bunker transfers, redstone rejection, synchronized falling-item state and active audio on two clients | PASS (2026-09-27, `cargo03-20260927-c`: server, driver and observer passed without crash) | NOT RUN | NOT RUN | NOT RUN |
-| Dedicated server reaches `Done` and Railward server-start handler runs | PASS (2026-09-19) | PASS (2026-09-19) | PASS (2026-09-19) | PASS (2026-10-04, isolated startup smoke) |
-| Separate client completes Forge handshake and joins dedicated server | PASS (2026-09-19, `railward:main` accepted) | NOT RUN | NOT RUN | PASS (2026-10-04, isolated client joined the isolated dedicated server twice while exercising both Flywheel backends) |
+| Dedicated server reaches `Done` and Railward server-start handler runs | PASS (2026-10-09, isolated bogey-model fixture) | PASS (2026-10-09, isolated bogey-model fixture) | PASS (2026-10-09, isolated bogey-model fixture) | PASS (2026-10-09, isolated bogey-model fixture) |
+| Separate client completes Forge handshake and joins dedicated server | PASS (2026-10-09, `bogey_models`) | PASS (2026-10-09, `bogey_models`) | PASS (2026-10-09, `bogey_models`, fresh client retry) | PASS (2026-10-09, `bogey_models`; earlier 2026-10-04 both-backend shader smoke retained) |
 
 The unit suite covers physical-station selection, malformed schedule filters,
 world-time projection (including B3M modes), and wagon-frame serialized values.

@@ -57,8 +57,8 @@ minecraft {
     def clientProbeHost = rootProject.findProperty('railwardClientProbeHost')?.toString()?.trim() ?: '127.0.0.1'
     def clientProbePort = rootProject.findProperty('railwardClientProbePort')?.toString()?.trim() ?: '25565'
     def clientProbeMode = rootProject.findProperty('railwardClientProbeMode')?.toString()?.trim() ?: 'late_join'
-    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading'].contains(clientProbeMode))
-        throw new GradleException("railwardClientProbeMode must be 'late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', or 'cargo_unloading'")
+    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading', 'bogey_models'].contains(clientProbeMode))
+        throw new GradleException("Unknown railwardClientProbeMode: ${clientProbeMode}")
     def clientProbeName = rootProject.findProperty('railwardClientProbeName')?.toString()?.trim()
     def mainRunDirectory = runDirectoryOverride
             ? rootProject.file(runDirectoryOverride)
@@ -147,7 +147,11 @@ minecraft {
             if (clientProbe) {
                 property 'railward.clientProbe', 'true'
                 property 'railward.clientProbeMode', clientProbeMode
-                args '--server', clientProbeHost, '--port', clientProbePort
+                // Minecraft 1.20 replaced the old auto-connect launch options.
+                if (minecraft_version == '1.20.1')
+                    args '--quickPlayMultiplayer', "${clientProbeHost}:${clientProbePort}"
+                else
+                    args '--server', clientProbeHost, '--port', clientProbePort
                 if (clientProbeName)
                     args '--username', clientProbeName
                 mods {

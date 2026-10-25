@@ -1,0 +1,77 @@
+newmtl rail
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl steel
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl balance
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl wheel
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl tread
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl cap
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl spring
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl motor
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl brake
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl rubber
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl rod
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl grease
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png
+
+newmtl bolted
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd ../bogey_triple_axle_equalized_locomotive_v2.png

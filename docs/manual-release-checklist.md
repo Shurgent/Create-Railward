@@ -28,6 +28,11 @@ clients and a disposable world. Record the date and evidence in
 - [ ] Orbit representative panels, roof pieces, doors, railings, lights,
   spotlight, cistern and cargo blocks in every supported facing. Lighting stays
   world-facing and stable; animated parts use the correct local pivot.
+- [ ] Inspect the v2 triple-axle locomotive bogey placed on both track axes
+  and on a moving assembled train: approved geometry/texture, all suspension
+  and motor parts present, wheels centered on the rails and normal day/night
+  lighting. Repeat on the ports, including Create 6 with Flywheel enabled
+  and disabled; the automated model/buffer probe is not a GPU visual pass.
 - [ ] Exercise the primary and secondary whistle, arrival sound, unloading
   falling-item stream and loop, and diesel exhaust as driver and observer. Each
   effect looks correct, starts/stops once and remains spatially consistent.
@@ -38,6 +43,9 @@ clients and a disposable world. Record the date and evidence in
   exact packaged Create version. Re-run the disabled/enabled multi-tank
   regression whenever the dependency changes; keep the mixin only while the
   upstream bug remains.
+- [ ] On Create 6, keep `fixCreate6SignalOverlayLighting=true` and compare
+  signal markers on straight and curved track in the same scene. Disable it
+  only to diagnose a confirmed `SignalVisual` mixin conflict.
 - [ ] Join a dedicated server with a separate client; assemble, drive, save and
   reload a train containing a modern controller, couplers, bulk cargo and a
   partially filled cistern.

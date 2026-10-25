@@ -1,49 +1,77 @@
-# Texture variables are resolved by the Forge OBJ loader
-newmtl brake
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+newmtl rail
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
-newmtl frame
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+newmtl steel
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
-newmtl frame_edge
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+newmtl balance
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
 newmtl wheel
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
 newmtl tread
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd #texture
+
+newmtl cap
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
 newmtl spring
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
-newmtl rust
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+newmtl motor
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
-newmtl axis
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
+newmtl brake
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
 map_Kd #texture
 
+newmtl rubber
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd #texture
+
+newmtl rod
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd #texture
+
+newmtl grease
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd #texture
+
+newmtl bolted
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd #texture

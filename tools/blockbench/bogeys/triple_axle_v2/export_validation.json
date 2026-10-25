@@ -1,0 +1,37 @@
+{
+  "forge\\bogey_triple_axle_equalized_locomotive_v2_frame.obj": {
+    "objects": 248,
+    "faces": 3788,
+    "unique_names": true,
+    "normals": true,
+    "UV_roundtrip": true
+  },
+  "forge\\bogey_triple_axle_equalized_locomotive_v2_wheelset.obj": {
+    "objects": 3,
+    "faces": 200,
+    "unique_names": true,
+    "normals": true,
+    "UV_roundtrip": true
+  },
+  "portable\\bogey_triple_axle_equalized_locomotive_v2_assembled.obj": {
+    "objects": 257,
+    "faces": 4388,
+    "unique_names": true,
+    "normals": true,
+    "UV_roundtrip": true
+  },
+  "portable\\bogey_triple_axle_equalized_locomotive_v2_frame.obj": {
+    "objects": 248,
+    "faces": 3788,
+    "unique_names": true,
+    "normals": true,
+    "UV_roundtrip": true
+  },
+  "portable\\bogey_triple_axle_equalized_locomotive_v2_wheelset.obj": {
+    "objects": 3,
+    "faces": 200,
+    "unique_names": true,
+    "normals": true,
+    "UV_roundtrip": true
+  }
+}
