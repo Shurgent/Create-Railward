@@ -3,7 +3,6 @@ package ua.pp.shurgent.railward.mixin.create.client;
 //? if create6 {
 /*import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -19,30 +18,18 @@ import ua.pp.shurgent.railward.client.renderer.TrainCouplerContraptionRenderCont
 @Mixin(value = ContraptionEntityRenderer.class, remap = false)
 public class ContraptionRenderDispatcherMixin {
 
-	@Group(name = "railward$setCurrentContraptionEntity", min = 1, max = 2)
-	@Inject(method = "render", at = @At("HEAD"), remap = false, require = 0)
-	private void railward$setCurrentContraptionEntityDev(AbstractContraptionEntity entity, float yaw,
+	// The typed render method keeps its name in production. m_7392_ is the
+	// compiler-generated bridge taking Entity, not AbstractContraptionEntity.
+	@Inject(method = "render(Lcom/simibubi/create/content/contraptions/AbstractContraptionEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+		at = @At("HEAD"), remap = false, require = 1)
+	private void railward$setCurrentContraptionEntity(AbstractContraptionEntity entity, float yaw,
 		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
 		railward$beginContraptionRender(entity, buffers);
 	}
 
-	@Group(name = "railward$setCurrentContraptionEntity", min = 1, max = 2)
-	@Inject(method = "m_7392_", at = @At("HEAD"), remap = false, require = 0)
-	private void railward$setCurrentContraptionEntitySrg(AbstractContraptionEntity entity, float yaw,
-		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
-		railward$beginContraptionRender(entity, buffers);
-	}
-
-	@Group(name = "railward$clearCurrentContraptionEntity", min = 1, max = 2)
-	@Inject(method = "render", at = @At("RETURN"), remap = false, require = 0)
-	private void railward$clearCurrentContraptionEntityDev(AbstractContraptionEntity entity, float yaw,
-		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
-		railward$endContraptionRender(buffers);
-	}
-
-	@Group(name = "railward$clearCurrentContraptionEntity", min = 1, max = 2)
-	@Inject(method = "m_7392_", at = @At("RETURN"), remap = false, require = 0)
-	private void railward$clearCurrentContraptionEntitySrg(AbstractContraptionEntity entity, float yaw,
+	@Inject(method = "render(Lcom/simibubi/create/content/contraptions/AbstractContraptionEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+		at = @At("RETURN"), remap = false, require = 1)
+	private void railward$clearCurrentContraptionEntity(AbstractContraptionEntity entity, float yaw,
 		float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int overlay, CallbackInfo ci) {
 		railward$endContraptionRender(buffers);
 	}

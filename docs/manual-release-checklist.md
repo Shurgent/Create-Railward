@@ -39,6 +39,11 @@ clients and a disposable world. Record the date and evidence in
 
 ## Port gate: repeat for 1.19.2, 1.20.1/Create 5 and 1.20.1/Create 6
 
+- [ ] Launch the collected release JAR in an isolated ordinary Forge client,
+  with the matching Create release and required dependencies, and reach the
+  main menu. In particular, check Create 6.0.8: `runClient` uses deobfuscated
+  dependencies and cannot rule out the `m_7392_(Entity, ...)` bridge-method
+  mixin crash. Then render a moving train with Railward couplers and spotlight.
 - [ ] Confirm the recorded `create.FluidNetworkMixin` audit still matches the
   exact packaged Create version. Re-run the disabled/enabled multi-tank
   regression whenever the dependency changes; keep the mixin only while the

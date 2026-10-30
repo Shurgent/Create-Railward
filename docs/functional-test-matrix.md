@@ -5,6 +5,35 @@ This matrix is the runtime acceptance checklist for Create: Railward. Minecraft
 feature is considered complete. Minecraft 1.19.2, 1.20.1/Create 5 and
 1.20.1/Create 6 are ports and use the reduced gate described below.
 
+## Create 6 release-client renderer mixin regression — 2026-10-30
+
+The supplied ordinary-client crash report reproduces the startup failure with
+Minecraft 1.20.1, Forge 47.4.28, Create 6.0.8 and Railward 0.7.0. Its root cause
+is `InvalidInjectionException` in `railward$setCurrentContraptionEntitySrg`:
+the handler takes `AbstractContraptionEntity`, but `m_7392_` takes `Entity`.
+`javap` of the pinned Create 6.0.8-289 release dependency confirms that
+`m_7392_(Entity, ...)` is `ACC_BRIDGE, ACC_SYNTHETIC` and delegates to
+`render(AbstractContraptionEntity, ...)`. The latter retains its name in both
+release and deobfuscated dependencies. The release JAR of Railward 0.7.1
+before this fix also contains the faulty SRG handlers.
+
+The Create 6 mixin now targets the typed `render` method by full descriptor
+at HEAD and RETURN, requires each injection, and removes the SRG alternatives.
+The Create 5 branches are unchanged. An ordinary release-client launch is
+required in addition to development `runClient` checks; see the port gate in
+`manual-release-checklist.md`.
+
+Verification on 2026-10-30: canonical `:1.18.2:compileJava`, then `compileAll`,
+then `clean buildAndCollect` all PASS. The clean build executed all 53 tasks;
+each of the four targets passed 19 unit tests with zero failures/errors.
+`javap` of the newly collected Create 6 JAR confirms both descriptor-qualified
+injections with `require=1` and no SRG handlers. Evidence:
+`.devdocs/tmp/create6-render-fix-20261030/compileAll.log`,
+`buildAndCollect.log` and `release-mixin-javap.txt` in that directory.
+Post-fix ordinary-client startup: PASS (2026-10-30, maintainer confirmed the
+replacement JAR starts successfully in the isolated Create/Railward instance
+that reproduced the crash). Moving-train rendering remains NOT RUN.
+
 ## Triple-axle locomotive bogey v2 — 2026-10-09
 
 The approved v2 OBJ frame, centered wheelset and 256×256 atlas replace the
