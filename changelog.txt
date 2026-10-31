@@ -3,14 +3,107 @@
 ## Changelog:
 
 ### 0.7.1
-    - Added Ponder tutorials for upright and ground signals: installation, rotation and signal aspects.
-    - Added Ponder tutorials for the Cistern Hatch and Fluid Terminal: pairing, vertical spacing, automatic connection, comparator output and redstone control.
-    - Added Ponder tutorials for bulk storage: multiblock shapes and sizes, colour separation, dropped-item intake, right-click stack extraction and inventory automation.
-    - Added locomotive-led tank-wagon and bulk-wagon demonstrations of loading and unloading through Railward's fluid and bulk-cargo blocks.
-    - Added English, Russian and Ukrainian titles and captions for all Ponder tutorials.
-    - Fixed a startup crash with Create 6.0.8 on Minecraft 1.20.1 caused by the contraption-renderer mixin.
-    - Added isolated Ponder client checks and updated verification documentation for all four build targets.
-    - Supported targets: Minecraft 1.18.2, 1.19.2, 1.20.1 with Create 0.5.1, and 1.20.1 with Create 6.
+    - Added Ponder scenes for signals, the Cistern Hatch, Fluid Terminal, Bulk Cargo Containers, Unloading Hatch and Unloading Bunker.
+    - Fixed a startup crash with Create 6.0.8 on Minecraft 1.20.1.
+
+### 0.7.0
+    - Added Minecraft 1.19.2 and 1.20.1 support, including Create 6.
+    - Fixed rendering and client-server synchronization issues in the newer ports.
+
+### 0.6.4
+    - Added multiple-arrival selection to the CC:Tweaked station peripheral.
+
+### 0.6.3
+    - Added a music disc.
+    - Fixed dual-panel and smoke rendering; made exhaust render distance configurable.
+
+### 0.6.2
+    - Corrected Forge 40.3.12 requirements.
+    - Fixed second-panel placement and added block-shape outlines.
+
+### 0.6.1
+    - Fixed particle compatibility with Forge 40.2.21.
+    - Updated Forge to 40.3.12.
+
+### 0.6.0
+    - Added the radiator fan, cab corner doors, dual panels, diesel exhaust, windshield, ladder panels and train stairs.
+    - Added a buffer-light variant and improved roof placement.
+    - Fixed door opening sides at stations, particle rendering and textures.
+
+### 0.5.1
+    - Added gray, red and yellow train floors.
+    - Fixed pilot rendering and textures.
+
+### 0.5.0
+    - Added the Modern Train Controller and fixed its behavior and rendering.
+
+### 0.4.2
+    - Added a Modern Whistle recipe using Create's whistle.
+    - Fixed whistle behavior, spotlight rendering and surface-mounted block mirroring.
+
+### 0.4.1
+    - Fixed rotation and placement of surface-mounted blocks on contraptions.
+    - Fixed pickaxe mining for the Cab Signal.
+
+### 0.4.0
+    - Added railings, hood walls, copycat parts, pilots, two bogeys, buffer lights and a dynamically lit spotlight.
+    - Added the Cab Signal.
+    - Updated roof shapes and textures.
+
+### 0.3.12
+    - Updated the version number from 0.3.8.
+
+### 0.3.8
+    - Increased whistle range to 128 blocks.
+    - Added CC:Tweaked station arrivals and schedule data.
+    - Improved arrival/departure predictions and compatibility with world-time changes.
+
+### 0.3.6
+    - Fixed whistle signs triggering Create's whistle.
+
+### 0.3.5
+    - Added Create goggles information for cargo containers and cisterns on moving contraptions; removed WTHIT integration.
+    - Fixed cargo and fluid preservation during disassembly and improved synchronization.
+    - Fixed rotation and mirroring of containers, cisterns and whistles.
+    - Improved Modern Whistle integration with train arrival sounds.
+
+### 0.3.4
+    - Fixed speed-sign and whistle-sign recipes.
+    - Fixed dedicated-server issues with signs and buffer lights.
+
+### 0.3.3
+    - Fixed locomotive buffer lights.
+
+### 0.3.2
+    - Added locomotive buffer lights and wall-panel attachments.
+    - Fixed train-door issues.
+
+### 0.3.0
+    - Added speed and whistle signs.
+    - Fixed coupler movement on curves and slopes.
+
+### 0.2.1
+    - Changed the Cistern Hatch recipe.
+
+### 0.2.0
+    - Corrected the version number from 0.1.4.
+
+### 0.1.4
+    - Added cisterns, the Cistern Hatch and Fluid Terminal.
+    - Fixed Create fluid-network behavior.
+
+### 0.1.3
+    - Fixed wagon-frame configuration preservation in schematics.
+
+### 0.1.2
+    - Fixed bulk storage and increased its maximum horizontal size to 11 blocks.
+    - Fixed pickaxe mining for blocks.
+
+### 0.1.1
+    - Fixed a dedicated-server crash.
 
 ### 0.1.0
-    - Initial build
+    - Initial signals, buffers, train walls and wall panels.
+    - Early development added whistles, large windows, wagon frames, floors, couplers and automatic coupling.
+    - Added bulk containers, loading/unloading blocks, hinged/sliding doors, roofs and WTHIT integration.
+    - Fixed whistle behavior and recipe conflicts.
