@@ -117,6 +117,24 @@ Shape locomotives and carriages with matching walls, windows, roofs,
 working doors, railings, and copycat parts. Combine multiple colors and
 liveries across passenger and freight builds.
 
+## Schematics
+
+Download example locomotive and wagon builds for your railway. Create and
+Railward are required to use these schematics.
+
+| Build | Download |
+| --- | --- |
+| ChME3 diesel locomotive | [chme3.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/chme3.nbt) |
+| Cargo platform | [cargo_platform.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/cargo_platform.nbt) |
+| Dump-car platform | [dumpcar_platform.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/dumpcar_platform.nbt) |
+| Green gondola | [gondola_green.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/gondola_green.nbt) |
+| Green open wagon | [halfcar_green.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/halfcar_green.nbt) |
+| Green tank wagon | [tank_car_green.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/tank_car_green.nbt) |
+| Light gray tank wagon | [tank_car_lgray.nbt](https://raw.githubusercontent.com/Shurgent/Create-Railward/main/schematics/tank_car_lgray.nbt) |
+
+Place the downloaded `.nbt` files in your Minecraft instance's `schematics/`
+folder, then load them using Create's **Schematic Table**.
+
 ## Compatibility
 
 The project targets the following Minecraft and Create versions on **Forge**:
