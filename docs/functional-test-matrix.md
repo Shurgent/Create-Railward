@@ -34,6 +34,152 @@ Post-fix ordinary-client startup: PASS (2026-10-30, maintainer confirmed the
 replacement JAR starts successfully in the isolated Create/Railward instance
 that reproduced the crash). Moving-train rendering remains NOT RUN.
 
+## Bulk Cargo Ponder tutorials — 2026-10-30
+
+Two additional storyboards cover bulk storage and wagon handling. All three
+container colours expose both; Unloading Hatch and Unloading Bunker expose
+the wagon scene (eight registrations). Eight storage captions show square,
+rectangular and tall assembly, complete-layer placement, adjacent colours that
+retain separate controllers/walls, top item intake, empty-hand stack extraction
+and inventory automation. Six wagon captions cover overhead supply, 1–3-block
+hatch reach, loading, a floor hatch aligned 1–3 blocks above a bunker, active
+extraction through its pull-only capability and automatic disconnection.
+EN/RU/UK translations contain 50 matching Ponder keys in total.
+
+The supplied halfcar and reversed ChME3 share one moving section. All 54 cargo
+cells are rebound to controller (4,5,6), size 9x3x2. The view retains standard
+isometry and a compact platform; the locomotive may leave the viewport. The
+overhead supply is behind the loading hatch, and pale sand makes the native
+falling-item visuals distinct. The train moves four blocks to the unloading
+stop, then departs empty. Existing signal/fluid scenes and gameplay logic are
+unchanged.
+
+| Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
+| --- | --- | --- | --- | --- |
+| Canonical-first compile, compileAll, clean buildAndCollect, 19/19 unit tests and compileClientTestAll | PASS | PASS | PASS | PASS |
+| Eight registrations, localized 8+6 captions and square/rectangular/tall dimensions | PASS | PASS | PASS | PASS |
+| Separate touching colours, 1152 thrown items, exactly 64 extracted by hand, 512 inserted/extracted through capabilities | PASS | PASS | PASS | PASS |
+| 54 normalized wagon cells, one moving consist, 46656 items conserved through full load/unload and disconnected departure | PASS | PASS | PASS | PASS |
+| Native hatch/bunker falling visuals during real UI playback, no transfer ItemEntity, nine rendered previews, default camera | PASS (ru_ru) | PASS (uk_ua) | PASS (en_us) | PASS (ru_ru) |
+| Collected JARs contain both new schematics, BulkCargoScenes, matching 50 language keys and no probe classes | PASS | PASS | PASS | PASS |
+| Full human navigation, reading pace, rendering/particle/audio inspection in every language | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
+
+Evidence: `.devdocs/tmp/bulk-ponder-compile-118.log`,
+`bulk-ponder-compile-all.log`, `bulk-ponder-clean-build.log` and the updated
+`verify_ponder_jars.py`. Accepted runtime evidence is under
+`.devdocs/tmp/bulk-ponder-20261030-final/`: per-target launch logs, result JSON,
+client/server directories and nine `screenshots/bulk-ponder-*.png` captures.
+Require `Railward BULK-PONDER client probe passed`, successful client/server
+exits and no client crash report. The earlier coal/overhanging-supply layout
+under `.devdocs/tmp/bulk-ponder-20261030/` is superseded.
+
+These are virtual tutorial-world checks. Formation, hand interactions and
+transfer timing are scripted while item counts, capabilities, multiblock NBT
+and native renderers are exercised. The bunker uses its actual pull-only
+handler; the visible hopper represents extraction at compressed tutorial
+speed. No dedicated-server gameplay or live train/hopper-network change is
+claimed. Retain the human pass in `manual-release-checklist.md`.
+
+## Cistern Hatch and Fluid Terminal Ponder tutorials — 2026-10-27
+
+Both items offer two pair-focused scenes, five captions each. They explain the
+analogy with Create's Portable Fluid Interface, the terminal directly above the
+hatch at a block-height difference of 1 or 2 (zero or one empty block between),
+automatic lid/hose movement, carriage-local storage, comparator connection
+output and redstone control. Assembly, pump operation, tank-level explanations,
+station scheduling and train-stopping tutorials were removed.
+
+The supplied ChME3 leads the supplied cistern on one track. Their couplers are
+adjacent at x=13/14; both vehicles occupy one moving section, with all four
+bogeys animated during arrival and departure. The decorative iron pillar,
+gantry and pump pedestals were removed. The comparator/support sits screen-left (east); the lever/support sits
+screen-right (west), with the comparator output facing east to read the terminal. Both
+controls are visible beside the pair. The compact platform is 14 by 8 blocks,
+with a 16-block framing region and view scale 0.8 instead of 0.35. The hatch
+and terminal are the focus; the decorative locomotive may extend beyond the
+platform and viewport. Both scenes retain Create's standard isometric
+camera (-35/145 degrees). The locomotive is rotated 180 degrees, with its cab
+at the rear beside the wagon and its long hood forward. All supply equipment
+is behind the wagon at z=11; the pump at x=3 is beyond its end toward the right
+edge of the view. Facing states, copycat materials, secondary panel facings,
+whistle rotation and railing parts rotate with the locomotive.
+
+| Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
+| --- | --- | --- | --- | --- |
+| Canonical-first compilation, compileAll, clean buildAndCollect, 19/19 unit tests and compileClientTestAll | PASS | PASS | PASS | PASS |
+| Four storyboard registrations, 81 normalized cistern parts, empty-supply playback, 16000 mB conserved and 8000 mB exchanged both ways | PASS | PASS | PASS | PASS |
+| Adjacent couplers, one moving section, all four bogeys animated, no iron station supports, flanking controls, correct comparator facing, rear cab, background supply and standard camera | PASS | PASS | PASS | PASS |
+| Rendered lid/hose, redstone disconnect/reconnect, comparator 15/0, closed departure and eight UI captures | PASS (ru_ru) | PASS (uk_ua) | PASS (en_us) | PASS (ru_ru) |
+| Collected JARs: matching schematics, scene classes, 34 Ponder keys per language, no test classes | PASS | PASS | PASS | PASS |
+| Full human W-key navigation/reading-pace/visual pass in every language | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
+
+Evidence: `.devdocs/tmp/fluid-swap-compile-118.log`,
+`fluid-swap-compile-all.log`, `fluid-swap-clean-build.log` (63 tasks) and
+`verify_ponder_jars.py`. Runtime evidence lives in
+`.devdocs/tmp/fluid-swap-20261027/`: `<target>-client/`,
+`<target>-server/`, their launch logs and `<target>-result.json` files. Require
+the `Railward FLUID-PONDER client probe passed` marker including
+`standard isometric camera, rear-facing cab, supply behind wagon`, successful
+client/server exits, no crash report in the accepted client directory and
+eight `screenshots/fluid-ponder-*.png` captures.
+
+These scenes illustrate inventory exchange in a virtual world; gameplay train
+and fluid-network code is unchanged. Keep the human checks in
+`manual-release-checklist.md`.
+
+## Signal Ponder tutorials — 2026-10-26
+
+Follow-up from human review: the original renderless disconnected-state check
+missed the cached source retained by a rendered repeater. `SchematicWorld`
+removed the source from its map without setting its removed flag, so subsequent
+visible-section ticks could restore INVALID and flashing lights. The scene now
+marks the source removed before replacing it with air. The new regression
+warms each cache in an actually rendered invalid scene, then removes the source
+and checks that the repeater remains dark for 80 client ticks. The wrench scene
+also turns all four parts through 15 sequential steps (337.5 degrees).
+
+Three shared-source tutorials cover installation, tall-signal aspects and
+ground-signal aspects. Both items register installation plus their own aspect
+scene. Captions explain the actual 1–4-block downward source lookup, four-block
+tall-head clearance, wrench rotation, Create-controlled routing and the ground
+head's green/yellow-to-white mapping. Gameplay signal logic is unchanged.
+
+| Check | 1.18.2 | 1.19.2 | 1.20.1/Create 5 | 1.20.1/Create 6 |
+| --- | --- | --- | --- | --- |
+| Canonical-first compilation, `compileAll`, clean `buildAndCollect`, 19/19 unit tests and `compileClientTestAll` | PASS | PASS | PASS | PASS |
+| Collected JAR: matching schematic, scene classes, 22 signal Ponder keys in each of three languages, no test classes | PASS | PASS | PASS | PASS |
+| Isolated dedicated server plus separate-client Ponder playback: four registrations, real schematic/BE loading, all four animated aspects and disconnected state | PASS | PASS | PASS | PASS |
+| Rendered wrench demonstration observes all 15 sequential steps, 16 distinct renderer states and consistent rotation of all four parts | PASS | PASS | PASS | PASS |
+| Both rendered repeaters warm their invalid-source cache, then stay dark for 80 client ticks after source removal | PASS | PASS | PASS | PASS |
+| Client UI rendered six preview frames and exited successfully, no crash report | PASS (ru_ru) | PASS (uk_ua) | PASS (en_us) | PASS (ru_ru) |
+| Human W-key entry, full tutorial/navigation/reading-pace review in all languages | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
+
+Build evidence: `.devdocs/tmp/ponder-fix-compile-118.log`,
+`ponder-fix-compile-all.log`, `ponder-fix-clean-build.log` and
+`verify_ponder_jars.py`. The clean build executed all 63 tasks successfully.
+Runtime evidence is under `.devdocs/tmp/ponder-fix-20261026/`. Each target uses
+`<target>-client/`, `<target>-server/` and corresponding
+`<target>-client-launch.log` / `<target>-server-launch.log` files. All four
+clients logged the `Railward PONDER client probe passed` marker, saved six
+previews and exited zero. The marker explicitly includes
+`15 rendered wrench steps` and
+`both cached-source disconnects stayed dark for 80 client ticks`.
+All four servers then stopped cleanly over RCON with exit code zero.
+`ports-results.json` records the successful target/language pairs. The
+six screenshots per client show installation, each head's normal aspect,
+15-step rotation, tall head disconnected and ground head disconnected.
+The canonical rotation and both disconnected screenshots were inspected.
+The probe clears vanilla join toasts and hides the background HUD in its
+isolated client so these do not obscure the tutorial captures.
+
+Initial attempts and the earlier three-preview probe are retained separately
+under `.devdocs/tmp/ponder-20261026/`; they do not verify the cached-source fix.
+Create 5's `PonderWorld` needs a client level, so probes wait for a dedicated
+server connection. Ponder playback drives illustrated state changes explicitly;
+it does not claim a new verification of real railway signaling or a complete
+human visual/reading-pace pass. Retain the human checks in
+`manual-release-checklist.md`.
+
 ## Triple-axle locomotive bogey v2 — 2026-10-09
 
 The approved v2 OBJ frame, centered wheelset and 256×256 atlas replace the

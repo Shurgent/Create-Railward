@@ -199,6 +199,16 @@ stonecutter {
 				'net.createmod.catnip.render.SuperByteBuffer')
 		replaceForCreate6('RenderTypes.getAdditive()', 'RenderTypes.additive()')
 
+		replaceForCreate6('com.simibubi.create.foundation.ponder.PonderPalette', 'net.createmod.ponder.api.PonderPalette')
+		replaceForCreate6('com.simibubi.create.foundation.utility.Pointing', 'net.createmod.catnip.math.Pointing')
+		replaceForCreate6('com.simibubi.create.foundation.ponder.SceneBuilder', 'net.createmod.ponder.api.scene.SceneBuilder')
+		replaceForCreate6('com.simibubi.create.foundation.ponder.SceneBuildingUtil', 'net.createmod.ponder.api.scene.SceneBuildingUtil')
+		replaceForCreate6('com.simibubi.create.foundation.ponder.Selection', 'net.createmod.ponder.api.scene.Selection')
+		replaceForCreate6('com.simibubi.create.foundation.ponder.element.WorldSectionElement', 'net.createmod.ponder.api.element.WorldSectionElement')
+		replaceForCreate6('scene.world.', 'scene.world().')
+		replaceForCreate6('scene.overlay.', 'scene.overlay().')
+		replaceForCreate6('util.select.', 'util.select().')
+
 		replaceForCreate6('com.jozufozu.flywheel.core.PartialModel',
 				'dev.engine_room.flywheel.lib.model.baked.PartialModel')
 		replaceForCreate6('new PartialModel(', 'PartialModel.of(')

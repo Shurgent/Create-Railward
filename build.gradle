@@ -57,7 +57,7 @@ minecraft {
     def clientProbeHost = rootProject.findProperty('railwardClientProbeHost')?.toString()?.trim() ?: '127.0.0.1'
     def clientProbePort = rootProject.findProperty('railwardClientProbePort')?.toString()?.trim() ?: '25565'
     def clientProbeMode = rootProject.findProperty('railwardClientProbeMode')?.toString()?.trim() ?: 'late_join'
-    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading', 'bogey_models'].contains(clientProbeMode))
+    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading', 'bogey_models', 'ponder', 'ponder_fluid', 'ponder_bulk'].contains(clientProbeMode))
         throw new GradleException("Unknown railwardClientProbeMode: ${clientProbeMode}")
     def clientProbeName = rootProject.findProperty('railwardClientProbeName')?.toString()?.trim()
     def mainRunDirectory = runDirectoryOverride

@@ -2,5 +2,15 @@
 
 ## Changelog:
 
+### 0.7.1
+    - Added Ponder tutorials for upright and ground signals: installation, rotation and signal aspects.
+    - Added Ponder tutorials for the Cistern Hatch and Fluid Terminal: pairing, vertical spacing, automatic connection, comparator output and redstone control.
+    - Added Ponder tutorials for bulk storage: multiblock shapes and sizes, colour separation, dropped-item intake, right-click stack extraction and inventory automation.
+    - Added locomotive-led tank-wagon and bulk-wagon demonstrations of loading and unloading through Railward's fluid and bulk-cargo blocks.
+    - Added English, Russian and Ukrainian titles and captions for all Ponder tutorials.
+    - Fixed a startup crash with Create 6.0.8 on Minecraft 1.20.1 caused by the contraption-renderer mixin.
+    - Added isolated Ponder client checks and updated verification documentation for all four build targets.
+    - Supported targets: Minecraft 1.18.2, 1.19.2, 1.20.1 with Create 0.5.1, and 1.20.1 with Create 6.
+
 ### 0.1.0
     - Initial build

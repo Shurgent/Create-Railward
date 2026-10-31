@@ -36,6 +36,37 @@ clients and a disposable world. Record the date and evidence in
 - [ ] Exercise the primary and secondary whistle, arrival sound, unloading
   falling-item stream and loop, and diesel exhaust as driver and observer. Each
   effect looks correct, starts/stops once and remains spatially consistent.
+- [ ] Hold W over each Railward signal item and play both Ponder scenes in
+  Russian, Ukrainian and English. Check camera/framing, captions, navigation,
+  tall green/red/yellow/flashing-red/dark states, and ground blue/white/
+  flashing-blue/dark states. The ground head must show white for both green
+  and yellow Create source states. Repeat on the ports, especially Create 6.
+  In the wrench demonstration, the whole tall signal takes 15 steps through
+  almost one full turn; both heads stay completely dark throughout the
+  disconnected-source caption after their invalid flashing example.
+- [ ] Hold W over both the Cistern Hatch and Fluid Terminal and play both fluid
+  tutorials. Inspect the locomotive leading the cistern on the same track as
+  one moving consist, cab at the rear and long hood forward, with all four bogeys
+  animated. Keep the standard isometric view with the hatch/terminal large and
+  central; allow the decorative locomotive beyond the compact platform and
+  viewport. Check the comparator/support on the left and lever/support on the
+  right, both unobscured. The supply pipe/tank sit behind
+  the wagon and the pump is visible beyond its end toward the right edge. Check readable
+  captions, visible lid opening/closure and hose extension/retraction, reservoir
+  level changes in both flow directions, redstone disconnect/reconnect and
+  closed departure, the explicit 1–2-block terminal height, clear hose/hatch
+  sightlines and absence of the old support pillar.
+  Repeat framing and text checks in all three languages and
+  on the ports; the illustrative scenes do not replace live fluid-transfer tests.
+
+- [ ] Hold W over each Bulk Cargo Container colour, the Unloading Hatch and the
+  Unloading Bunker. Inspect square/rectangular/tall assembly, the complete-layer
+  right-click prompt, separate touching colours, thrown-item intake, empty-hand
+  stack extraction and hopper input/output. In the wagon scene, check the
+  supplied halfcar travelling with ChME3, clear overhead loading and falling
+  cargo into the bunker, active extraction and empty departure. Retain standard
+  isometry and focus on the cargo mechanisms. Check reading pace, navigation,
+  particles and audio in all three languages and on the ports.
 
 ## Port gate: repeat for 1.19.2, 1.20.1/Create 5 and 1.20.1/Create 6
 

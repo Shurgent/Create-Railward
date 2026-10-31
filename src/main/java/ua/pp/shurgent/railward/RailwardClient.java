@@ -36,6 +36,7 @@ import ua.pp.shurgent.railward.client.renderer.SurfaceMountedPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.TrainRoofPartitionHighlight;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
 import ua.pp.shurgent.railward.particle.RailwardParticleTypes;
+import ua.pp.shurgent.railward.client.ponder.RailwardPonder;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RailwardClient {
@@ -43,6 +44,7 @@ public class RailwardClient {
 	public static void onCtorClient(IEventBus modEventBus, IEventBus forgeEventBus) {
 		
 		AllPartialModels.init();
+		RailwardPonder.register();
 		
 		modEventBus.addListener(RailwardClient::clientInit);
 		modEventBus.addListener(RailwardClient::registerParticleFactories);

@@ -72,6 +72,9 @@ Build multiblock cargo containers with visible fill levels. Unload through
 wagon hatches into receiving inventories or unloading bunkers, with
 falling-cargo effects and unloading sounds.
 
+Hold **W** over any bulk container colour for storage-building and wagon-handling
+Ponder scenes, or over an unloading hatch/bunker for the wagon scene.
+
 ![A bulk-cargo wagon receiving ore beneath a loading installation.](docs/images/features/bulk-cargo.png)
 
 ### Multiblock cisterns
@@ -80,6 +83,9 @@ Build tank wagons in several sizes and colors. Transfer fluids between
 assembled trains and station infrastructure using cistern hatches and
 fluid terminals.
 
+Hold **W** over a cistern hatch or fluid terminal to see how they work as a pair,
+their permitted vertical spacing and connection controls through Ponder.
+
 ![A green tank wagon connected to an overhead fluid terminal through its cistern hatch.](docs/images/features/cistern.png)
 
 ### Railway signaling
@@ -87,6 +93,10 @@ fluid terminals.
 Equip your network with modern upright and ground signals, bring signal
 aspects into the cab, and use configurable speed signs and whistle signs
 to control passing trains.
+
+Hold **W** over an upright or ground signal item to open its Ponder tutorials.
+The scenes explain installation and signal aspects in English, Russian and
+Ukrainian.
 
 ![Modern railway signals installed beside parallel tracks.](docs/images/features/signals.png)
 
