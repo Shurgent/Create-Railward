@@ -9,8 +9,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+//? if >=1.19.2 {
+/*import net.minecraftforge.client.model.data.ModelData;*/
+//?} else {
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+//?}
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public class WagonFrameBlockEntity extends SmartBlockEntity {
+
+	public static final ModelProperty<FrameConfiguration> FRAME_CONFIGURATION = new ModelProperty<>();
+
+	public record FrameConfiguration(List<WagonFrameMemberType> members, WagonFrameEquipmentType equipment,
+			WagonFrameHandBrakeValveSide handBrakeValve) {
+		public FrameConfiguration {
+			members = List.copyOf(members);
+		}
+
+		public WagonFrameMemberType member(WagonFrameSide side) {
+			return members.get(side.ordinal());
+		}
+	}
 
 	private final WagonFrameMemberType[] members = new WagonFrameMemberType[WagonFrameSide.values().length];
 	private WagonFrameEquipmentType equipment = WagonFrameEquipmentType.NONE;
@@ -62,6 +82,18 @@ public class WagonFrameBlockEntity extends SmartBlockEntity {
 	}
 
 	@Override
+	//? if >=1.19.2 {
+	/*public ModelData getModelData() {
+		ModelData.Builder builder = ModelData.builder();
+	*///?} else {
+	public IModelData getModelData() {
+		ModelDataMap.Builder builder = new ModelDataMap.Builder();
+	//?}
+		return builder.withInitial(FRAME_CONFIGURATION,
+			new FrameConfiguration(List.of(members), equipment, handBrakeValve)).build();
+	}
+
+	@Override
 	protected void write(CompoundTag tag, boolean clientPacket) {
 		super.write(tag, clientPacket);
 		writeConfiguration(tag);
@@ -86,9 +118,20 @@ public class WagonFrameBlockEntity extends SmartBlockEntity {
 	protected void read(CompoundTag tag, boolean clientPacket) {
 		super.read(tag, clientPacket);
 		CompoundTag membersTag = tag.getCompound("Members");
-		for (WagonFrameSide side : WagonFrameSide.values())
-			members[side.ordinal()] = WagonFrameMemberType.byName(membersTag.getString(side.getSerializedName()));
-		equipment = WagonFrameEquipmentType.byName(tag.getString("Equipment"));
-		handBrakeValve = WagonFrameHandBrakeValveSide.byName(tag.getString("HandBrakeValve"));
+		boolean changed = false;
+		for (WagonFrameSide side : WagonFrameSide.values()) {
+			WagonFrameMemberType member = WagonFrameMemberType.byName(membersTag.getString(side.getSerializedName()));
+			changed |= members[side.ordinal()] != member;
+			members[side.ordinal()] = member;
+		}
+		WagonFrameEquipmentType nextEquipment = WagonFrameEquipmentType.byName(tag.getString("Equipment"));
+		WagonFrameHandBrakeValveSide nextValve = WagonFrameHandBrakeValveSide.byName(tag.getString("HandBrakeValve"));
+		changed |= equipment != nextEquipment || handBrakeValve != nextValve;
+		equipment = nextEquipment;
+		handBrakeValve = nextValve;
+		if (clientPacket && changed && hasLevel() && !isVirtual()) {
+			requestModelDataUpdate();
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 16);
+		}
 	}
 }

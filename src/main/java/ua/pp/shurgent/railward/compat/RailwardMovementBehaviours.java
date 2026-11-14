@@ -12,6 +12,7 @@ import com.simibubi.create.content.contraptions.behaviour.MovingInteractionBehav
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class RailwardMovementBehaviours {
 
@@ -38,5 +39,19 @@ public final class RailwardMovementBehaviours {
 		/*MovementBehaviour.REGISTRY.register(block, behaviour);
 		*///? if !create6
 		AllMovementBehaviours.registerBehaviour(block, behaviour);
+	}
+
+	public static MovingInteractionBehaviour getInteraction(BlockState state) {
+		//? if create6
+		/*return MovingInteractionBehaviour.REGISTRY.get(state.getBlock());
+		*///? if !create6
+		return AllInteractionBehaviours.getBehaviour(state);
+	}
+
+	public static void registerInteraction(Block block, MovingInteractionBehaviour behaviour) {
+		//? if create6
+		/*MovingInteractionBehaviour.REGISTRY.register(block, behaviour);
+		*///? if !create6
+		AllInteractionBehaviours.registerBehaviour(block, behaviour);
 	}
 }

@@ -131,7 +131,9 @@ public final class RailwardLateJoinClientProbe {
 		if (minecraft.level == null || minecraft.player == null)
 			return;
 		String mode = System.getProperty(MODE_PROPERTY, "late_join");
-		if ("bogey_models".equals(mode) || "ponder".equals(mode) || "ponder_fluid".equals(mode) || "ponder_bulk".equals(mode))
+		if ("relay_case".equals(mode) || "relay_case_marker".equals(mode) || "rail_crossing_signal".equals(mode) || "bogey_models".equals(mode) || "ponder".equals(mode) || "ponder_fluid".equals(mode) || "ponder_bulk".equals(mode)
+			|| "ponder_coupler".equals(mode) || "ponder_cistern".equals(mode) || "ponder_lighting".equals(mode) || "ponder_controller".equals(mode)
+			|| "ponder_speed_sign".equals(mode) || "ponder_whistle_sign".equals(mode) || "ponder_crossing_signal".equals(mode))
 			return;
 		boolean cargoUnloadingProbe = "cargo_unloading".equals(mode);
 		if (!cargoUnloadingProbe && CreateClient.RAILWAYS == null)

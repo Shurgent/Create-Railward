@@ -103,6 +103,33 @@
       }
     ]
   },
+  "crossing_bell": {
+    "subtitle": "subtitle.railward.crossing_bell",
+    "sounds": [
+      {
+        "name": "railward:train/signal/crossing_bell",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "crossing_ring": {
+    "subtitle": "subtitle.railward.crossing_ring",
+    "sounds": [
+      {
+        "name": "railward:train/signal/crossing_ring",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "crossing_siren": {
+    "subtitle": "subtitle.railward.crossing_siren",
+    "sounds": [
+      {
+        "name": "railward:train/signal/crossing_siren",
+        "attenuation_distance": 32
+      }
+    ]
+  },
   "music_disc.echoes": {
     "sounds": [
       {

@@ -62,6 +62,12 @@ public class RailwardBogeyStyles {
 	public static void register() {
 	}
 
+	//? if !create6 {
+	public static boolean supportsPlacedInstancing(BogeyStyle style) {
+		return style == FREIGHT_18_100 || style == TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE;
+	}
+	//?}
+
 	private static ResourceLocation standardCycleGroup() {
 		//? if create6
 		/*return AllBogeyStyles.STANDARD_CYCLE_GROUP;

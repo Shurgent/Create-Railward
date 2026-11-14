@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": { "0": "railward:block/train/signal/rail_crossing_signal", "particle": "railward:block/train/signal/rail_crossing_signal" },
+  "elements": [
+    {
+      "name": "left_lamp_off",
+      "from": [11, 12, 5.9],
+      "to": [13, 14, 6],
+      "faces": {
+        "north": {"uv": [0.5, 8.0, 1.5, 9.0], "texture": "#0"},
+        "east": {"uv": [0.25, 8.0, 0.5, 9.0], "texture": "#0"},
+        "west": {"uv": [0.25, 8.0, 0.5, 9.0], "texture": "#0"},
+        "up": {"uv": [1.5, 8.0, 0.5, 7.75], "texture": "#0"},
+        "down": {"uv": [1.5, 7.75, 0.5, 8.0], "texture": "#0"}
+      }
+    }
+  ]
+}

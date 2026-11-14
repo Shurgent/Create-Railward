@@ -36,6 +36,9 @@ Shunt rolling stock into place and couple trains by slowly approaching a
 stationary train on straight, level track. Couplers also let you manually
 join and split assembled trains.
 
+Hold W over the Train Coupler for Ponder scenes covering automatic coupling,
+wrench coupling/uncoupling and train-name inheritance.
+
 ![A locomotive approaches a stationary freight wagon and automatically couples to it.](docs/images/features/automatic-coupling.gif)
 
 ### Bidirectional train controller
@@ -44,9 +47,17 @@ Drive forward and backward from a single controller using a dedicated
 reverser. Animated levers reflect throttle, braking, and direction during
 both manual and scheduled operation.
 
+Hold **W** over the controller item for a Ponder tutorial covering the reverser,
+stopping requirements and direction-dependent Buffer Lights.
+
 | Modern train controller | Reverser set to backward |
 | --- | --- |
 | ![The modern train controller installed inside a locomotive cab.](docs/images/features/controller.png) | ![The same controller with the reverser set to backward.](docs/images/features/controller-reversed.png) |
+
+### Directional locomotive lighting
+
+Hold **W** over Buffer Lights or a Locomotive Spotlight for tutorials covering
+their variants, panel mounting and automatic directional lighting.
 
 ### Responsive diesel exhaust
 
@@ -83,6 +94,7 @@ Build tank wagons in several sizes and colors. Transfer fluids between
 assembled trains and station infrastructure using cistern hatches and
 fluid terminals.
 
+Hold **W** over any cistern colour for building and pipe-connection tutorials.
 Hold **W** over a cistern hatch or fluid terminal to see how they work as a pair,
 their permitted vertical spacing and connection controls through Ponder.
 
@@ -99,6 +111,14 @@ The scenes explain installation and signal aspects in English, Russian and
 Ukrainian.
 
 ![Modern railway signals installed beside parallel tracks.](docs/images/features/signals.png)
+
+### Relay cabinets
+
+Bind cabinets to tracks to define independent occupancy blocks for redstone
+railway automation. A cabinet outputs redstone while a train occupies the block
+ahead. External redstone sets its occupied state without being retransmitted;
+check that state with Engineer's Goggles. Cabinets support four horizontal
+orientations and wrench rotation, and do not restrict train movement.
 
 ### Locomotive lighting and sound
 

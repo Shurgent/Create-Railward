@@ -305,11 +305,12 @@ public final class BulkCargoScenes {
 	}
 
 	private static void wheels(SceneBuilder scene, float distance, int duration) {
+		// Match the +X movement of the consist after the bogeys' 90-degree world rotation.
 		for (int x : new int[] {5, 11, 18, 25}) {
 			//? if create6 {
-			/*new CreateSceneBuilder(scene).world().animateBogey(new BlockPos(x, 4, 7), distance, duration);
+			/*new CreateSceneBuilder(scene).world().animateBogey(new BlockPos(x, 4, 7), -distance, duration);
 			*///?} else {
-			scene.world.animateBogey(new BlockPos(x, 4, 7), distance, duration);
+			scene.world.animateBogey(new BlockPos(x, 4, 7), -distance, duration);
 			//?}
 		}
 	}

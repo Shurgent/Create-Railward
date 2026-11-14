@@ -23,6 +23,11 @@ public class LocomotiveBufferLightsRenderer extends SmartBlockEntityRenderer<Loc
 		BlockState state = be.getBlockState();
 		Direction facing = state.getValue(LocomotiveBufferLightsBlock.FACING);
 		LocomotiveBufferLightsVariant variant = state.getValue(LocomotiveBufferLightsBlock.VARIANT);
+		var preview = ua.pp.shurgent.railward.client.ponder.TrainLightingPonderState.get(be);
+		if (preview != null) {
+			LocomotiveBufferLightsRenderHelper.renderPonder(state, variant, facing, preview, ms, buffers, light);
+			return;
+		}
 		LocomotiveBufferLightsRenderHelper.render(state, variant, facing, 0, ms, buffers, light);
 	}
 }

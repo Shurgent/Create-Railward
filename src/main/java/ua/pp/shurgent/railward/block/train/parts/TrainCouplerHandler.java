@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -47,11 +48,12 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import ua.pp.shurgent.railward.AllBlocks;
 import ua.pp.shurgent.railward.RailwardConfig;
 import ua.pp.shurgent.railward.RailwardPackets;
 import ua.pp.shurgent.railward.RailwardSoundEvents;
 import ua.pp.shurgent.railward.compat.RailwardComponents;
+import ua.pp.shurgent.railward.compat.TrainCouplerCompatibility;
+import ua.pp.shurgent.railward.compat.TrainCouplerCompatibility.CouplerType;
 import ua.pp.shurgent.railward.mixin.create.CarriageBogeyAccessor;
 import ua.pp.shurgent.railward.mixin.create.TrainAccessor;
 import ua.pp.shurgent.railward.network.TrainCouplerSyncPacket;
@@ -71,13 +73,17 @@ public class TrainCouplerHandler {
 	private static final double MIN_AXIS_DOT = 0.5;
 	private static final double AUTO_MOVEMENT_EPSILON_SQ = 1.0E-6;
 
-	private static final Map<UUID, Vec3> AUTO_LAST_TRAIN_CENTERS = new HashMap<>();
-	private static final List<SuppressedCouplerPair> AUTO_SUPPRESSED_COUPLERS = new ArrayList<>();
+	private static final Map<ServerLevel, AutoCouplerState> AUTO_STATES = new WeakHashMap<>();
+
+	private static AutoCouplerState autoState(ServerLevel level) {
+		return AUTO_STATES.computeIfAbsent(level, ignored -> new AutoCouplerState());
+	}
+
+	public static void clearAutoCouplers() {
+		AUTO_STATES.clear();
+	}
 
 	public static void tickAutoCouplers(ServerLevel level) {
-		if (!Level.OVERWORLD.equals(level.dimension()))
-			return;
-
 		int interval = Math.max(1, RailwardConfig.COMMON.trainCouplerAutoScanIntervalTicks.get());
 		if (level.getGameTime() % interval != 0)
 			return;
@@ -89,18 +95,20 @@ public class TrainCouplerHandler {
 			return;
 		}
 
+		AutoCouplerState state = autoState(level);
 		List<Train> trains = new ArrayList<>(Create.RAILWAYS.sided(level).trains.values());
+		trains.removeIf(train -> !isTrainInLevel(level, train));
 		Map<UUID, Vec3> currentCenters = collectCurrentTrainCenters(level, trains);
 		cleanupSuppressedAutoCouplers(level);
 		autoDebug(debugAttempt, "auto tick: dimension={} gameTime={} trains={} centers={} previousCenters={} suppressedPairs={} interval={} maxSpeed={}",
 			level.dimension().location(), level.getGameTime(), trains.size(), currentCenters.size(),
-			AUTO_LAST_TRAIN_CENTERS.size(), AUTO_SUPPRESSED_COUPLERS.size(), interval,
+			state.lastTrainCenters.size(), state.suppressedCouplers.size(), interval,
 			getAutoMaxSpeed());
 
 		try {
 			for (Train movingTrain : trains) {
 				Vec3 currentCenter = currentCenters.get(movingTrain.id);
-				Vec3 previousCenter = AUTO_LAST_TRAIN_CENTERS.get(movingTrain.id);
+				Vec3 previousCenter = state.lastTrainCenters.get(movingTrain.id);
 				if (currentCenter == null) {
 					autoDebug(debugAttempt, "auto train skipped: {} has no current center", debugTrain(movingTrain));
 					continue;
@@ -120,9 +128,23 @@ public class TrainCouplerHandler {
 					return;
 			}
 		} finally {
-			AUTO_LAST_TRAIN_CENTERS.clear();
-			AUTO_LAST_TRAIN_CENTERS.putAll(currentCenters);
+			state.lastTrainCenters.clear();
+			state.lastTrainCenters.putAll(currentCenters);
 		}
+	}
+
+	private static boolean isTrainInLevel(Level level, Train train) {
+		if (train.carriages.isEmpty())
+			return false;
+		for (Carriage carriage : train.carriages) {
+			if (carriage.presentInMultipleDimensions())
+				return false;
+			Carriage.DimensionalCarriageEntity dimensional = carriage.getDimensionalIfPresent(level.dimension());
+			CarriageContraptionEntity entity = dimensional == null ? null : dimensional.entity.get();
+			if (entity == null || !entity.isAlive() || entity.level != level)
+				return false;
+		}
+		return true;
 	}
 
 	private static Map<UUID, Vec3> collectCurrentTrainCenters(Level level, Collection<Train> trains) {
@@ -291,7 +313,7 @@ public class TrainCouplerHandler {
 		return new MovingCoupler(best.carriageIndex(), best.end(), best.coupler(), movementDirection);
 	}
 
-	private static CouplingCandidate findAutoCouplingCandidate(int debugAttempt, Level level, Train movingTrain,
+	private static CouplingCandidate findAutoCouplingCandidate(int debugAttempt, ServerLevel level, Train movingTrain,
 		MovingCoupler movingCoupler) {
 		CouplingCandidate best = null;
 		double bestDistance = MAX_COUPLER_DISTANCE_SQ;
@@ -300,6 +322,8 @@ public class TrainCouplerHandler {
 			Create.RAILWAYS.sided(level).trains.size(), debugDistance(MAX_COUPLER_DISTANCE_SQ));
 		for (Train candidateTrain : Create.RAILWAYS.sided(level).trains.values()) {
 			if (candidateTrain == movingTrain)
+				continue;
+			if (!isTrainInLevel(level, candidateTrain))
 				continue;
 
 			Result validation = validateTrainReady(candidateTrain);
@@ -319,6 +343,8 @@ public class TrainCouplerHandler {
 			}
 
 			for (CouplerLocation location : collectOuterCouplers(debugAttempt, level, candidateTrain)) {
+				if (!TrainCouplerCompatibility.canCouple(movingCoupler.coupler().type(), location.coupler().type()))
+					continue;
 				Vec3 offset = location.coupler()
 					.center()
 					.subtract(movingCoupler.coupler()
@@ -332,7 +358,7 @@ public class TrainCouplerHandler {
 					continue;
 				}
 
-				if (isAutoCouplingSuppressed(movingCoupler.coupler(), location.coupler())) {
+				if (isAutoCouplingSuppressed(level, movingCoupler.coupler(), location.coupler())) {
 					autoDebug(debugAttempt,
 						"auto candidate coupler rejected: train={} carriage={} center={} suppressed until separation",
 						debugTrain(candidateTrain), location.carriageIndex(), debugVec(location.coupler()
@@ -383,7 +409,8 @@ public class TrainCouplerHandler {
 				continue;
 
 			Carriage carriage = train.carriages.get(carriageIndex);
-			CarriageContraptionEntity entity = carriage.anyAvailableEntity();
+			Carriage.DimensionalCarriageEntity dimensional = carriage.getDimensionalIfPresent(level.dimension());
+			CarriageContraptionEntity entity = dimensional == null ? null : dimensional.entity.get();
 			if (entity == null || entity.level != level) {
 				autoDebug(debugAttempt,
 					"outer coupler search skipped carriage: train={} carriage={} entityMissingOrWrongLevel entity={}",
@@ -401,7 +428,7 @@ public class TrainCouplerHandler {
 
 			for (StructureBlockInfo info : contraption.getBlocks()
 				.values()) {
-				if (!AllBlocks.TRAIN_COUPLER.has(info.state))
+				if (!TrainCouplerCompatibility.isCoupler(info.state))
 					continue;
 
 				CouplerEnd end = resolveCouplerEnd(level, entity, carriage, info.pos, info.state);
@@ -431,6 +458,8 @@ public class TrainCouplerHandler {
 		Set<ServerPlayer> players = new HashSet<>();
 		for (Carriage carriage : movingTrain.carriages) {
 			carriage.forEachPresentEntity(entity -> {
+				if (entity.level != level)
+					return;
 				Optional<UUID> controllingPlayer = entity.getControllingPlayer();
 				if (controllingPlayer.isEmpty())
 					return;
@@ -483,27 +512,28 @@ public class TrainCouplerHandler {
 		}
 	}
 
-	private static void suppressAutoCoupling(CouplerRef first, CouplerRef second) {
+	private static void suppressAutoCoupling(ServerLevel level, CouplerRef first, CouplerRef second) {
 		if (first.endpoint() == null || second.endpoint() == null)
 			return;
 
 		SuppressedCouplerPair pair = new SuppressedCouplerPair(first.endpoint(), second.endpoint());
-		AUTO_SUPPRESSED_COUPLERS.removeIf(pair::matches);
-		AUTO_SUPPRESSED_COUPLERS.add(pair);
+		List<SuppressedCouplerPair> suppressed = autoState(level).suppressedCouplers;
+		suppressed.removeIf(pair::matches);
+		suppressed.add(pair);
 	}
 
-	private static boolean isAutoCouplingSuppressed(CouplerRef first, CouplerRef second) {
+	private static boolean isAutoCouplingSuppressed(ServerLevel level, CouplerRef first, CouplerRef second) {
 		if (first.endpoint() == null || second.endpoint() == null)
 			return false;
 
-		for (SuppressedCouplerPair pair : AUTO_SUPPRESSED_COUPLERS)
+		for (SuppressedCouplerPair pair : autoState(level).suppressedCouplers)
 			if (pair.matches(first.endpoint(), second.endpoint()))
 				return true;
 		return false;
 	}
 
 	private static void cleanupSuppressedAutoCouplers(ServerLevel level) {
-		Iterator<SuppressedCouplerPair> iterator = AUTO_SUPPRESSED_COUPLERS.iterator();
+		Iterator<SuppressedCouplerPair> iterator = autoState(level).suppressedCouplers.iterator();
 		while (iterator.hasNext()) {
 			SuppressedCouplerPair pair = iterator.next();
 			Vec3 first = resolveSuppressedCouplerCenter(level, pair.first());
@@ -521,7 +551,7 @@ public class TrainCouplerHandler {
 		StructureBlockInfo info = carriageEntity.getContraption()
 			.getBlocks()
 			.get(endpoint.localPos());
-		if (info == null || !AllBlocks.TRAIN_COUPLER.has(info.state))
+		if (info == null || !TrainCouplerCompatibility.isCoupler(info.state))
 			return null;
 
 		return carriageEntity.toGlobalVector(VecHelper.getCenterOf(endpoint.localPos()), 1);
@@ -535,7 +565,7 @@ public class TrainCouplerHandler {
 		StructureBlockInfo clickedInfo = carriageEntity.getContraption()
 			.getBlocks()
 			.get(localPos);
-		if (clickedInfo == null || !AllBlocks.TRAIN_COUPLER.has(clickedInfo.state)) {
+		if (clickedInfo == null || !TrainCouplerCompatibility.isCoupler(clickedInfo.state)) {
 			debug(debugAttempt, "clicked block is not a coupler: info={}", clickedInfo);
 			return Result.fail("railward.train_coupler.error.not_coupler");
 		}
@@ -602,7 +632,8 @@ public class TrainCouplerHandler {
 			debug(debugAttempt, "decouple rejected: paired coupler not found");
 			return Result.fail("railward.train_coupler.error.adjacent_missing");
 		}
-		suppressAutoCoupling(clickedCoupler, otherCoupler);
+		if (level instanceof ServerLevel serverLevel)
+			suppressAutoCoupling(serverLevel, clickedCoupler, otherCoupler);
 
 		Train newTrain = splitTrain(level, train, splitIndex);
 		if (newTrain == null) {
@@ -661,6 +692,8 @@ public class TrainCouplerHandler {
 	private static Result completeCoupling(int debugAttempt, Level level, Train clickedTrain, int clickedCarriageIndex,
 		CouplerEnd clickedEnd, CouplerRef clickedCoupler, CouplingCandidate candidate,
 		Train trainToStopBeforeCombine, boolean forceClickedTrainName) {
+		if (!TrainCouplerCompatibility.canCouple(clickedCoupler.type(), candidate.coupler().type()))
+			return Result.fail("railward.train_coupler.error.other_missing");
 		Train otherTrain = candidate.train();
 		debug(debugAttempt, "selected candidate: train={} carriage={} end={} center={} distanceSq={}",
 			debugTrain(otherTrain), candidate.carriageIndex(), candidate.end(), debugVec(candidate.coupler()
@@ -896,6 +929,9 @@ public class TrainCouplerHandler {
 			return null;
 
 		Direction facing = state.getValue(TrainCouplerBlock.FACING);
+		CouplerType type = TrainCouplerCompatibility.typeOf(state);
+		if (type != null && !type.isRailward())
+			facing = facing.getOpposite();
 		if (facing.getAxis() != assemblyDirection.getAxis())
 			return null;
 		return facing == assemblyDirection ? CouplerEnd.TRAILING : CouplerEnd.LEADING;
@@ -957,7 +993,7 @@ public class TrainCouplerHandler {
 
 		for (StructureBlockInfo info : contraption.getBlocks()
 			.values()) {
-			if (!AllBlocks.TRAIN_COUPLER.has(info.state))
+			if (!TrainCouplerCompatibility.isCoupler(info.state))
 				continue;
 
 			CouplerEnd end = resolveCouplerEnd(level, otherEntity, otherCarriage, info.pos, info.state);
@@ -968,7 +1004,7 @@ public class TrainCouplerHandler {
 			}
 
 			CouplerRef candidate = CouplerRef.from(otherEntity, info.pos, info.state);
-			if (candidate == null)
+			if (candidate == null || !TrainCouplerCompatibility.canCouple(clickedCoupler.type(), candidate.type()))
 				continue;
 
 			double distance = clickedCoupler.center()
@@ -1034,11 +1070,12 @@ public class TrainCouplerHandler {
 
 				for (StructureBlockInfo info : contraption.getBlocks()
 					.values()) {
-					if (!AllBlocks.TRAIN_COUPLER.has(info.state))
+					if (!TrainCouplerCompatibility.isCoupler(info.state))
 						continue;
 
 					CouplerRef candidateCoupler = CouplerRef.from(entity, info.pos, info.state);
-					if (candidateCoupler == null)
+					if (candidateCoupler == null
+						|| !TrainCouplerCompatibility.canCouple(clickedCoupler.type(), candidateCoupler.type()))
 						continue;
 
 					CouplerEnd end = resolveCouplingEndByRelativePosition(level, candidateTrain, carriageIndex,
@@ -1609,6 +1646,11 @@ public class TrainCouplerHandler {
 	private record CouplerLocation(int carriageIndex, CouplerEnd end, CouplerRef coupler) {
 	}
 
+	private static class AutoCouplerState {
+		private final Map<UUID, Vec3> lastTrainCenters = new HashMap<>();
+		private final List<SuppressedCouplerPair> suppressedCouplers = new ArrayList<>();
+	}
+
 	private record CouplerEndpoint(UUID entityId, BlockPos localPos) {
 	}
 
@@ -1623,11 +1665,14 @@ public class TrainCouplerHandler {
 		}
 	}
 
-	private record CouplerRef(Vec3 center, CouplerEndpoint endpoint) {
+	private record CouplerRef(Vec3 center, CouplerEndpoint endpoint, CouplerType type) {
 
 		private static CouplerRef from(CarriageContraptionEntity entity, BlockPos localPos, BlockState state) {
+			CouplerType type = TrainCouplerCompatibility.typeOf(state);
+			if (type == null)
+				return null;
 			Vec3 center = entity.toGlobalVector(VecHelper.getCenterOf(localPos), 1);
-			return new CouplerRef(center, new CouplerEndpoint(entity.getUUID(), localPos.immutable()));
+			return new CouplerRef(center, new CouplerEndpoint(entity.getUUID(), localPos.immutable()), type);
 		}
 	}
 

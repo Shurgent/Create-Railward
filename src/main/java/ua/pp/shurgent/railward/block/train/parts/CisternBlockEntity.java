@@ -114,11 +114,15 @@ public class CisternBlockEntity extends FluidTankBlockEntity {
 
 	@Override
 	protected AABB createRenderBoundingBox() {
+		AABB blockBounds = new AABB(worldPosition);
 		if (!isController())
-			return super.createRenderBoundingBox();
+			return blockBounds;
+
+		int width = isValidWidth(getCisternWidth()) ? getCisternWidth() : 1;
+		int length = Math.max(1, getCisternLength());
 		return getCisternAxis() == Direction.Axis.X
-			? super.createRenderBoundingBox().expandTowards(height - 1, width - 1, width - 1)
-			: super.createRenderBoundingBox().expandTowards(width - 1, width - 1, height - 1);
+			? blockBounds.expandTowards(length - 1, width - 1, width - 1)
+			: blockBounds.expandTowards(width - 1, width - 1, length - 1);
 	}
 
 	@Override

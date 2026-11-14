@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": { "0": "railward:block/train/signal/rail_crossing_signal", "particle": "railward:block/train/signal/rail_crossing_signal" },
+  "elements": [
+    {
+      "name": "cross.2",
+      "from": [0, 0, 6.91],
+      "to": [16, 5, 6.91],
+      "faces": {
+        "north": {"uv": [8.0, 10.0, 16.0, 12.5], "texture": "#0"},
+        "south": {"uv": [8.0, 12.5, 16.0, 15.0], "texture": "#0"}
+      }
+    }
+  ]
+}

@@ -32,6 +32,7 @@ import ua.pp.shurgent.railward.client.renderer.LocomotiveBufferLightsPlacementPr
 import ua.pp.shurgent.railward.client.renderer.DualPanelPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.LocomotiveSpotlightForwardRenderer;
 import ua.pp.shurgent.railward.client.renderer.RailingInteractionHighlight;
+import ua.pp.shurgent.railward.client.renderer.RailCrossingSignalHighlight;
 import ua.pp.shurgent.railward.client.renderer.SurfaceMountedPlacementPreview;
 import ua.pp.shurgent.railward.client.renderer.TrainRoofPartitionHighlight;
 import ua.pp.shurgent.railward.client.renderer.WagonFrameInteractionHighlight;
@@ -60,6 +61,7 @@ public class RailwardClient {
 		forgeEventBus.addListener(EventPriority.LOWEST, DieselExhaustParticleRenderer::render);
 		forgeEventBus.addListener(DieselExhaustParticleRenderer::onClientLogout);
 		forgeEventBus.addListener(RailingInteractionHighlight::render);
+		forgeEventBus.addListener(RailCrossingSignalHighlight::tick);
 		forgeEventBus.addListener(TrainRoofPartitionHighlight::render);
 		forgeEventBus.addListener(WagonFrameInteractionHighlight::render);
 		forgeEventBus.addListener(ModernWhistleSecondaryHonkKeyHandler::onClientTick);

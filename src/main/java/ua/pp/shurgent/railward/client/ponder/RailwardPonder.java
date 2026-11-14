@@ -23,6 +23,22 @@ public final class RailwardPonder {
 		/*PonderIndex.addPlugin(new Plugin());
 		*///?} else {
 		var helper = new PonderRegistrationHelper(Railward.MOD_ID);
+		helper.forComponents(AllBlocks.RAIL_CROSSING_SIGNAL)
+			.addStoryBoard("speed_sign", RailCrossingSignalScenes::crossing);
+		helper.forComponents(AllBlocks.WHISTLE_SIGN)
+			.addStoryBoard("speed_sign", WhistleSignScenes::crossing);
+		helper.forComponents(AllBlocks.SPEED_SIGN)
+			.addStoryBoard("speed_sign", SpeedSignScenes::limit);
+		helper.forComponents(AllBlocks.MODERN_TRAIN_CONTROLLER)
+			.addStoryBoard("train_lighting", ModernTrainControllerScenes::controls);
+		helper.forComponents(AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS)
+			.addStoryBoard("train_lighting", TrainLightingScenes::buffers);
+		helper.forComponents(AllBlocks.LOCOMOTIVE_SPOTLIGHT)
+			.addStoryBoard("train_lighting", TrainLightingScenes::spotlight);
+		helper.forComponents(AllBlocks.CISTERN, AllBlocks.CISTERN_BLUE, AllBlocks.CISTERN_LIGHT_BLUE,
+			AllBlocks.CISTERN_BLACK, AllBlocks.CISTERN_LIGHT_GRAY, AllBlocks.CISTERN_YELLOW, AllBlocks.CISTERN_ORANGE)
+			.addStoryBoard("cistern_storage", CisternScenes::building)
+			.addStoryBoard("cistern_storage", CisternScenes::connections);
 		helper.forComponents(AllBlocks.MODERN_SIGNAL, AllBlocks.MODERN_SIGNAL_GROUND)
 			.addStoryBoard("signals", SignalScenes::placement);
 		helper.forComponents(AllBlocks.MODERN_SIGNAL).addStoryBoard("signals", SignalScenes::mainSignal);
@@ -36,6 +52,10 @@ public final class RailwardPonder {
 			.addStoryBoard("bulk_transport", BulkCargoScenes::transport);
 		helper.forComponents(AllBlocks.UNLOADING_HATCH, AllBlocks.UNLOADING_BUNKER)
 			.addStoryBoard("bulk_transport", BulkCargoScenes::transport);
+		helper.forComponents(AllBlocks.TRAIN_COUPLER)
+			.addStoryBoard("train_coupler", CouplerScenes::automatic)
+			.addStoryBoard("train_coupler", CouplerScenes::manual)
+			.addStoryBoard("train_coupler", CouplerScenes::names);
 		//?}
 	}
 
@@ -48,6 +68,22 @@ public final class RailwardPonder {
 
 		@Override
 		public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+			helper.forComponents(AllBlocks.RAIL_CROSSING_SIGNAL.getId())
+				.addStoryBoard("speed_sign", RailCrossingSignalScenes::crossing);
+			helper.forComponents(AllBlocks.WHISTLE_SIGN.getId())
+			.addStoryBoard("speed_sign", WhistleSignScenes::crossing);
+		helper.forComponents(AllBlocks.SPEED_SIGN.getId())
+			.addStoryBoard("speed_sign", SpeedSignScenes::limit);
+			helper.forComponents(AllBlocks.MODERN_TRAIN_CONTROLLER.getId())
+				.addStoryBoard("train_lighting", ModernTrainControllerScenes::controls);
+			helper.forComponents(AllBlocks.LOCOMOTIVE_BUFFER_LIGHTS.getId())
+				.addStoryBoard("train_lighting", TrainLightingScenes::buffers);
+			helper.forComponents(AllBlocks.LOCOMOTIVE_SPOTLIGHT.getId())
+				.addStoryBoard("train_lighting", TrainLightingScenes::spotlight);
+			helper.forComponents(AllBlocks.CISTERN.getId(), AllBlocks.CISTERN_BLUE.getId(), AllBlocks.CISTERN_LIGHT_BLUE.getId(),
+				AllBlocks.CISTERN_BLACK.getId(), AllBlocks.CISTERN_LIGHT_GRAY.getId(), AllBlocks.CISTERN_YELLOW.getId(), AllBlocks.CISTERN_ORANGE.getId())
+				.addStoryBoard("cistern_storage", CisternScenes::building)
+				.addStoryBoard("cistern_storage", CisternScenes::connections);
 			helper.forComponents(AllBlocks.MODERN_SIGNAL.getId(), AllBlocks.MODERN_SIGNAL_GROUND.getId())
 				.addStoryBoard("signals", SignalScenes::placement);
 			helper.forComponents(AllBlocks.MODERN_SIGNAL.getId()).addStoryBoard("signals", SignalScenes::mainSignal);
@@ -61,6 +97,10 @@ public final class RailwardPonder {
 				.addStoryBoard("bulk_transport", BulkCargoScenes::transport);
 			helper.forComponents(AllBlocks.UNLOADING_HATCH.getId(), AllBlocks.UNLOADING_BUNKER.getId())
 				.addStoryBoard("bulk_transport", BulkCargoScenes::transport);
+			helper.forComponents(AllBlocks.TRAIN_COUPLER.getId())
+				.addStoryBoard("train_coupler", CouplerScenes::automatic)
+				.addStoryBoard("train_coupler", CouplerScenes::manual)
+				.addStoryBoard("train_coupler", CouplerScenes::names);
 		}
 	}
 	*///?}

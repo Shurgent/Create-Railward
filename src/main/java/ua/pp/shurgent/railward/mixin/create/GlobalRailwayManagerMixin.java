@@ -9,6 +9,7 @@ import com.simibubi.create.content.trains.GlobalRailwayManager;
 
 import net.minecraft.world.level.Level;
 import ua.pp.shurgent.railward.block.train.parts.CabSignalTrainState;
+import ua.pp.shurgent.railward.block.train.signal.RelayCaseRailwayManager;
 
 @Mixin(value = GlobalRailwayManager.class, remap = false)
 public class GlobalRailwayManagerMixin {
@@ -16,5 +17,6 @@ public class GlobalRailwayManagerMixin {
 	@Inject(method = "tick", at = @At("TAIL"), remap = false)
 	private void railward$tickCabSignalsAfterSignalStates(Level level, CallbackInfo ci) {
 		CabSignalTrainState.tickAll(level);
+		RelayCaseRailwayManager.tick((GlobalRailwayManager) (Object) this, level);
 	}
 }

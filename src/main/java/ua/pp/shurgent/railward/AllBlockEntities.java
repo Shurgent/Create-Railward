@@ -9,9 +9,18 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlockEntity;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlockEntity;
+import ua.pp.shurgent.railward.block.train.signal.RelayCaseBlockEntity;
+import ua.pp.shurgent.railward.block.train.signal.RailCrossingSignalBlockEntity;
+import ua.pp.shurgent.railward.client.renderer.RelayCaseRenderer;
+import ua.pp.shurgent.railward.client.renderer.RailCrossingSignalRenderer;
 import ua.pp.shurgent.railward.block.train.bogey.FreightBogey18_100BlockEntity;
 import ua.pp.shurgent.railward.block.train.bogey.TripleAxleEqualizedLocomotiveBogeyBlockEntity;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityRenderer;
+//? if create6 {
+/*import com.simibubi.create.content.trains.bogey.BogeyBlockEntityVisual;
+*///?} else {
+import ua.pp.shurgent.railward.client.renderer.RailwardBogeyBlockInstance;
+//?}
 import ua.pp.shurgent.railward.client.renderer.ModernSignalGroundRenderer;
 import ua.pp.shurgent.railward.client.renderer.ModernSignalRenderer;
 import ua.pp.shurgent.railward.client.renderer.SpeedSignRenderer;
@@ -53,12 +62,16 @@ import ua.pp.shurgent.railward.client.renderer.TrainWallPanelAttachmentRenderer;
 import ua.pp.shurgent.railward.client.renderer.TrainCouplerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingBunkerRenderer;
 import ua.pp.shurgent.railward.client.renderer.UnloadingHatchRenderer;
-import ua.pp.shurgent.railward.client.renderer.WagonFrameRenderer;
 
 public class AllBlockEntities {
 
 	public static final BlockEntityEntry<FreightBogey18_100BlockEntity> FREIGHT_BOGEY_18_100 = REGISTRATE
 			.blockEntity("train/bogey/freight_18_100", FreightBogey18_100BlockEntity::new)
+			//? if create6 {
+			/*.visual(() -> BogeyBlockEntityVisual::new, false)
+			*///?} else {
+			.instance(() -> RailwardBogeyBlockInstance::new, be -> !RailwardBogeyStyles.supportsPlacedInstancing(be.getStyle()))
+			//?}
 			.validBlocks(AllBlocks.FREIGHT_BOGEY_18_100)
 			.renderer(() -> BogeyBlockEntityRenderer::new)
 			.register();
@@ -67,6 +80,11 @@ public class AllBlockEntities {
 			TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_BOGEY = REGISTRATE
 			.blockEntity("train/bogey/triple_axle_equalized_locomotive",
 					TripleAxleEqualizedLocomotiveBogeyBlockEntity::new)
+			//? if create6 {
+			/*.visual(() -> BogeyBlockEntityVisual::new, false)
+			*///?} else {
+			.instance(() -> RailwardBogeyBlockInstance::new, be -> !RailwardBogeyStyles.supportsPlacedInstancing(be.getStyle()))
+			//?}
 			.validBlocks(AllBlocks.TRIPLE_AXLE_EQUALIZED_LOCOMOTIVE_BOGEY)
 			.renderer(() -> BogeyBlockEntityRenderer::new)
 			.register();
@@ -126,6 +144,18 @@ public class AllBlockEntities {
 			.renderer(() -> WhistleSignRenderer::new)
 			.register();
 
+	public static final BlockEntityEntry<RelayCaseBlockEntity> RELAY_CASE = REGISTRATE
+			.blockEntity("train/signal/relay_case", RelayCaseBlockEntity::new)
+			.validBlocks(AllBlocks.RELAY_CASE)
+			.renderer(() -> RelayCaseRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<RailCrossingSignalBlockEntity> RAIL_CROSSING_SIGNAL = REGISTRATE
+			.blockEntity("train/signal/rail_crossing_signal", RailCrossingSignalBlockEntity::new)
+			.validBlocks(AllBlocks.RAIL_CROSSING_SIGNAL)
+			.renderer(() -> RailCrossingSignalRenderer::new)
+			.register();
+
 	public static final BlockEntityEntry<SpeedSignBlockEntity> SPEED_SIGN = REGISTRATE
 			.blockEntity("train/signal/speed_sign", SpeedSignBlockEntity::new)
 			.validBlocks(AllBlocks.SPEED_SIGN)
@@ -165,7 +195,6 @@ public class AllBlockEntities {
 	public static final BlockEntityEntry<WagonFrameBlockEntity> WAGON_FRAME = REGISTRATE
 			.blockEntity("train/parts/wagon_frame", WagonFrameBlockEntity::new)
 			.validBlocks(AllBlocks.WAGON_FRAME)
-			.renderer(() -> WagonFrameRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<RadiatorFanBlockEntity> RADIATOR_FAN = REGISTRATE

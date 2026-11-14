@@ -57,7 +57,7 @@ minecraft {
     def clientProbeHost = rootProject.findProperty('railwardClientProbeHost')?.toString()?.trim() ?: '127.0.0.1'
     def clientProbePort = rootProject.findProperty('railwardClientProbePort')?.toString()?.trim() ?: '25565'
     def clientProbeMode = rootProject.findProperty('railwardClientProbeMode')?.toString()?.trim() ?: 'late_join'
-    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading', 'bogey_models', 'ponder', 'ponder_fluid', 'ponder_bulk'].contains(clientProbeMode))
+    if (clientProbe && !['late_join', 'multi_client', 'controller', 'scheduled', 'scheduled_route', 'signal', 'coupler', 'coupler_auto', 'coupler_storage', 'cargo_unloading', 'bogey_models', 'relay_case', 'relay_case_marker', 'rail_crossing_signal', 'ponder', 'ponder_fluid', 'ponder_bulk', 'ponder_coupler', 'ponder_cistern', 'ponder_lighting', 'ponder_controller', 'ponder_speed_sign', 'ponder_whistle_sign', 'ponder_crossing_signal'].contains(clientProbeMode))
         throw new GradleException("Unknown railwardClientProbeMode: ${clientProbeMode}")
     def clientProbeName = rootProject.findProperty('railwardClientProbeName')?.toString()?.trim()
     def mainRunDirectory = runDirectoryOverride
@@ -182,6 +182,8 @@ minecraft {
             workingDirectory gameTestRunDirectory
             property 'forge.enabledGameTestNamespaces', mod_id
             arg "-mixin.config=${mod_id}.mixins.json"
+            // Simulate another addon redirecting the train passage call. Test-only.
+            arg "-mixin.config=${mod_id}.gametest.mixins.json"
             if (ccGameTest)
                 property 'railward.ccTest', 'true'
 

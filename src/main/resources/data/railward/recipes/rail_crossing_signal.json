@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TIT",
+    " A ",
+    " I "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    },
+    "A": {
+      "item": "create:andesite_alloy"
+    }
+  },
+  "result": {
+    "item": "railward:train/signal/rail_crossing_signal"
+  }
+}

@@ -84,8 +84,12 @@ import ua.pp.shurgent.railward.block.train.signal.ModernSignalBlock;
 import ua.pp.shurgent.railward.block.train.signal.ModernSignalGroundBlock;
 import ua.pp.shurgent.railward.block.train.signal.SpeedSignBlock;
 import ua.pp.shurgent.railward.block.train.signal.WhistleSignBlock;
+import ua.pp.shurgent.railward.block.train.signal.RelayCaseBlock;
+import ua.pp.shurgent.railward.block.train.signal.RailCrossingSignalBlock;
+import ua.pp.shurgent.railward.block.train.signal.RailCrossingSignalItem;
 import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlockItem;
 import ua.pp.shurgent.railward.client.model.TrainRoofModelRegistration;
+import ua.pp.shurgent.railward.client.model.WagonFrameModelRegistration;
 import ua.pp.shurgent.railward.client.model.WallPanelCopycatModelRegistration;
 import ua.pp.shurgent.railward.compat.RailwardMountedStorage;
 
@@ -759,6 +763,7 @@ public class AllBlocks {
 	public static final BlockEntry<WagonFrameBlock> WAGON_FRAME = REGISTRATE
 			.block("train/parts/wagon_frame", WagonFrameBlock::new).initialProperties(() -> Blocks.IRON_BLOCK)
 			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.onRegister(WagonFrameModelRegistration.create())
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new BlockItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
@@ -899,6 +904,24 @@ public class AllBlocks {
 			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.item((block, properties) -> new TrackTargetingBlockItem(block,
 				properties.tab(Railward.RAILWARD_TAB), AllEdgePointTypes.SPEED_SIGN))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<RelayCaseBlock> RELAY_CASE = REGISTRATE
+			.block("train/signal/relay_case", RelayCaseBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.addLayer(() -> RenderType::cutout)
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new TrackTargetingBlockItem(block,
+				properties.tab(Railward.RAILWARD_TAB), AllEdgePointTypes.RELAY_CASE))
+			.transform(customItemModel()).register();
+
+	public static final BlockEntry<RailCrossingSignalBlock> RAIL_CROSSING_SIGNAL = REGISTRATE
+			.block("train/signal/rail_crossing_signal", RailCrossingSignalBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.properties(p -> p.noOcclusion().requiresCorrectToolForDrops())
+			.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+			.item((block, properties) -> new RailCrossingSignalItem(block, properties.tab(Railward.RAILWARD_TAB)))
 			.transform(customItemModel()).register();
 
 	public static void register() {

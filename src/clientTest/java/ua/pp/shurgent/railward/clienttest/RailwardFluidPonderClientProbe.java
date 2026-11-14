@@ -22,6 +22,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,7 +50,7 @@ public final class RailwardFluidPonderClientProbe {
 	private static boolean captured;
 	private static boolean complete;
 	private static int previousFluid;
-	private static final int[] TIMES = {400, 330, 430, 700, 760, 850, 660, 50};
+	private static final int[] TIMES = {400, 330, 430, 700, 760, 850, 660, 50, 0};
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -87,7 +88,7 @@ public final class RailwardFluidPonderClientProbe {
 			require(cistern <= previousFluid, "unloading reversed unexpectedly");
 			previousFluid = cistern;
 		}
-		if (frame >= 15) {
+		if (frame >= 15 && preview < 8) {
 			boolean connected = preview <= 2 || preview == 4;
 			require(terminal.isConnectedToHatch() == connected, "wrong rendered connection state at preview " + preview);
 			require(Math.abs(terminal.getHoseExtensionDistance(1) - (connected ? 2 : 0)) < .01,
@@ -99,13 +100,13 @@ public final class RailwardFluidPonderClientProbe {
 				.getAnalogOutputSignal(world, FluidTransferScenes.TERMINAL) == (connected ? 15 : 0),
 				"wrong comparator output at preview " + preview);
 		}
-		if (frame == 25 && !captured) {
+		if (frame == (preview == 8 ? 10 : 25) && !captured) {
 			captured = true;
 			Screenshot.grab(mc.gameDirectory, "fluid-ponder-" + preview + ".png", mc.getMainRenderTarget(),
 				message -> LogUtils.getLogger().info("Railward FLUID-PONDER screenshot: {}", message.getString()));
 		}
 		boolean advance = preview == 1 ? active.getCurrentTime() >= 410
-			: preview == 2 ? active.getCurrentTime() >= 510 : frame >= 45;
+			: preview == 2 ? active.getCurrentTime() >= 510 : frame >= (preview == 8 ? 12 : 45);
 		if (!advance)
 			return;
 		if (preview == 1) require(cistern == 8000, "loading did not reach 8 buckets");
@@ -119,7 +120,7 @@ public final class RailwardFluidPonderClientProbe {
 			+ "81 cistern parts sharing one controller, localized captions, conserved 16000 mB, 8000 mB load/unload, "
 			+ "empty-supply no-op, locomotive-led single moving section, four animated bogeys, "
 			+ "standard isometric camera, rear-facing cab, supply behind wagon, "
-			+ "rendered lid/hose, redstone disconnect/reconnect, comparator 15/0, closed departure, 8 previews");
+			+ "rendered lid/hose, redstone disconnect/reconnect, comparator 15/0, closed departure, forward wheel rotation, 9 previews");
 		mc.stop();
 	}
 
@@ -154,9 +155,19 @@ public final class RailwardFluidPonderClientProbe {
 					require(part.getControllerBE() == controller, "stale original-world controller reference");
 				}
 		int maximum = 0;
+		float[] previousAngles = new float[FluidTransferScenes.BOGEY_X.length];
+		int[] rotatingTicks = new int[previousAngles.length];
 		int total = amount(scene, FluidTransferScenes.CISTERN) + amount(scene, FluidTransferScenes.RESERVOIR);
 		for (int i = 0; i < 1600; i++) {
 			scene.tick();
+			for (int b = 0; b < previousAngles.length; b++) {
+				var bogey = (AbstractBogeyBlockEntity) world.getBlockEntity(new BlockPos(FluidTransferScenes.BOGEY_X[b], 2, 7));
+				float angle = bogey.getVirtualAngle(1);
+				float step = Mth.wrapDegrees(angle - previousAngles[b]);
+				require(step >= -.001f, "wheel rolls against +X train movement at bogey " + b);
+				if (step > .001f) rotatingTicks[b]++;
+				previousAngles[b] = angle;
+			}
 			int wagon = amount(scene, FluidTransferScenes.CISTERN);
 			require(wagon + amount(scene, FluidTransferScenes.RESERVOIR) == total, "lost or duplicated fluid");
 			maximum = Math.max(maximum, wagon);
@@ -175,10 +186,8 @@ public final class RailwardFluidPonderClientProbe {
 				movingSections[0]++;
 		});
 		require(movingSections[0] == 1, "locomotive and wagon must share a single moving section");
-		for (int x : FluidTransferScenes.BOGEY_X) {
-			var bogey = (AbstractBogeyBlockEntity) scene.getWorld().getBlockEntity(new BlockPos(x, 2, 7));
-			require(Math.abs(bogey.getVirtualAngle(1)) > .01, "stationary bogey on moving consist: " + x);
-		}
+		for (int count : rotatingTicks)
+			require(count >= 100, "bogey must roll during both arrival and departure");
 		require(scene.getWorld().getBlockState(new BlockPos(13, 2, 7)).is(AllBlocks.TRAIN_COUPLER.get())
 			&& scene.getWorld().getBlockState(new BlockPos(14, 2, 7)).is(AllBlocks.TRAIN_COUPLER.get()),
 			"wagon and locomotive couplers are not adjacent");

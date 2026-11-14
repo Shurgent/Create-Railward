@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": { "0": "railward:block/train/signal/rail_crossing_signal", "particle": "railward:block/train/signal/rail_crossing_signal" },
+  "elements": [
+    {
+      "name": "right_glow",
+      "from": [2.3, 11.3, 5.3],
+      "to": [5.7, 14.7, 6.1],
+      "faces": {
+        "north": {"uv": [2.2, 5.7, 3.9, 7.4], "texture": "#0"},
+        "east": {"uv": [3.9, 5.7, 4.5, 7.4], "texture": "#0"},
+        "west": {"uv": [3.9, 5.7, 4.5, 7.4], "texture": "#0"},
+        "up": {"uv": [3.9, 5.7, 2.2, 5.1], "texture": "#0"},
+        "down": {"uv": [3.9, 5.1, 2.2, 5.7], "texture": "#0"}
+      }
+    }
+  ]
+}

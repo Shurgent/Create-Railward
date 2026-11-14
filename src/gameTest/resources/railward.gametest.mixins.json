@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ua.pp.shurgent.railward.gametest.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ForeignCarriagePassageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

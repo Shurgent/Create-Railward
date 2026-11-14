@@ -2,6 +2,7 @@ package ua.pp.shurgent.railward.clienttest;
 
 import java.util.List;
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.content.trains.bogey.AbstractBogeyBlockEntity;
 import com.simibubi.create.foundation.ponder.element.WorldSectionElement;
 //? if create6 {
 /*import net.createmod.ponder.foundation.PonderIndex;
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -116,8 +118,19 @@ public final class RailwardBulkPonderClientProbe {
 		for (BlockPos pos : BlockPos.betweenClosed(BulkCargoScenes.WAGON, BulkCargoScenes.WAGON.offset(8, 1, 2)))
 			require(((BulkCargoContainerBlockEntity) scene.getWorld().getBlockEntity(pos)).getControllerBE() == root, "original-world controller reference");
 		int maximum = 0;
+		int[] bogeyX = {5, 11, 18, 25};
+		float[] previousAngles = new float[bogeyX.length];
+		int[] rotatingTicks = new int[bogeyX.length];
 		for (int i = 1; i <= 1600; i++) {
 			scene.tick();
+			for (int b = 0; b < bogeyX.length; b++) {
+				var bogey = (AbstractBogeyBlockEntity) scene.getWorld().getBlockEntity(new BlockPos(bogeyX[b], 4, 7));
+				float angle = bogey.getVirtualAngle(1);
+				float step = Mth.wrapDegrees(angle - previousAngles[b]);
+				require(step >= -.001f, "wheel rolls against +X train movement at bogey " + b);
+				if (step > .001f) rotatingTicks[b]++;
+				previousAngles[b] = angle;
+			}
 			if (i > 230) require(amount(scene, BulkCargoScenes.WAGON) + amount(scene, BulkCargoScenes.SUPPLY)
 				+ amount(scene, BulkCargoScenes.OUTPUT) == BulkCargoScenes.TRAIN_AMOUNT, "lost/duplicated train cargo");
 			maximum = Math.max(maximum, amount(scene, BulkCargoScenes.WAGON));
@@ -128,6 +141,7 @@ public final class RailwardBulkPonderClientProbe {
 		int[] moving = {0};
 		scene.forEach(WorldSectionElement.class, section -> { if (Math.abs(section.getAnimatedOffset().x - 8) < .001) moving[0]++; });
 		require(moving[0] == 1, "wagon must move with its locomotive");
+		for (int count : rotatingTicks) require(count >= 140, "bogey must roll during all three train movements");
 		camera(scene);
 	}
 

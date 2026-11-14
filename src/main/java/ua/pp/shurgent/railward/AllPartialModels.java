@@ -42,6 +42,18 @@ public class AllPartialModels {
 	SIGNAL_GREEN_LAMP = block("train/signal/lamp_green_lamp"),
 	SIGNAL_GREEN_GLOW = block("train/signal/lamp_green_glow"),
 
+	// Rail Crossing Signal
+	CROSSING_SIGN_1 = block("train/signal/rail_crossing_signal/cross_1"),
+	CROSSING_SIGN_2 = block("train/signal/rail_crossing_signal/cross_2"),
+	CROSSING_LEFT_LAMP_ON = block("train/signal/rail_crossing_signal/left_lamp_on"),
+	CROSSING_LEFT_LAMP_OFF = block("train/signal/rail_crossing_signal/left_lamp_off"),
+	CROSSING_LEFT_LENS = block("train/signal/rail_crossing_signal/left_lens_off"),
+	CROSSING_LEFT_GLOW = block("train/signal/rail_crossing_signal/left_glow"),
+	CROSSING_RIGHT_LAMP_ON = block("train/signal/rail_crossing_signal/right_lamp_on"),
+	CROSSING_RIGHT_LAMP_OFF = block("train/signal/rail_crossing_signal/right_lamp_off"),
+	CROSSING_RIGHT_LENS = block("train/signal/rail_crossing_signal/right_lens_off"),
+	CROSSING_RIGHT_GLOW = block("train/signal/rail_crossing_signal/right_glow"),
+
 	// Whistle Sign
 	WHISTLE_SIGN = block("train/signal/whistle_sign"),
 	SPEED_SIGN = block("train/signal/speed_sign"),
@@ -67,7 +79,6 @@ public class AllPartialModels {
 	TRAIN_ROOF_PARTITION_WEDGE_CLOCKWISE_INTERIOR = block("train/parts/train_roof_partition_wedge_clockwise_interior"),
 
 	// Wagon Frame
-	WAGON_FRAME_BASE = block("train/parts/wagon_frame_base"),
 	WAGON_FRAME_MEMBER_THIN = block("train/parts/wagon_frame_member_thin"),
 	WAGON_FRAME_MEMBER_THICK = block("train/parts/wagon_frame_member_thick"),
 	WAGON_FRAME_MEMBER_TAPER_THIN_TO_THICK = block("train/parts/wagon_frame_member_taper_thin_to_thick"),

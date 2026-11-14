@@ -1,23 +1,37 @@
 # Railward Ponder scenes
 
-Hold Create's Ponder key (W by default) over a Railward signal, Cistern Hatch or
-Fluid Terminal item. Signals offer installation plus their own aspect scene;
-both fluid components offer two scenes focused on their paired connection.
+Hold Create's Ponder key (W by default) over a supported Railward block item.
+The table below lists the available storyboards for each item.
 Captions and titles are provided in English, Russian and Ukrainian.
 
 | Scene | Available on | Teaches |
 | --- | --- | --- |
+| Locomotive buffer lights | Buffer Lights | 13 wrench-selectable housings, direct wall-panel mounting, white/red direction changes and inactive state |
+| Using a locomotive spotlight | Locomotive Spotlight | Two sizes, direct wall-panel mounting, directional activation and Spotlight-filtered Contraption Controls |
+| Building a cistern | All seven Cistern colours | Solid 1/3/5-block cross-sections, horizontal axes, length up to 11, full-section right-click extension and separate colours |
+| Connecting pipes to a cistern | All seven Cistern colours | End ports, central side/top/bottom lines excluding end sections, 5-block end area and end-only access on 1-block cisterns |
 | Installing Railward signals | Tall and ground signals | Select track with a Create signal, place the source below the Railward base, four-block search range, tall head clearance, wrench rotation, source configuration |
 | Reading the tall signal | Tall signal | Green, red, chain-signal yellow, invalid flashing red, disconnected dark head, manual driving responsibility |
 | Reading the ground signal | Ground signal | Red maps to blue; green and yellow map to white; invalid flashing blue; disconnected dark head |
+| Setting up a rail crossing signal | Rail Crossing Signal | Select and highlight a Relay Cabinet, place the signal, watch the lamps and warning follow occupancy, and adjust the sign and sound through the white square |
 | The hatch and terminal pair | Cistern Hatch and Fluid Terminal | Analogy with Create's Portable Fluid Interface, exact 1–2-block height, automatic lid/hose, per-carriage storage |
 | Fluid exchange through the pair | Cistern Hatch and Fluid Terminal | The paired connection in both transfer directions, connection comparator output and redstone control |
 | Building and using bulk storage | All three Bulk Cargo Container colours | Square, rectangular and tall multiblocks; complete layers; separate colours; top intake, empty-hand stack extraction and inventory automation |
 | Loading and unloading a bulk wagon | All three containers, Unloading Hatch and Unloading Bunker | Overhead loading into the supplied halfcar, its floor hatch above a bunker, active extraction through the bunker and departure |
+| Automatic train coupling | Train Coupler | Facing outer couplers, straight/level alignment, schedules, configuration requirements, slow approach and joint departure |
+| Coupling and uncoupling with a wrench | Train Coupler | One right-click to join stopped trains, split at an internal connection, paused-schedule exception and protection against immediate automatic recoupling |
+| Train naming rules | Train Coupler | Controls-based manual naming, moving-train automatic naming and generated numbers after splitting |
 
 Shared scene code lives in `client/ponder/`. Create 5 registers storyboards with
 `PonderRegistrationHelper`; Create 6 registers a client-only `PonderPlugin`.
 Stonecutter handles the small scene API/package differences.
+
+The Rail Crossing Signal storyboard reuses the speed-sign stage. It shows
+the cabinet selection and placement, then uses the scene clock for the
+alternating lamps as the wagon crosses. The warning plays during ordinary
+playback and stops at release. Seeking reconstructs the lamp and sign
+states silently. The final keyframes point out the settings square and
+demonstrate the three sign options on the model.
 
 The shipped `assets/railward/ponder/signals.nbt` is a vanilla structure with
 DataVersion 2975 (1.18.2), a 7 x 7 base at y=0, east-west track at z=4/y=1,
@@ -36,7 +50,88 @@ change gameplay signal behavior.
 The wrench demonstration cycles all four tall-signal parts through 15 steps,
 one every six ticks (337.5 degrees over 4.5 seconds), while its caption is shown.
 
+## Modern Train Controller tutorial
+
+The controller storyboard reuses the 7 x 7 lighting stage and the shared
+3 x 3 inspection cart, one bogey, central seat and seated bee. It contains one
+Railward Modern Train Controller and no ordinary Create train controls. Two
+buffer lights sit on each end with their red lenses outside.
+
+Six captions cover the combined controls, forward lighting, stopping and
+releasing both traction/brake before reversal, the configurable reverser key
+(default R), returning to forward and inactive/neutral state. The scene follows
+forward/reverse/forward/off without rotating the controller housing. Forward
+points from the seat toward the controller (north); reverse points toward the
+free deck end (south). These travel cues follow the cab layout rather than
+using the raw FACING property as a cart-front vector. Both
+FACING and REVERSED change together to retain its physical facing. The two
+isometric camera orbits reveal the light colours at both ends.
+
+`ControllerLeverElement` draws the native reverser, throttle and brake partials
+at the same pivots and angles as the moving-train renderer, easing them every
+tick with render interpolation. The static housing uses OPEN=true so neutral
+handles are not drawn a second time. Local buffer transforms rotate vertices
+and lighting normals together. This element belongs only to the Ponder scene;
+no real train state, packets or gameplay renderers are modified.
+
+The opt-in `ponder_controller` client probe checks its single registration,
+six translated captions, one-controller cart, seated passenger, paired lamp
+states, fixed housing, continuous lever animation including intermediate
+reversal, throttle/brake movement, smooth passenger turn, camera orbits and
+scene replay. It saves twelve `controller-ponder-*.png` native UI previews.
+The existing CTRL server/client probes remain the real-game behavior checks.
+
+## Locomotive lighting tutorials
+
+`train_lighting.nbt` supplies a compact 7 x 7 base. A 3 x 3 inspection cart
+sits on one small bogey above straight track. A red seat occupies its centre,
+with ordinary train controls immediately ahead and behind, facing the seat.
+One native bee rides a Create SeatEntity, with AI and gravity disabled; its
+body and head ease through a 30-tick turn toward the selected controller.
+Both controllers retain Create's virtual model with visible levers throughout
+the scene. A 300-tick outline and right-click prompt identify the selected
+one. Captions explain the controller and light direction without referring
+to the passenger.
+Each end has two buffer lights on its outer deck blocks, with mirrored
+housings placing the red lenses outside. Only one light cycles through styles.
+The spotlight remains centred on each end. All lights face away from the cart. The camera starts
+at the standard isometric angle and smoothly orbits 180 degrees to show each
+end before and after reversing direction. Isometric pitch stays unchanged.
+They use the native equipment and panel-attachment
+renderers, including all 13 buffer-light styles and both spotlight sizes.
+`TrainLightingPonderState` supplies scripted colours only to virtual block
+entities inside a Ponder world; weak keys avoid retaining discarded scenes.
+It explicitly marks scene-created lights virtual: Ponder 1.0.91's dynamically
+created-block path calls Catnip's lowercase `onBEadded`, bypassing Ponder's
+capitalized `onBEAdded` hook. The initialization is guarded by the Ponder
+level type on every target.
+Real-world block entities and contraption render paths keep their normal
+train-driven state. Thin overlay lines diagram the spotlight's direction;
+the live-world forward-light shader is not run inside Ponder.
+
+The opt-in `ponder_lighting` probe checks registration, translations, variants,
+panel attachments, lamp transitions, the Spotlight control filter and preview
+state isolation, paired lamps with outward red lenses, single-lamp style
+cycling, persistent levers on both controllers, intermediate passenger yaw, opposite
+facings and the camera orbit. It captures 16 native UI frames. Scripted direction changes
+do not replace the dedicated-server train-light checks.
+
 ## Fluid tutorial assets
+
+The two standalone Cistern scenes share `cistern_storage.nbt`, a 13 x 13 base.
+They retain the standard isometric camera and replace examples on a compact
+stage. Formation is scripted because gameplay connectivity runs on the server;
+the normal cistern renderer draws each complete multiblock from its controller.
+The first 3 x 3 cross-section is shown block by block before combining it.
+End clicks illustrate full-section extensions with 9 or 25 matching blocks.
+Pipe examples use native pipe models and the cistern's real sided fluid
+capabilities. These scenes do not explain pumps or train assembly.
+
+The opt-in `ponder_cistern` client probe checks all 14 item/storyboard
+registrations, both horizontal axes, complete controller bindings, dimensions,
+colour separation, permitted/rejected pipe ports, translated captions and
+standard isometry. It captures 11 native UI previews. Scripted scene formation
+is not a replacement for live server multiblock-placement tests.
 
 `assets/railward/ponder/cistern_transfer.nbt` derives its wagon and locomotive
 from the supplied `tank_car_lgray.nbt` and `chme3.nbt`. The originals remain
@@ -65,6 +160,14 @@ independent section throughout both scenes and move together; all four bogeys
 animate. The platform covers only x=1..14/z=4..11; the decorative locomotive
 extends beyond it. A 16-block framing region and 0.8 view scale keep the hatch
 and terminal prominent, without fitting the locomotive into the view.
+The fluid, bulk-wagon and coupler scenes pass the opposite signed distance to Create's
+virtual bogey animation so the wheels roll with each vehicle along the X axis.
+`PonderUITrainDepthMixin` expands the GUI clipping depth for Railward's train
+storyboards only. It compresses clip-space Z, retaining the camera, scale,
+screen position and depth order, so the offstage track is not sliced inside
+the viewport. A fresh depth layer before the widgets keeps the title and
+navigation above the scene, including GuiGraphics' depth-tested render types.
+Other storyboards use Ponder's original projection.
 The lever sits screen-right (west), with its support at (7,8,7), and
 the comparator sits screen-left (east), with its support at (9,7,7) and its
 output facing east so it reads the terminal. There is no industrial-
@@ -111,15 +214,16 @@ languages. Automated clients have music muted by the existing probe setup.
 Use `-PrailwardClientProbeMode=ponder_fluid` for the separate fluid-scene probe.
 It loads all four item/storyboard combinations, validates all 81 cistern parts
 and localized text, checks conserved volume and both transfer directions, then
-renders eight checkpoints: open hatch, loading, unloading, redstone-disabled,
-reconnected, departing wagon, closed hatch and the arrival view centered on the pair.
-It also checks adjacent couplers, one moving section, all four animated bogeys,
+renders nine checkpoints: open hatch, loading, unloading, redstone-disabled,
+reconnected, departing wagon, closed hatch, arrival and the opening empty track.
+It also checks adjacent couplers, one moving section, all four bogeys rolling
+in the direction of travel,
 the flanking controls, absence of industrial-iron station supports, default
 isometric camera, rear cab and relocated background supply.
 It requires the real lid/hose
 animations, comparator output 15/0, correct power state and unchanged total
 volume, and separately plays an empty-supply scene to catch exhausted-source
-errors. Require `Railward FLUID-PONDER client probe passed`, eight
+errors. Require `Railward FLUID-PONDER client probe passed`, nine
 `screenshots/fluid-ponder-*.png` captures, exit code zero and no crash report.
 
 This check does not verify actual track signaling or replace a person checking
@@ -160,3 +264,32 @@ separation, item conservation, native transfer effects and standard isometry.
 The opt-in client saves nine `screenshots/bulk-ponder-*.png` previews and exits
 with `Railward BULK-PONDER client probe passed`. It remains in `clientTest` and
 is excluded from release JARs. Keep the human rendering/reading-pace checks.
+
+## Train Coupler tutorials
+
+`train_coupler.nbt` contains `cargo_platform.nbt` at (3,2,6) and reversed ChME3
+at (16,1,5), with opposing couplers at (13,2,7)/(16,2,7). The low, open deck
+keeps the coupling visible. Its Railward bogeys occupy the same positions as
+the earlier halfcar. The original schematics remain unchanged. A compact
+16-block framing region is centered on the joint, using the standard camera
+and scale 1; the locomotive can extend beyond the platform and viewport.
+
+Automatic approach moves the locomotive -2 blocks to close the gap, then both
+vehicles depart +3 blocks together. The manual example starts with adjacent
+stationary couplers, shows two wrench prompts, moves both vehicles together,
+then leaves the wagon behind after splitting. The naming storyboard uses
+labels and visible controls to illustrate the actual `TrainCouplerHandler`
+rules, including both-controls and neither-controls cases. Generated numbers
+are examples, not a reservation of those names in the player's world.
+
+These are virtual storyboards: section movement represents joining/splitting;
+it does not assemble live server trains or invoke the topology handler. The
+existing COUPLE probes remain the gameplay checks. Use
+`-PrailwardClientProbeMode=ponder_coupler` to check all three registrations,
+5/6/19 localized text entries (the latter includes example name labels),
+coupler orientation/height, motion and wheel direction, controls examples and
+the unchanged isometric camera. The client saves nine
+`screenshots/coupler-ponder-*.png` previews and stops itself. Require the
+`Railward COUPLER-PONDER client probe passed` marker, successful client/server
+exits and no crash report; inspect framing, labels, wrench prompts and native
+coupler visibility in the saved frames.

@@ -39,6 +39,11 @@ public class LocomotiveBufferLightsRenderHelper {
 			LightTexture.FULL_BRIGHT, true);
 	}
 
+	public static void renderPonder(BlockState state, LocomotiveBufferLightsVariant variant, Direction facing,
+		LampState lamp, PoseStack ms, MultiBufferSource buffers, int light) {
+		render(state, variant, getMountedFacingRotation(facing), 0, lamp, ms, buffers, light, false);
+	}
+
 	public static void renderPanelAttachment(BlockState state, LocomotiveBufferLightsVariant variant, Direction facing,
 		PoseStack ms, MultiBufferSource buffers, int light) {
 		render(state, variant, getPanelFacingRotation(facing), PANEL_ATTACHMENT_OFFSET, resolveLampState(facing), ms,
@@ -190,7 +195,7 @@ public class LocomotiveBufferLightsRenderHelper {
 		return getMountedFacingRotation(facing.getOpposite());
 	}
 
-	private enum LampState {
+	public enum LampState {
 		OFF,
 		WHITE,
 		RED

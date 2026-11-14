@@ -2,8 +2,21 @@
 
 ## Changelog:
 
+### 0.7.2
+    - Added automatic and manual coupling support for matching Steam 'n' Rails decorative coupler and Headstock styles.
+    - Added the Relay Cabinet.
+    - Added the Rail Crossing Signal with bell, ring and siren sounds.
+    - Added Ponder scenes for the Train Coupler, Cisterns, Buffer Lights, Locomotive Spotlight, Modern Train Controller, Speed Limit Sign, Whistle Sign and Rail Crossing Signal.
+    - Improved Wagon Frame rendering performance and increased the render distance of placed frames.
+    - Improved rendering performance for placed locomotive and freight bogeys.
+    - Improved rendering performance for placed Cisterns and Bulk Cargo Containers.
+    - Improved compatibility of train passage triggers with other Create addons.
+    - Fixed the Railward creative tab name.
+    - Fixed automatic train coupling in the Nether, End and other dimensions.
+
 ### 0.7.1
     - Added Ponder scenes for signals, the Cistern Hatch, Fluid Terminal, Bulk Cargo Containers, Unloading Hatch and Unloading Bunker.
+    - Fixed reversed wheel rotation and clipped scenery in the fluid and bulk cargo Ponder scenes.
     - Fixed a startup crash with Create 6.0.8 on Minecraft 1.20.1.
 
 ### 0.7.0

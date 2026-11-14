@@ -22,6 +22,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import ua.pp.shurgent.railward.block.surface.SurfaceMountedBlock;
+import ua.pp.shurgent.railward.compat.TrainCouplerCompatibility;
 import ua.pp.shurgent.railward.particle.RailwardParticleTypes;
 import ua.pp.shurgent.railward.schedule.RailwardScheduleInstructions;
 
@@ -79,6 +80,7 @@ public class Railward {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		event.enqueueWork((Runnable) SurfaceMountedBlock::registerMovementChecks);
+		event.enqueueWork(TrainCouplerCompatibility::registerInteractions);
 		// some preinit code
 		LOGGER.info("HELLO FROM PREINIT");
 		LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));

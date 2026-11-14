@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "railward:block/train/signal/rail_crossing_signal"
+    },
+    "facing=east": {
+      "model": "railward:block/train/signal/rail_crossing_signal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "railward:block/train/signal/rail_crossing_signal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "railward:block/train/signal/rail_crossing_signal",
+      "y": 270
+    }
+  }
+}

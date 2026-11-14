@@ -164,11 +164,12 @@ public final class FluidTransferScenes {
 	}
 
 	private static void wheels(SceneBuilder scene, float distance, int duration) {
+		// Create's virtual bogey animation runs along local -Z; these tracks run along +X.
 		for (int x : BOGEY_X) {
 			//? if create6 {
-			/*new CreateSceneBuilder(scene).world().animateBogey(new BlockPos(x, 2, 7), distance, duration);
+			/*new CreateSceneBuilder(scene).world().animateBogey(new BlockPos(x, 2, 7), -distance, duration);
 			*///?} else {
-			scene.world.animateBogey(new BlockPos(x, 2, 7), distance, duration);
+			scene.world.animateBogey(new BlockPos(x, 2, 7), -distance, duration);
 			//?}
 		}
 	}

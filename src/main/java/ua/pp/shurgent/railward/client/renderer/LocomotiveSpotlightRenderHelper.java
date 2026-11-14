@@ -40,6 +40,11 @@ public class LocomotiveSpotlightRenderHelper {
 			light, false);
 	}
 
+	public static void renderPonder(BlockState state, LocomotiveSpotlightVariant variant, Direction facing,
+		boolean active, PoseStack ms, MultiBufferSource buffers, int light) {
+		render(state, variant, getMountedFacingRotation(facing), 0, active, ms, buffers, light, false);
+	}
+
 	public static void renderPanelAttachmentGhost(BlockState state, LocomotiveSpotlightVariant variant,
 		Direction facing, PoseStack ms, MultiBufferSource buffers) {
 		render(state, variant, getPanelFacingRotation(facing), PANEL_ATTACHMENT_OFFSET, false, ms, buffers,

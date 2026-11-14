@@ -28,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 //? if >=1.19.2
 /*import net.minecraftforge.client.model.data.ModelData;*/
 //? if <1.19.2
@@ -71,17 +72,20 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	@Override
 	protected void renderSafe(BulkCargoContainerBlockEntity be, float partialTicks, PoseStack ms,
 		MultiBufferSource buffers, int light, int overlay) {
-		ItemStack displayStack = be.getDisplayStack();
-		if (displayStack.isEmpty())
+		boolean virtualCargoView = be.hasClientCargoView();
+		if (!virtualCargoView && !be.isController())
 			return;
 
-		boolean virtualCargoView = be.hasClientCargoView();
 		LerpedFloat cargoLevel = be.getCargoLevel();
 		if (!virtualCargoView && cargoLevel == null)
 			return;
 
 		float fill = virtualCargoView ? be.getFillState() : cargoLevel.getValue(partialTicks);
 		if (fill <= 0)
+			return;
+
+		ItemStack displayStack = be.getDisplayStack();
+		if (displayStack.isEmpty())
 			return;
 
 		BakedModel itemModel = Minecraft.getInstance()
@@ -102,8 +106,6 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 				surfaceTile, ms);
 			return;
 		}
-		if (!be.isController())
-			return;
 
 		float wallInset = 2 / 16f + 1 / 128f;
 		float xMin = wallInset;
@@ -470,6 +472,11 @@ public class BulkCargoContainerRenderer extends SmartBlockEntityRenderer<BulkCar
 	@Override
 	public boolean shouldRenderOffScreen(BulkCargoContainerBlockEntity be) {
 		return be.isController() || be.hasClientCargoView();
+	}
+
+	@Override
+	public boolean shouldRender(BulkCargoContainerBlockEntity be, Vec3 cameraPos) {
+		return (be.isController() || be.hasClientCargoView()) && super.shouldRender(be, cameraPos);
 	}
 
 	private record Decoration(float x, float z, float size, float yaw, float pitch, float roll) {
